@@ -1,4 +1,4 @@
-package async.server.client.models;
+package async.chainreplication.server.client.models;
 
 import async.server.client.model.exceptions.InvalidRequestException;
 
@@ -35,7 +35,6 @@ public class RequestDetails {
 	public RequestDetails(
 			RequestType requestType, int accountNum,
 			int amount) throws InvalidRequestException {
-		super();
 		this.requestType = requestType;
 		this.accountNum = accountNum;
 		this.amount = amount;

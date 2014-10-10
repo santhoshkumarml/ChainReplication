@@ -1,4 +1,4 @@
-package async.master.models;
+package async.chainreplication.master.models;
 
 import java.util.concurrent.ConcurrentHashMap;
 

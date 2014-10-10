@@ -1,6 +1,6 @@
 package async.master;
 
-import async.master.models.MasterDataStructure;
+import async.chainreplication.master.models.MasterDataStructure;
 
 public class Master {
 	MasterDataStructure masterDataStructure = new MasterDataStructure();
