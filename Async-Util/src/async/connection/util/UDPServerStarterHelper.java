@@ -8,10 +8,18 @@ import java.net.DatagramSocket;
 
 public class UDPServerStarterHelper {
 	DatagramSocket serverSocket;
+	
+	public UDPServerStarterHelper() {
+		initAndStartUDPServer();
+	}
+	
+	public int getServerPort() {
+		return serverSocket.getLocalPort();
+	}
 
-	public void initAndStartUDPServer(int port) {
+	public void initAndStartUDPServer() {
 		try {
-			serverSocket = new DatagramSocket(port);
+			serverSocket = new DatagramSocket(0);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

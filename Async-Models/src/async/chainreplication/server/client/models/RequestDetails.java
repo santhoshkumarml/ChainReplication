@@ -1,9 +1,11 @@
 package async.chainreplication.server.client.models;
 
+import java.io.Serializable;
+
 import async.server.client.model.exceptions.InvalidRequestException;
 
 
-public class RequestDetails {
+public class RequestDetails implements Serializable{
 	RequestType requestType;
 	int accountNum;
 	int amount;

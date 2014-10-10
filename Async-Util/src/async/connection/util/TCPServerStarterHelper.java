@@ -7,9 +7,14 @@ import java.net.Socket;
 
 public class TCPServerStarterHelper {
 	ServerSocket serverSocket;
-	public void initAndStartTCPServer(int port) {
+	
+	public TCPServerStarterHelper() {
+		initAndStartTCPServer();
+	}
+	
+	public void initAndStartTCPServer() {
 		try {
-			serverSocket = new ServerSocket(port);
+			serverSocket = new ServerSocket(0);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -17,6 +22,11 @@ public class TCPServerStarterHelper {
 
 		}
 	}
+	
+	public int getServerPort() {
+		return serverSocket.getLocalPort();
+	}
+
 
 	public Object acceptAndReadObjectFromTCPConnections() {
 		Object message = null;
