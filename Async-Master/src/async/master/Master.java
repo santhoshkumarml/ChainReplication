@@ -1,4 +1,7 @@
 package async.master;
+
+import async.master.models.MasterDataStructure;
+
 public class Master {
 	MasterDataStructure masterDataStructure = new MasterDataStructure();
 

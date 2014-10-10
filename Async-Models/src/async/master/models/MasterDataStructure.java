@@ -1,4 +1,4 @@
-package async.master;
+package async.master.models;
 
 import java.util.concurrent.ConcurrentHashMap;
 

@@ -1,4 +1,4 @@
-package async.master;
+package async.master.models;
 
 public class Server {
  String universalId;
