@@ -61,10 +61,10 @@ public class RequestDetails {
 	}
 
 	public int getDestAccountNum() {
-/*		if(requestType != RequestType.TRANSFER) {
+		/*		if(requestType != RequestType.TRANSFER) {
 			throw new InvalidOperationException("Should be called on a Transfer Request");
 		}*/
 		return destAccountNum;
 	}
-	
+
 }

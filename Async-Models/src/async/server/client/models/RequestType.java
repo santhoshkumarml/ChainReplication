@@ -5,7 +5,7 @@ public enum RequestType {
 	DEPOSIT(QueryOrUpdate.UPDATE),
 	TRANSFER(QueryOrUpdate.UPDATE),
 	WITHDRAW(QueryOrUpdate.UPDATE);
-	
+
 	private QueryOrUpdate queryOrUpdate;
 
 	RequestType(QueryOrUpdate queryOrUpdate) {
@@ -15,4 +15,10 @@ public enum RequestType {
 	public QueryOrUpdate getQueryOrUpdate() {
 		return queryOrUpdate;
 	}
+
+	public enum QueryOrUpdate {
+		QUERY,
+		UPDATE;
+	}
+
 }

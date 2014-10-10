@@ -2,9 +2,9 @@ package async.server.client.models;
 
 public class Request {
 	String requestId;
-	
+
 	RequestDetails requestDetails;
-	
+
 	public Request(RequestDetails requestDetails) {
 		this.requestDetails = requestDetails;
 	}
