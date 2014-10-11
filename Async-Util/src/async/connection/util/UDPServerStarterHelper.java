@@ -8,11 +8,11 @@ import java.net.DatagramSocket;
 
 public class UDPServerStarterHelper {
 	DatagramSocket serverSocket;
-	
+
 	public UDPServerStarterHelper() {
 		initAndStartUDPServer();
 	}
-	
+
 	public int getServerPort() {
 		return serverSocket.getLocalPort();
 	}
@@ -31,7 +31,7 @@ public class UDPServerStarterHelper {
 	public Object acceptAndReadObjectFromUDPConnections() {
 		Object message = null;
 		byte[] receiveData = new byte[2048];
-	    ObjectInputStream oos = null;
+		ObjectInputStream oos = null;
 		try {
 			DatagramPacket packet = new DatagramPacket(receiveData, receiveData.length );
 			serverSocket.receive(packet);
@@ -60,6 +60,4 @@ public class UDPServerStarterHelper {
 	public void stopUDPServer() {
 		serverSocket.close();
 	}
-
-
 }
