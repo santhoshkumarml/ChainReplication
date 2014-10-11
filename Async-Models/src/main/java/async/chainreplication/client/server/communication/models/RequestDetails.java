@@ -44,7 +44,7 @@ public class RequestDetails implements Serializable{
 		this.requestType = requestType;
 		this.accountNum = accountNum;
 		this.amount = amount;
-		if(requestType != RequestType.WITHDRAW && requestType != RequestType.DEPOSIT) {
+		if(requestType == RequestType.GET_BALANCE) {
 			throw new InvalidRequestException(this);
 		}
 	}
@@ -71,5 +71,54 @@ public class RequestDetails implements Serializable{
 		}*/
 		return destAccountNum;
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((requestType == null) ? 0 : requestType.hashCode());
+		result = prime * result + accountNum;
+		if(requestType != RequestType.GET_BALANCE)
+			result = prime * result + amount;
+		if(requestType == RequestType.TRANSFER) {
+			result = prime * result + destAccountNum;
+			result = prime * result
+					+ ((destBank == null) ? 0 : destBank.hashCode());
+		}
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+
+		RequestDetails other = (RequestDetails) obj;
+		if (requestType != other.requestType)
+			return false;
+		if (accountNum != other.accountNum)
+			return false;
+		if(requestType != RequestType.GET_BALANCE)
+			if (amount != other.amount)
+				return false;
+		if(requestType == RequestType.TRANSFER) {
+			if (destAccountNum != other.destAccountNum)
+				return false;
+			if (destBank == null) {
+				if (other.destBank != null)
+					return false;
+			} else if (!destBank.equals(other.destBank))
+				return false;
+		}
+		return true;
+	}
+
+
+
 
 }

@@ -45,4 +45,12 @@ public class Server implements Serializable{
 	}
 	
 	
+	public boolean isHead() {
+		return this.adjacencyList.getPredecessor() == null;
+	}
+	
+	public boolean isTail() {
+		return this.adjacencyList.getSucessor() == null;
+	}
+	
 }

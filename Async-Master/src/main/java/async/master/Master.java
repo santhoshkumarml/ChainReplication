@@ -2,7 +2,7 @@ package async.master;
 
 
 public class Master {
-	MasterDataStructure masterDataStructure = new MasterDataStructure();
+	MasterDataPersister masterDataStructure = new MasterDataPersister();
 
 	public static void main(String args[]) {
 		HeartBeatListenerThread listernerThread = new HeartBeatListenerThread();

@@ -1,6 +1,8 @@
-package async.chainreplication.master.models;
+package async.chainreplication.application.models;
 
 import java.io.Serializable;
+
+import async.chainreplication.master.models.Server;
 
 
 public class Bank implements Serializable{
@@ -12,7 +14,6 @@ public class Bank implements Serializable{
 	Server head;
 	Server tail;
 	public Bank(String bankName, Server head, Server tail) {
-		super();
 		this.bankName = bankName;
 		this.head = head;
 		this.tail = tail;

@@ -33,5 +33,46 @@ public class Request implements Serializable{
 
 	public RequestDetails getRequestDetails() {
 		return requestDetails;
-	}	
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((clientId == null) ? 0 : clientId.hashCode());
+		result = prime * result
+				+ ((requestDetails == null) ? 0 : requestDetails.hashCode());
+		result = prime * result
+				+ ((requestId == null) ? 0 : requestId.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Request other = (Request) obj;
+		if (clientId == null) {
+			if (other.clientId != null)
+				return false;
+		} else if (!clientId.equals(other.clientId))
+			return false;
+		if (requestDetails == null) {
+			if (other.requestDetails != null)
+				return false;
+		} else if (!requestDetails.equals(other.requestDetails))
+			return false;
+		if (requestId == null) {
+			if (other.requestId != null)
+				return false;
+		} else if (!requestId.equals(other.requestId))
+			return false;
+		return true;
+	}
+	
 }
