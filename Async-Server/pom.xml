@@ -15,7 +15,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>Async.Async-Project</groupId>
-			<artifactId>Async-Models</artifactId>
+			<artifactId>Async-Util</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 	</dependencies>

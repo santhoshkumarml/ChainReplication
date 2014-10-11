@@ -3,7 +3,7 @@ package async.common.util;
 import java.util.ArrayList;
 import java.util.List;
 
-import async.chainreplication.server.client.models.Request;
+import async.chainreplication.client.server.communication.models.Request;
 
 public class Config {
 	
