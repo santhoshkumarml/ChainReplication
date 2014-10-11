@@ -31,7 +31,7 @@ public class UDPClientHelper {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} finally {
-				if(os == null) {
+				if(os != null) {
 					try {
 						os.close();
 					} catch (IOException e) {

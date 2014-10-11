@@ -25,7 +25,7 @@ public class MasterDataStructure {
 	}
 
 
-	public List<Bank> getBankChanges(
+	public StructureChanges calculateChanges(
 			ConcurrentHashMap<String, Bank> bankNameToBankMapFromCurrentTimeStamp) {
 		List<Bank> changedBanks = new ArrayList<Bank>();
 		synchronized (this.getBankNameToBankMap()) {

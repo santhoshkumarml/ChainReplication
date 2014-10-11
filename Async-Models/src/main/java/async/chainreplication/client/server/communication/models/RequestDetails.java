@@ -6,6 +6,10 @@ import async.server.client.model.exceptions.InvalidRequestException;
 
 
 public class RequestDetails implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8844277582877496842L;
 	RequestType requestType;
 	int accountNum;
 	int amount;

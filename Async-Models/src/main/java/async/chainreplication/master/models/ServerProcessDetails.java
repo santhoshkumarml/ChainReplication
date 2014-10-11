@@ -3,6 +3,10 @@ package async.chainreplication.master.models;
 import java.io.Serializable;
 
 public class ServerProcessDetails implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -449386447593161029L;
 	String host = "localhost";
 	int port = -1;
 	int tcpPort = -1;

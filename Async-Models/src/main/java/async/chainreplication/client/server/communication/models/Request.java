@@ -4,6 +4,10 @@ import java.io.Serializable;
 import java.util.UUID;
 
 public class Request implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2145253058392283227L;
 	String requestId;
 	String clientId;
 

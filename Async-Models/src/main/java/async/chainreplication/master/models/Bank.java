@@ -4,6 +4,10 @@ import java.io.Serializable;
 
 
 public class Bank implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1094492046636943340L;
 	String bankName;
 	Server head;
 	Server tail;
