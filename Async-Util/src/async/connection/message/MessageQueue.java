@@ -13,19 +13,19 @@ public class MessageQueue<T> {
 		}
 	});
 
-	public Object getNextMessage() {
+	public Object dequeueMessage() {
 		synchronized (messages) {
 			return messages.remove().getMessageObject();
 		}
 	}
 
-	public void pushMessage(Object messageObject) {
+	public void enqueueMessage(Object messageObject) {
 		synchronized (messages) {
 			messages.add(new Message(System.currentTimeMillis(), messageObject));
 		}
 	}
 
-	public boolean hasNextMessage() {
+	public boolean hasMoreMessages() {
 		synchronized (messages) {
 			return messages.size()>0;	
 		}

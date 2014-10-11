@@ -1,6 +1,8 @@
 package async.chainreplication.master.models;
 
-public class ServerProcessDetails {
+import java.io.Serializable;
+
+public class ServerProcessDetails implements Serializable{
 	String host = "localhost";
 	int port = -1;
 	int tcpPort = -1;
