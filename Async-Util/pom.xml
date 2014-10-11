@@ -11,7 +11,7 @@
 	<artifactId>Async-Util</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
-	<name>Async Chain replication Master</name>
+	<name>Async Chain replication Util</name>
 	<dependencies>
 		<dependency>
 			<groupId>Async.Async-Project</groupId>
