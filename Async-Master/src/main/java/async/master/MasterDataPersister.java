@@ -9,7 +9,7 @@ import async.chainreplication.master.models.Chain;
 import async.chainreplication.master.models.Server;
 
 public class MasterDataPersister {
-	ConcurrentHashMap<String, Chain> bankNameToBankMap = 
+	/*ConcurrentHashMap<String, Chain> bankNameToBankMap = 
 			new ConcurrentHashMap<String, Chain>();
 	ConcurrentHashMap<String,TreeMap<String, Server>> bankToAllServersMap =
 			new ConcurrentHashMap<String, TreeMap<String,Server>>();
@@ -27,11 +27,10 @@ public class MasterDataPersister {
 
 	public void calculateChanges(
 			ConcurrentHashMap<String,TreeMap<String, Server>> bankToAllServersMap) {
-		List<Chain> changedBanks = new ArrayList<Chain>();
 		synchronized (this.getBankNameToBankMap()) {
 
 		}
 		//return changedBanks;
-	}
+	}*/
 
 }

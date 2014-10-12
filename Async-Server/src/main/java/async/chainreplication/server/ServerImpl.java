@@ -12,49 +12,69 @@ import async.chainreplication.server.threads.RequestQueryOrUpdateThread;
 
 public class ServerImpl {	
 	long heartBeatTimeOut;
-
-	HeartBeatSenderTask heartBeatSender;
+	Timer heartBeatSenderTimer; 
 	MasterUpdateListenerThread masterUpdateListener;
 	ChainMessageListenerThread chainMessageListenerThread;
 	RequestQueryOrUpdateThread requestOrQueryUpdateThread;
-	ChainReplicationFacade chainReplicationFacade;
+	ServerChainReplicationFacade serverChainReplicationFacade;
+	
+	
+	public static void main(String args[]) {
+		String serverId = args[0];
+		String chainName = args[1];
+		String host = args[2];
+		int port = Integer.parseInt(args[3]);
+		String masterHost = args[4];
+		int masterPort = Integer.parseInt(args[5]);
+		long heartBeatTimeOut = Long.parseLong(args[6]);
+		ServerImpl serverImpl = new ServerImpl(
+				serverId, chainName, host, port,
+				masterHost, masterPort, heartBeatTimeOut);
+		serverImpl.initServer();
+	}
 
 	public ServerImpl(String serverId, String chainName, String host, int port,
 			String masterHost, int masterPort, long heartBeatTimeOut) {
-		this.chainReplicationFacade = new ChainReplicationFacade(
+		this.serverChainReplicationFacade = new ServerChainReplicationFacade(
 				new Server(serverId, chainName, host, port),
 				new Master(masterHost, masterPort));
 	}
 
 	public void deliverMessage(ChainReplicationMessage message) {
-		this.chainReplicationFacade.deliverMessage(message);
+		this.serverChainReplicationFacade.deliverMessage(message);
 	}
 
 	public Server getServer() {
-		return this.chainReplicationFacade.getServer();
+		return this.serverChainReplicationFacade.getServer();
 	}
 
 	public Master getMaster() {
-		return this.chainReplicationFacade.getMaster();
+		return this.serverChainReplicationFacade.getMaster();
 	}
 
 	public boolean isHeadInTheChain() {
-		return this.chainReplicationFacade.isHeadInTheChain();
+		return this.serverChainReplicationFacade.isHeadInTheChain();
 	}
 
 	public boolean isTailInTheChain() {
-		return this.chainReplicationFacade.isTailInTheChain();
+		return this.serverChainReplicationFacade.isTailInTheChain();
 	}
 
 
 	public void initServer() {
-		Timer timer = new Timer();
-		this.heartBeatSender = new HeartBeatSenderTask(this);
-		timer.schedule(heartBeatSender, (heartBeatTimeOut-3000));
+		heartBeatSenderTimer = new Timer();
+		HeartBeatSenderTask heartBeatSender = new HeartBeatSenderTask(this);
+		heartBeatSenderTimer.schedule(heartBeatSender, (heartBeatTimeOut-3000));
 		requestOrQueryUpdateThread = new RequestQueryOrUpdateThread(this);
 		requestOrQueryUpdateThread.start();
 		chainMessageListenerThread = new ChainMessageListenerThread(this);
 		chainMessageListenerThread.start();
+	}
+	
+	public void stopServer() {
+		heartBeatSenderTimer.cancel();
+		requestOrQueryUpdateThread.stopThread();
+		chainMessageListenerThread.stopThread();
 	}
 
 }

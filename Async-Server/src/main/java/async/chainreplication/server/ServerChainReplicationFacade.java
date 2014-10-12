@@ -9,14 +9,14 @@ import async.chainreplication.master.models.Server;
 import async.generic.message.queue.models.MessageQueue;
 
 
-public class ChainReplicationFacade {
+public class ServerChainReplicationFacade {
 
 	ChainReplicationMessageHandler chainReplicationMessageHandler;
 
 	MessageQueue<ChainReplicationMessage> messages = 
 			new MessageQueue<ChainReplicationMessage>();
 
-	public ChainReplicationFacade(Server server, Master master) {
+	public ServerChainReplicationFacade(Server server, Master master) {
 		this.chainReplicationMessageHandler = 
 				new ChainReplicationMessageHandler(server, master);
 	}

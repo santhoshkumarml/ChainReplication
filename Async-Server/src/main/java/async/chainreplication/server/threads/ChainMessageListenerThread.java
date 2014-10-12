@@ -9,6 +9,7 @@ public class ChainMessageListenerThread extends Thread{
 	
 	IServerStarterHelper chainMessagesListener;
 	ServerImpl serverImpl;
+	boolean shouldStillRun = true;
 	
 	public ChainMessageListenerThread(ServerImpl serverImpl) {
 		this.serverImpl = serverImpl;
@@ -16,10 +17,15 @@ public class ChainMessageListenerThread extends Thread{
 	}
 	
 	public void run()  {
-		while(true) {
+		while(shouldStillRun) {
 	       ChainReplicationMessage message = 
 	    		   (ChainReplicationMessage)this.chainMessagesListener.acceptAndReadObjectConnection();
 	       this.serverImpl.deliverMessage(message); 
 		}
+		this.chainMessagesListener.stopServer();
+	}
+	
+	public void stopThread() {
+		shouldStillRun = false;
 	}
 }

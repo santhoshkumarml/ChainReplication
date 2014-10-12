@@ -9,6 +9,7 @@ public class RequestQueryOrUpdateThread extends Thread{
 
 	IServerStarterHelper requestServerHelper;
 	ServerImpl serverImpl;
+	boolean shouldStillRun = true;
 	
 	
 	public RequestQueryOrUpdateThread(ServerImpl serverImpl) {
@@ -19,11 +20,16 @@ public class RequestQueryOrUpdateThread extends Thread{
 		}
 	}
 	public void run() {
-		while(this.serverImpl.isHeadInTheChain()
-				||this.serverImpl.isHeadInTheChain()) {
+		while(shouldStillRun && (this.serverImpl.isHeadInTheChain()
+				||this.serverImpl.isHeadInTheChain())) {
              ChainReplicationMessage message = 
             		 (ChainReplicationMessage)this.requestServerHelper.acceptAndReadObjectConnection();
              this.serverImpl.deliverMessage(message);
 		}
+		this.requestServerHelper.stopServer();
+	}
+	
+	public void stopThread() {
+		shouldStillRun = false;
 	}
 }
