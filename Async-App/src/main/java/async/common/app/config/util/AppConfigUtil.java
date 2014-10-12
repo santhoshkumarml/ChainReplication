@@ -29,9 +29,9 @@ public class AppConfigUtil {
 			String input = "";
 			while((input = br.readLine()) != null) {
 				String[] inputSplit = input.split(":");
-				String clientId = inputSplit[0];
+				String clientId = inputSplit[0].trim();
 				Client client =config.getClients().get(clientId);
-				String requestString = inputSplit[1];
+				String requestString = inputSplit[1].trim();
 				String[] requestStringSplit = requestString.split(",");
 				ApplicationRequest request = createRequest(client, requestStringSplit);
 				TestCases testCases = config.getTestCases().get(client);
@@ -61,10 +61,10 @@ public class AppConfigUtil {
 	}
 
 	private static ApplicationRequest createRequest(Client client, String[] requestStringSplit) {
-		String reqId = requestStringSplit[1];
-		String accountNum = requestStringSplit[2];
+		String reqId = requestStringSplit[1].trim();
+		String accountNum = requestStringSplit[2].trim();
 		ApplicationRequestType applicationRequestType = 
-				ApplicationRequestType.valueOf(requestStringSplit[0]);
+				ApplicationRequestType.valueOf(requestStringSplit[0].trim());
 		ApplicationRequest applicationRequest  = new ApplicationRequest(client, reqId);
 		applicationRequest.setApplicationRequestType(applicationRequestType);
 		applicationRequest.setAccountNum(Integer.valueOf(accountNum));
@@ -72,19 +72,19 @@ public class AppConfigUtil {
 		case GET_BALANCE:
 			break;
 		case TRANSFER:
-			int amount = Integer.valueOf(requestStringSplit[3]);
+			int amount = Integer.valueOf(requestStringSplit[3].trim());
 			applicationRequest.setAmount(amount);
 			String destBank = requestStringSplit[4];
 			applicationRequest.setDestBank(destBank);
-			int destAccountNum = Integer.valueOf(requestStringSplit[5]);
+			int destAccountNum = Integer.valueOf(requestStringSplit[5].trim());
 			applicationRequest.setAmount(destAccountNum);
 			break;
 		case DEPOSIT:
-			amount = Integer.valueOf(requestStringSplit[3]);
+			amount = Integer.valueOf(requestStringSplit[3].trim());
 			applicationRequest.setAmount(amount);
 			break;
 		case WITHDRAW:
-			amount = Integer.valueOf(requestStringSplit[3]);
+			amount = Integer.valueOf(requestStringSplit[3].trim());
 			applicationRequest.setAmount(amount);
 			break;
 		default:

@@ -14,7 +14,7 @@ import async.common.util.ConfigUtil;
 import aync.chainreplication.base.impl.ChainReplicationImpl;
 
 public class ServerImpl extends ChainReplicationImpl{	
-	long heartBeatTimeOut;
+	long heartBeatTimeOut = 2000;
 	Timer heartBeatSenderTimer; 
 	MasterUpdateListenerThread masterUpdateListener;
 	ChainMessageListenerThread chainMessageListenerThread;
@@ -27,7 +27,7 @@ public class ServerImpl extends ChainReplicationImpl{
 		Config config = ConfigUtil.convertToConfig(args[0]);
 		String serverId = args[1];
 		String chainName = args[2];
-		ServerImpl serverImpl = new ServerImpl(config,chainName, serverId);
+		ServerImpl serverImpl = new ServerImpl(config, chainName, serverId);
 		serverImpl.init();
 	}
 

@@ -108,7 +108,7 @@ public class Config {
 		
 		Chain chain2 = new Chain("chain2", server21, server23);
 		
-		Master master = new Master("localhost",7300);
+		Master master = new Master("localhost",7300, "master");
 		
 		config.getChains().put(chain1.getChainName(), chain1);
 		
