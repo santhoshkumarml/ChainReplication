@@ -30,7 +30,15 @@ public class ChainReplicationMessageHandler {
 	public ChainReplicationMessageHandler(Server server, Master master) {
 		this.server  = server;
 		this.master =  master;
-		this.applicationRequestHandler = new ApplicationRequestHandler(this);
+		try {
+			this.applicationRequestHandler = 
+					(IApplicationRequestHandler) Class.forName(
+							"async.chainreplication.app.server."
+									+ "handler.ApplicationHandler").newInstance();
+		} catch (InstantiationException | IllegalAccessException
+				| ClassNotFoundException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public Request getCurrentRequest() {
@@ -64,8 +72,8 @@ public class ChainReplicationMessageHandler {
 	public void setHistoryOfRequests(HistoryOfRequests historyOfRequests) {
 		this.historyOfRequests = historyOfRequests;
 	}
-	
-	
+
+
 	public Server getServer() {
 		return server;
 	}

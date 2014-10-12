@@ -1,4 +1,4 @@
-package async.chainreplication.server;
+package async.chainreplication.app.server.handler;
 
 import async.chainreplication.application.models.AccountSnapshot;
 import async.chainreplication.application.models.Accounts;
@@ -7,6 +7,8 @@ import async.chainreplication.application.models.ApplicationRequest;
 import async.chainreplication.application.models.Outcome;
 import async.chainreplication.client.server.communication.models.Reply;
 import async.chainreplication.client.server.communication.models.Request;
+import async.chainreplication.server.ChainReplicationMessageHandler;
+import async.chainreplication.server.IApplicationRequestHandler;
 
 
 public class ApplicationRequestHandler implements IApplicationRequestHandler{
