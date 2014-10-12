@@ -3,7 +3,7 @@ package async.message.facade;
 import async.chainreplication.client.server.communication.models.Reply;
 import async.chainreplication.client.server.communication.models.Request;
 
-public interface IServerRequestHandler {
+public interface IApplicationRequestHandler {
 	Reply handleRequest(Request request);
 
 }

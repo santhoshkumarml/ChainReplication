@@ -7,11 +7,11 @@ import async.chainreplication.server.models.AccountSnapshot;
 import async.chainreplication.server.models.Accounts;
 
 
-public class ServerRequestHandler implements IServerRequestHandler{
+public class ApplicationRequestHandler implements IApplicationRequestHandler{
 	Accounts accounts;
 	ChainReplicationMessageHandler chainReplicationMessageHandler;
 
-	public ServerRequestHandler(
+	public ApplicationRequestHandler(
 			ChainReplicationMessageHandler chainReplicationMessageHandler) {
 		this.accounts = new Accounts();
 		this.chainReplicationMessageHandler = chainReplicationMessageHandler;

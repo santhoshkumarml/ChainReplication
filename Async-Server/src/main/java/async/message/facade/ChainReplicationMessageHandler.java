@@ -7,7 +7,6 @@ import async.chainreplication.communication.message.models.ChainReplicationMessa
 import async.chainreplication.communication.message.models.SyncMessage;
 import async.chainreplication.master.models.Master;
 import async.chainreplication.master.models.Server;
-import async.chainreplication.server.models.Accounts;
 import async.chainreplication.server.models.HistoryOfRequests;
 import async.chainreplication.server.models.SentHistory;
 import async.connection.util.TCPClientHelper;
@@ -18,10 +17,10 @@ public class ChainReplicationMessageHandler {
 	Reply currentReply;
 	SentHistory sentHistory;
 	HistoryOfRequests historyOfRequests;
-	Accounts accounts;
-
 	Server server;
 	Master master;
+	
+	IApplicationRequestHandler applicationRequestHandler;
 
 	TCPClientHelper tcpClientHelper;
 	UDPClientHelper udpClientHelper;
@@ -29,6 +28,7 @@ public class ChainReplicationMessageHandler {
 	public ChainReplicationMessageHandler(Server server, Master master) {
 		this.server  = server;
 		this.master =  master;
+		this.applicationRequestHandler = new ApplicationRequestHandler(this);
 	}
 
 	public Request getCurrentRequest() {
