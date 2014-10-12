@@ -1,5 +1,6 @@
 package async.message.facade;
 
+import async.chainreplication.communication.message.models.AckMessage;
 import async.chainreplication.communication.message.models.ChainReplicationMessage;
 import async.chainreplication.communication.message.models.RequestMessage;
 import async.chainreplication.communication.message.models.SyncMessage;
@@ -21,6 +22,8 @@ public class ChainReplicationFacade {
 		  			(RequestMessage)message);
 		} else if(message instanceof SyncMessage) {
 			this.chainReplicationMessageHandler.handleSyncMessage((SyncMessage) message);
+		} else if(message instanceof AckMessage) {
+			this.chainReplicationMessageHandler.handleAckMessage((AckMessage) message);
 		}
 	}
 }

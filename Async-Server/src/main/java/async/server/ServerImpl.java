@@ -1,17 +1,14 @@
 package async.server;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Timer;
 
-import async.chainreplication.application.models.Bank;
 import async.chainreplication.master.models.Master;
 import async.chainreplication.master.models.Server;
 
 public class ServerImpl {	
 	Server serverMetadata;
 	Master master;
-	List<Bank> otherBanks = new ArrayList<Bank>();
+   //	List<Bank> otherBanks = new ArrayList<Bank>();
 	long heartBeatTimeOut;
 	
 	HeartBeatSenderTask heartBeatSender;
@@ -32,9 +29,6 @@ public class ServerImpl {
 		return master;
 	}
 
-	public List<Bank> getOtherBanks() {
-		return otherBanks;
-	}
 	
 	public void initServer() {
 		Timer timer = new Timer();

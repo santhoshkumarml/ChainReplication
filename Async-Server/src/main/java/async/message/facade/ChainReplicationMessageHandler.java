@@ -32,8 +32,6 @@ public class ChainReplicationMessageHandler {
 		this.applicationRequestHandler = new ApplicationRequestHandler(this);
 	}
 
-
-
 	public Request getCurrentRequest() {
 		return currentRequest;
 	}
@@ -66,21 +64,9 @@ public class ChainReplicationMessageHandler {
 		this.historyOfRequests = historyOfRequests;
 	}
 
-//-------------------------------------------------------------------------------------
-//Message Handle Methods
 
-	public void handleRequestMessage(RequestMessage message) {
-		Reply reply = this.applicationRequestHandler.handleRequest(message.getRequest());
-		sync(message.getRequest(), reply);
-	}
-	
-	public void handleSyncMessage(SyncMessage message) {
-		this.applicationRequestHandler.handleSyncUpdate(message.getReply());
-		sync(message.getRequest(), message.getReply());
-	}
-	
-	
-	
+	//---------------------------------------------------------------------------------
+	//Handle Chain Operation
 
 	public void sync(Request request, Reply reply) {
 		this.setCurrentRequest(request);
@@ -88,18 +74,22 @@ public class ChainReplicationMessageHandler {
 		historyOfRequests.addToHistory(request);
 		Server sucessor = this.server.getAdjacencyList().getSucessor();
 		if(sucessor != null) {
+			//Non tail operation is to sync
 			tcpClientHelper = new TCPClientHelper(
 					sucessor.getServerProcessDetails().getHost(),
 					sucessor.getServerProcessDetails().getTcpPort());
 			ChainReplicationMessage syncMessage = new SyncMessage(request, reply);
 			tcpClientHelper.sendMessageOverTCPConnection(syncMessage);
-
 			//send sync
 		} else {
+			//Tail operation reply
+			//TODO Change here for Transfer Have to wait for ACK before reply
 			udpClientHelper = new UDPClientHelper(
 					request.getClient().getClientProcessDetails().getHost()	,
 					request.getClient().getClientProcessDetails().getUdpPort());
 			udpClientHelper.sendMessageOverUDPConnection(reply);
+			//ACk so that other servers can remove the messages from Sent
+			ACK(request);
 		}
 		sentHistory.addToSentHistory(request.getRequestId());
 	}
@@ -118,14 +108,32 @@ public class ChainReplicationMessageHandler {
 
 	}
 
-
-
-
 	/*public void IN_TRANSIT_UPDATES(String lastRequestId) {
-		synchronized(sentHistory) {
-			for(String requestId : sentHistory.getRequestIds()) {
-				//get latest Value for the account and return it
-			}
+	synchronized(sentHistory) {
+		for(String requestId : sentHistory.getRequestIds()) {
+			//get latest Value for the account and return it
 		}
-	}*/
+	}
+}*/
+
+
+	//-------------------------------------------------------------------------------------
+	//Message Handle Methods
+
+	public void handleRequestMessage(RequestMessage message) {
+		Reply reply = this.applicationRequestHandler.handleRequest(message.getRequest());
+		sync(message.getRequest(), reply);
+	}
+
+	public void handleSyncMessage(SyncMessage message) {
+		this.applicationRequestHandler.handleSyncUpdate(message.getReply());
+		sync(message.getRequest(), message.getReply());
+	}
+
+
+
+	public void handleAckMessage(AckMessage message) {
+		ACK(message.getRequest());
+	}
+
 }
