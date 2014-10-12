@@ -1,10 +1,10 @@
 package async.server;
 
-import async.chainreplication.communication.message.models.MasterBankChangeMessage;
+import async.chainreplication.communication.message.models.MasterOtherChainChangeMessage;
 import async.connection.message.MessageQueue;
 
 public class MasterUpdateListenerThread {
 	
-	MessageQueue<MasterBankChangeMessage> masterUpdateQueue = new MessageQueue<MasterBankChangeMessage>();
+	MessageQueue<MasterOtherChainChangeMessage> masterUpdateQueue = new MessageQueue<MasterOtherChainChangeMessage>();
 
 }

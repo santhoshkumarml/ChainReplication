@@ -3,7 +3,6 @@ package async.chainreplication.client.server.communication.models;
 import java.io.Serializable;
 import java.util.UUID;
 
-import async.chainreplication.application.models.ApplicationRequest;
 import async.chainreplication.master.models.Client;
 
 public class Request implements Serializable{

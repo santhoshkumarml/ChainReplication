@@ -1,4 +1,4 @@
-package async.chainreplication.server.models;
+package async.chainreplication.application.models;
 
 import java.util.HashMap;
 import java.util.Map;

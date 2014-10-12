@@ -2,7 +2,7 @@ package async.chainreplication.communication.message.models;
 
 import async.chainreplication.master.models.Server;
 
-public class MasterBankChangeMessage extends ChainReplicationMessage{
+public class MasterOtherChainChangeMessage extends ChainReplicationMessage{
 	
 	/**
 	 * 
@@ -11,7 +11,7 @@ public class MasterBankChangeMessage extends ChainReplicationMessage{
 	
 	Server server;
 
-	public MasterBankChangeMessage(Server server) {
+	public MasterOtherChainChangeMessage(Server server) {
 		this.server = server;
 	}
 

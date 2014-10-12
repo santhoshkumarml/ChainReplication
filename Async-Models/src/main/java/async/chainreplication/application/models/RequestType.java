@@ -1,5 +1,7 @@
 package async.chainreplication.application.models;
 
+import async.chainreplication.client.server.communication.models.QueryOrUpdate;
+
 public enum RequestType {
 	GET_BALANCE(QueryOrUpdate.QUERY),
 	DEPOSIT(QueryOrUpdate.UPDATE),
@@ -14,11 +16,6 @@ public enum RequestType {
 
 	public QueryOrUpdate getQueryOrUpdate() {
 		return queryOrUpdate;
-	}
-
-	public enum QueryOrUpdate {
-		QUERY,
-		UPDATE;
 	}
 
 }
