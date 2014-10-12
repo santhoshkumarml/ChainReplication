@@ -25,7 +25,7 @@ public class ApplicationRequest  extends Request implements Serializable{
 		return applicationRequestType;
 	}
 
-	public void setRequestType(ApplicationRequestType applicationRequestType) {
+	public void setApplicationRequestType(ApplicationRequestType applicationRequestType) {
 		this.applicationRequestType = applicationRequestType;
 		this.setRequestType(applicationRequestType.getRequestType());
 	}

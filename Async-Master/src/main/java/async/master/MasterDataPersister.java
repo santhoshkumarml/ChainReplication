@@ -1,12 +1,5 @@
 package async.master;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.TreeMap;
-import java.util.concurrent.ConcurrentHashMap;
-
-import async.chainreplication.master.models.Chain;
-import async.chainreplication.master.models.Server;
 
 public class MasterDataPersister {
 	/*ConcurrentHashMap<String, Chain> bankNameToBankMap = 

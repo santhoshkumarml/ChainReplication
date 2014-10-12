@@ -1,6 +1,8 @@
 package async.chainreplication.server;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
+import java.util.Map;
 
 import async.chainreplication.client.server.communication.models.Reply;
 import async.chainreplication.client.server.communication.models.Request;
@@ -8,6 +10,7 @@ import async.chainreplication.communication.messages.AckMessage;
 import async.chainreplication.communication.messages.ChainReplicationMessage;
 import async.chainreplication.communication.messages.RequestMessage;
 import async.chainreplication.communication.messages.ResponseOrSyncMessage;
+import async.chainreplication.master.models.Chain;
 import async.chainreplication.master.models.Master;
 import async.chainreplication.master.models.Server;
 import async.chainreplication.server.models.HistoryOfRequests;
@@ -23,14 +26,19 @@ public class ServerMessageHandler {
 	HistoryOfRequests historyOfRequests;
 	Server server;
 	Master master;
+	Map<String,Chain> chainNameToChainMap = new HashMap<String, Chain>(); 
 
 	IApplicationRequestHandler applicationRequestHandler;
 
 	IClientHelper syncOrAckSendClientHelper;
 	IClientHelper tailResponseClientHelper;
 
-	public ServerMessageHandler(Server server, Master master) {
+	public ServerMessageHandler(
+			Server server, 
+			Map<String,Chain> chainNameToChainMap,
+			Master master) {
 		this.server  = server;
+		this.chainNameToChainMap.putAll(chainNameToChainMap);
 		this.master =  master;
 		try {
 			this.applicationRequestHandler = (IApplicationRequestHandler) Class.forName(

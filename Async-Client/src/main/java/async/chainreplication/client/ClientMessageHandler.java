@@ -7,6 +7,8 @@ import async.chainreplication.client.server.communication.models.Reply;
 import async.chainreplication.client.server.communication.models.Request;
 import async.chainreplication.communication.messages.ResponseOrSyncMessage;
 import async.chainreplication.master.models.Chain;
+import async.chainreplication.master.models.Client;
+import async.chainreplication.master.models.Master;
 import async.chainreplication.master.models.Server;
 import async.chainreplicaton.client.message.ClientRequestMessage;
 import async.connection.util.IClientHelper;
@@ -14,11 +16,17 @@ import async.connection.util.UDPClientHelper;
 
 public class ClientMessageHandler {
 
+	Client client;
 	Map<String, Chain> chainNameToChainMap = new HashMap<String, Chain>();
+	Master master;
 	IClientHelper clientMessageClientHelper;
 	IApplicationReplyHandler applicationReplyHandler;
 
-	public ClientMessageHandler() {
+	public ClientMessageHandler(Client client,
+			Map<String, Chain> chainNameToChainMap, Master master) {
+		this.client = client;
+		this.chainNameToChainMap.putAll(chainNameToChainMap);
+		this.master = master;
 		try {
 			this.applicationReplyHandler = (IApplicationReplyHandler) Class.forName(
 					"async.chainreplication.app.client."

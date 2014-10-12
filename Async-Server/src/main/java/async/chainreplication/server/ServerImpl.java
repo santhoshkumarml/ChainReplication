@@ -8,8 +8,11 @@ import async.chainreplication.server.threads.ChainMessageListenerThread;
 import async.chainreplication.server.threads.HeartBeatSenderTask;
 import async.chainreplication.server.threads.MasterUpdateListenerThread;
 import async.chainreplication.server.threads.RequestQueryOrUpdateThread;
+import async.common.util.Config;
+import async.common.util.ConfigUtil;
+import aync.chainreplication.base.impl.ChainReplicationImpl;
 
-public class ServerImpl {	
+public class ServerImpl extends ChainReplicationImpl{	
 	long heartBeatTimeOut;
 	Timer heartBeatSenderTimer; 
 	MasterUpdateListenerThread masterUpdateListener;
@@ -20,24 +23,19 @@ public class ServerImpl {
 
 
 	public static void main(String args[]) {
-		String serverId = args[0];
-		String chainName = args[1];
-		String host = args[2];
-		int port = Integer.parseInt(args[3]);
-		String masterHost = args[4];
-		int masterPort = Integer.parseInt(args[5]);
-		long heartBeatTimeOut = Long.parseLong(args[6]);
-		ServerImpl serverImpl = new ServerImpl(
-				serverId, chainName, host, port,
-				masterHost, masterPort, heartBeatTimeOut);
+		Config config = ConfigUtil.convertToConfig(args[0]);
+		String serverId = args[1];
+		String chainName = args[2];
+		ServerImpl serverImpl = new ServerImpl(config,chainName, serverId);
 		serverImpl.initServer();
 	}
 
-	public ServerImpl(String serverId, String chainName, String host, int port,
-			String masterHost, int masterPort, long heartBeatTimeOut) {
+	public ServerImpl(Config config,String chainName, String serverId) {
 		this.serverChainReplicationFacade = new ServerChainReplicationFacade(
-				new Server(serverId, chainName, host, port),
-				new Master(masterHost, masterPort));
+				config.getChainToServerMap().get(chainName).get(serverId),
+				config.getChains(),
+				config.getMaster()
+				);
 	}
 
 	public ServerChainReplicationFacade getServerChainReplicationFacade() {

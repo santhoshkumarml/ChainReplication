@@ -38,4 +38,11 @@ public class ProcessDetails implements Serializable{
 	public void setUdpPort(int udpPort) {
 		this.udpPort = udpPort;
 	}
+	
+	@Override
+	public String toString() {
+		return "ProcessDetails [host=" + host + ", port=" + port + ", tcpPort="
+				+ tcpPort + ", udpPort=" + udpPort + "]";
+	}
+	
 }

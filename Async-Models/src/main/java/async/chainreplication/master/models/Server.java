@@ -51,5 +51,14 @@ public class Server implements Serializable{
 	public boolean isTail() {
 		return this.adjacencyList.getSucessor() == null;
 	}
+
+	@Override
+	public String toString() {
+		return "Server [serverId=" + serverId + ", chainName=" + chainName
+				+ ", serverProcessDetails=" + serverProcessDetails.toString()
+				+ ", adjacencyList=" + adjacencyList + "]";
+	}
+	
+	
 	
 }

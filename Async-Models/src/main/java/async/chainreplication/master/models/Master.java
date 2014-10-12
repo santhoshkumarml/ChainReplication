@@ -12,5 +12,12 @@ public class Master {
 	}
 	public int getMasterPort() {
 		return masterPort;
-	}	
+	}
+	
+	
+	@Override
+	public String toString() {
+		return "Master [masterHost=" + masterHost + ", masterPort="
+				+ masterPort + "]";
+	}
 }

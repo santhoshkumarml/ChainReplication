@@ -11,7 +11,6 @@ public class Client implements Serializable{
 	ProcessDetails clientProcessDetails;
 
 	public Client(String clientId, String host,int port) {
-		super();
 		this.clientId = clientId;
 		this.clientProcessDetails = new ProcessDetails();
 		this.clientProcessDetails.setHost(host);
@@ -68,6 +67,14 @@ public class Client implements Serializable{
 			return false;
 		return true;
 	}
+
+	@Override
+	public String toString() {
+		return "Client [clientId=" + clientId + ", clientProcessDetails="
+				+ clientProcessDetails.toString() + "]";
+	}
+	
+	
 	
 
 }

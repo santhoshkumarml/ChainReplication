@@ -2,6 +2,8 @@ package async.chainreplication.client;
 
 import async.chainreplication.client.threads.MasterUpdateListenerThread;
 import async.chainreplication.client.threads.ResponseListener;
+import async.common.util.Config;
+import async.common.util.ConfigUtil;
 
 
 public class ClientImpl {
@@ -10,22 +12,18 @@ public class ClientImpl {
 	ClientChainReplicationFacade clientChainReplicationFacade;
 
 	public static void main(String args[]) {
-		String clientId = args[0];
-		String host = args[1];
-		int port = Integer.parseInt(args[2]);
-		String masterHost = args[3];
-		int masterPort = Integer.parseInt(args[4]);
 		ClientImpl clientImpl = new ClientImpl(
-				clientId, host, port,
-				masterHost, masterPort);
+				ConfigUtil.convertToConfig(args[0]),
+				args[1]);
 		clientImpl.initAndStartClient();
 		clientImpl.performOperations();
 		clientImpl.stopClient();
 	}
 
-	public ClientImpl(String clientId, String host, int port,
-			String masterHost, int masterPort) {
-		clientChainReplicationFacade = new ClientChainReplicationFacade();
+	public ClientImpl(Config config, String clientId) {
+		clientChainReplicationFacade = new ClientChainReplicationFacade(
+				config.getClients().get(clientId), config.getChains(),
+				config.getMaster());
 	}
 
 	public ClientChainReplicationFacade getClientChainReplicationFacade() {

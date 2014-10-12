@@ -35,7 +35,7 @@ public class Request implements Serializable{
 		return requestType;
 	}
 	
-	public void setRequestType(RequestType requestType) {
+	protected void setRequestType(RequestType requestType) {
 		this.requestType = requestType;
 	}
 
