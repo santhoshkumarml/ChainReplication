@@ -6,19 +6,19 @@ import java.util.Set;
 import async.chainreplication.client.server.communication.models.Request;
 
 public class HistoryOfRequests {
-	Set<Request> requestIdToRequestMap = new HashSet<Request>();
+	Set<Request> requestSet = new HashSet<Request>();
 
 	public void addToHistory(Request request) {
-		synchronized (requestIdToRequestMap) {
+		synchronized (requestSet) {
 			if(!isHistoryPresent(request)) {
-				requestIdToRequestMap.add(request);		
+				requestSet.add(request);		
 			}	
 		}
 	}
 
 	public boolean isHistoryPresent(Request request) {
-		synchronized (requestIdToRequestMap) {
-			return requestIdToRequestMap.contains(request);
+		synchronized (requestSet) {
+			return requestSet.contains(request);
 		}
 	}
 

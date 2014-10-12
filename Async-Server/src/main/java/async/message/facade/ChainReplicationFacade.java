@@ -1,22 +1,15 @@
 package async.message.facade;
 
-import async.chainreplication.client.server.communication.models.Reply;
-import async.chainreplication.client.server.communication.models.Request;
+import async.chainreplication.master.models.Master;
 import async.chainreplication.master.models.Server;
-import async.chainreplication.server.models.HistoryOfRequests;
-import async.chainreplication.server.models.SentHistory;
 
 
-public class ChainReplicationFacade {	
+public class ChainReplicationFacade {
+	ChainReplicationMessageHandler chainReplicationMessageHandler;
 
-	Request currentRequest;
-	Reply currentReply;
-	SentHistory sentHistory;
-	HistoryOfRequests historyOfRequests;
-	
-	
-	public ChainReplicationFacade(Server server,Master master) {
-		
+	public ChainReplicationFacade(Server server, Master master) {
+		super();
+		this.chainReplicationMessageHandler = new ChainReplicationMessageHandler(server, master);
 	}
 	
 }
