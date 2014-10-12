@@ -1,6 +1,8 @@
 package async.message.facade;
 
-import async.chainreplication.client.server.communication.models.Outcome;
+import async.chainreplication.application.models.ApplicationReply;
+import async.chainreplication.application.models.ApplicationRequest;
+import async.chainreplication.application.models.Outcome;
 import async.chainreplication.client.server.communication.models.Reply;
 import async.chainreplication.client.server.communication.models.Request;
 import async.chainreplication.server.models.AccountSnapshot;
@@ -17,49 +19,24 @@ public class ApplicationRequestHandler implements IApplicationRequestHandler{
 		this.chainReplicationMessageHandler = chainReplicationMessageHandler;
 	}
 
-
-	public Reply handleRequest(Request request) {
-		Reply reply = checkForExistingTransactionHistoryAndReply(request);
-		if(reply == null) {
-			int accountNum = request.getRequestDetails().getAccountNum();
-			int amount = request.getRequestDetails().getAmount();
-			reply = new Reply();
-			switch (request.getRequestDetails().getRequestType()) {
-			case DEPOSIT:
-				handleDeposit(accountNum, amount, reply);
-				break;
-			case WITHDRAW:
-				handleWithdrawOrTransfer(accountNum, amount, reply);
-				break;
-			case TRANSFER:
-				handleWithdrawOrTransfer(accountNum, amount, reply);
-				break;
-			default:
-				break;
-			}
-			reply.setReqID(request.getRequestId());
-		}
-		return reply;
-	}
-
-
-	private Reply checkForExistingTransactionHistoryAndReply(Request request) {
+	private ApplicationReply checkForExistingTransactionHistoryAndReply(Request request) {
 		if(chainReplicationMessageHandler.getHistoryOfRequests().isHistoryPresent(
 				request)) {
-			Reply reply = new Reply();
-  			synchronized (accounts) {
-	            AccountSnapshot accountSnapshot = accounts.getAccountSnapshot(
-	            		request.getRequestDetails().getAccountNum());
-	            reply.setBalance(accountSnapshot.getBalance());
-	            reply.setOutcome(Outcome.Processed);
-	            reply.setReqID(request.getRequestId());
+			ApplicationReply reply = new ApplicationReply();
+			ApplicationRequest applicationRequest = (ApplicationRequest)request;
+			synchronized (accounts) {
+				AccountSnapshot accountSnapshot = accounts.getAccountSnapshot(
+						applicationRequest.getAccountNum());
+				reply.setBalance(accountSnapshot.getBalance());
+				reply.setOutcome(Outcome.Processed);
+				reply.setReqID(request.getRequestId());
 			}
 		}
 		return null;
 	}
 
 
-	private void handleWithdrawOrTransfer(int accountNum, int amount, Reply reply) {
+	private void handleWithdrawOrTransfer(int accountNum, int amount, ApplicationReply reply) {
 		synchronized (accounts) {
 			AccountSnapshot accountSnapshot = 
 					this.accounts.getAccountSnapshot(accountNum);
@@ -79,7 +56,7 @@ public class ApplicationRequestHandler implements IApplicationRequestHandler{
 	}
 
 
-	private void handleDeposit(int accountNum, int amount, Reply reply) {
+	private void handleDeposit(int accountNum, int amount, ApplicationReply reply) {
 		synchronized (accounts) {
 			AccountSnapshot accountSnapshot = 
 					this.accounts.getAccountSnapshot(accountNum);
@@ -88,6 +65,46 @@ public class ApplicationRequestHandler implements IApplicationRequestHandler{
 			balance += amount;
 			reply.setOutcome(Outcome.Processed);
 			reply.setBalance(balance);
+		}
+	}
+
+//--------------------------------------------------------------------------
+//Handler Methods
+	@Override
+	public Reply handleRequest(Request request) {
+		ApplicationReply reply = checkForExistingTransactionHistoryAndReply(request);
+		ApplicationRequest applicationRequest = (ApplicationRequest)request;
+		if(reply == null) {
+			int accountNum = applicationRequest.getAccountNum();
+			int amount = applicationRequest.getAmount();
+			reply = new ApplicationReply();
+			switch (applicationRequest.getRequestType()) {
+			case DEPOSIT:
+				handleDeposit(accountNum, amount, reply);
+				break;
+			case WITHDRAW:
+				handleWithdrawOrTransfer(accountNum, amount, reply);
+				break;
+			case TRANSFER:
+				handleWithdrawOrTransfer(accountNum, amount, reply);
+				break;
+			default:
+				break;
+			}
+			reply.setReqID(request.getRequestId());
+		}
+		return reply;
+	}
+
+
+
+	@Override
+	public void handleSyncUpdate(Reply reply) {
+		synchronized (accounts) {
+			ApplicationReply applicationReply = (ApplicationReply)reply;
+			AccountSnapshot accountSnapshot =  
+					accounts.getAccountSnapshot(applicationReply.getAccountNum());
+			accountSnapshot.setBalance(applicationReply.getBalance());
 		}
 	}
 

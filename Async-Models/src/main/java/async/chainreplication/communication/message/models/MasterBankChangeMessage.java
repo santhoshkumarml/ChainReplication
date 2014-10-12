@@ -1,10 +1,8 @@
 package async.chainreplication.communication.message.models;
 
-import java.io.Serializable;
-
 import async.chainreplication.master.models.Server;
 
-public class MasterBankChangeMessage extends ChainReplicationMessage implements Serializable{
+public class MasterBankChangeMessage extends ChainReplicationMessage{
 	
 	/**
 	 * 

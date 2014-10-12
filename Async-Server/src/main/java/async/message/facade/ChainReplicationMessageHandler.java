@@ -4,6 +4,7 @@ import async.chainreplication.client.server.communication.models.Reply;
 import async.chainreplication.client.server.communication.models.Request;
 import async.chainreplication.communication.message.models.AckMessage;
 import async.chainreplication.communication.message.models.ChainReplicationMessage;
+import async.chainreplication.communication.message.models.RequestMessage;
 import async.chainreplication.communication.message.models.SyncMessage;
 import async.chainreplication.master.models.Master;
 import async.chainreplication.master.models.Server;
@@ -19,7 +20,7 @@ public class ChainReplicationMessageHandler {
 	HistoryOfRequests historyOfRequests;
 	Server server;
 	Master master;
-	
+
 	IApplicationRequestHandler applicationRequestHandler;
 
 	TCPClientHelper tcpClientHelper;
@@ -30,6 +31,8 @@ public class ChainReplicationMessageHandler {
 		this.master =  master;
 		this.applicationRequestHandler = new ApplicationRequestHandler(this);
 	}
+
+
 
 	public Request getCurrentRequest() {
 		return currentRequest;
@@ -62,6 +65,22 @@ public class ChainReplicationMessageHandler {
 	public void setHistoryOfRequests(HistoryOfRequests historyOfRequests) {
 		this.historyOfRequests = historyOfRequests;
 	}
+
+//-------------------------------------------------------------------------------------
+//Message Handle Methods
+
+	public void handleRequestMessage(RequestMessage message) {
+		Reply reply = this.applicationRequestHandler.handleRequest(message.getRequest());
+		sync(message.getRequest(), reply);
+	}
+	
+	public void handleSyncMessage(SyncMessage message) {
+		this.applicationRequestHandler.handleSyncUpdate(message.getReply());
+		sync(message.getRequest(), message.getReply());
+	}
+	
+	
+	
 
 	public void sync(Request request, Reply reply) {
 		this.setCurrentRequest(request);
@@ -98,6 +117,9 @@ public class ChainReplicationMessageHandler {
 		}
 
 	}
+
+
+
 
 	/*public void IN_TRANSIT_UPDATES(String lastRequestId) {
 		synchronized(sentHistory) {

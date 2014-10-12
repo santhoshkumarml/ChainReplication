@@ -3,6 +3,7 @@ package async.chainreplication.client.server.communication.models;
 import java.io.Serializable;
 import java.util.UUID;
 
+import async.chainreplication.application.models.ApplicationRequest;
 import async.chainreplication.master.models.Client;
 
 public class Request implements Serializable{
@@ -13,12 +14,10 @@ public class Request implements Serializable{
 	String requestId;
 	Client client;
 
-	RequestDetails requestDetails;
-
-	public Request(Client client, RequestDetails requestDetails) {
+	public Request(Client client, String requestId) {
 		requestId = UUID.randomUUID().toString();
 		this.client = client; 
-		this.requestDetails = requestDetails;
+		this.requestId =  requestId;
 	}
 
 	public String getRequestId() {
@@ -33,18 +32,12 @@ public class Request implements Serializable{
 		return client;
 	}
 
-	public RequestDetails getRequestDetails() {
-		return requestDetails;
-	}
-
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result
 				+ ((client == null) ? 0 : client.hashCode());
-		result = prime * result
-				+ ((requestDetails == null) ? 0 : requestDetails.hashCode());
 		result = prime * result
 				+ ((requestId == null) ? 0 : requestId.hashCode());
 		return result;
@@ -63,11 +56,6 @@ public class Request implements Serializable{
 			if (other.client != null)
 				return false;
 		} else if (!client.equals(other.client))
-			return false;
-		if (requestDetails == null) {
-			if (other.requestDetails != null)
-				return false;
-		} else if (!requestDetails.equals(other.requestDetails))
 			return false;
 		if (requestId == null) {
 			if (other.requestId != null)

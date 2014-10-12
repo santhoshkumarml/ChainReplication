@@ -1,4 +1,4 @@
-package async.chainreplication.client.server.communication.models;
+package async.chainreplication.application.models;
 
 public enum Outcome {
 	Processed,

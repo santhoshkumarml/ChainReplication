@@ -1,4 +1,4 @@
-package async.chainreplication.client.server.communication.models;
+package async.chainreplication.application.models;
 
 public enum RequestType {
 	GET_BALANCE(QueryOrUpdate.QUERY),

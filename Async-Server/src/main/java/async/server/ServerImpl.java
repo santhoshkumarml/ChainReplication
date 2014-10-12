@@ -17,7 +17,6 @@ public class ServerImpl {
 	HeartBeatSenderTask heartBeatSender;
 	MasterUpdateListenerThread masterUpdateListener;
 	
-
 	public ServerImpl(String serverId, String bankName, String host, int port,
 			String masterHost, int masterPort, long heartBeatTimeOut) {
 		this.serverMetadata = new Server(serverId, bankName, host, port);
