@@ -1,7 +1,6 @@
 package async.chainreplication.client.server.communication.models;
 
 import java.io.Serializable;
-import java.util.UUID;
 
 import async.chainreplication.master.models.Client;
 
@@ -11,10 +10,11 @@ public class Request implements Serializable{
 	 */
 	private static final long serialVersionUID = 2145253058392283227L;
 	String requestId;
+	RequestType requestType;
 	Client client;
 
 	public Request(Client client, String requestId) {
-		requestId = UUID.randomUUID().toString();
+		//requestId = UUID.randomUUID().toString();
 		this.client = client; 
 		this.requestId =  requestId;
 	}
@@ -26,9 +26,17 @@ public class Request implements Serializable{
 	public void setRequestId(String requestId) {
 		this.requestId = requestId;
 	}
-	
+
 	public Client getClient() {
 		return client;
+	}
+
+	public RequestType getRequestType() {
+		return requestType;
+	}
+	
+	public void setRequestType(RequestType requestType) {
+		this.requestType = requestType;
 	}
 
 	@Override
@@ -63,5 +71,5 @@ public class Request implements Serializable{
 			return false;
 		return true;
 	}
-	
+
 }

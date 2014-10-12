@@ -5,7 +5,7 @@ import async.chainreplication.client.server.communication.models.Request;
 import async.chainreplication.communication.message.models.AckMessage;
 import async.chainreplication.communication.message.models.ChainReplicationMessage;
 import async.chainreplication.communication.message.models.RequestMessage;
-import async.chainreplication.communication.message.models.SyncMessage;
+import async.chainreplication.communication.message.models.ResponseOrSyncMessage;
 import async.chainreplication.master.models.Master;
 import async.chainreplication.master.models.Server;
 import async.chainreplication.server.models.HistoryOfRequests;
@@ -34,7 +34,7 @@ public class ChainReplicationMessageHandler {
 			this.applicationRequestHandler = 
 					(IApplicationRequestHandler) Class.forName(
 							"async.chainreplication.app.server."
-									+ "handler.ApplicationHandler").newInstance();
+									+ "handler.ApplicationRequestHandler").newInstance();
 		} catch (InstantiationException | IllegalAccessException
 				| ClassNotFoundException e) {
 			e.printStackTrace();
@@ -106,8 +106,9 @@ public class ChainReplicationMessageHandler {
 			syncOrAckSendClientHelper = new TCPClientHelper(
 					sucessor.getServerProcessDetails().getHost(),
 					sucessor.getServerProcessDetails().getTcpPort());
-			ChainReplicationMessage syncMessage = new SyncMessage(request, reply);
+			ChainReplicationMessage syncMessage = new ResponseOrSyncMessage(request, reply);
 			syncOrAckSendClientHelper.sendMessage(syncMessage);
+			sentHistory.addToSentHistory(request.getRequestId());
 			//send sync
 		} else {
 			//Tail operation reply
@@ -119,7 +120,6 @@ public class ChainReplicationMessageHandler {
 			//ACk so that other servers can remove the messages from Sent
 			ACK(request);
 		}
-		sentHistory.addToSentHistory(request.getRequestId());
 	}
 
 	public void ACK(Request request) {
@@ -154,12 +154,10 @@ public class ChainReplicationMessageHandler {
 		sync(message.getRequest(), reply);
 	}
 
-	public void handleSyncMessage(SyncMessage message) {
+	public void handleSyncMessage(ResponseOrSyncMessage message) {
 		this.applicationRequestHandler.handleSyncUpdate(message.getReply());
 		sync(message.getRequest(), message.getReply());
 	}
-
-
 
 	public void handleAckMessage(AckMessage message) {
 		ACK(message.getRequest());

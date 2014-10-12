@@ -1,7 +1,7 @@
 package async.chainreplication.app.server.handler;
 
-import async.chainreplication.application.models.AccountSnapshot;
-import async.chainreplication.application.models.Accounts;
+import async.app.models.AccountSnapshot;
+import async.app.models.Accounts;
 import async.chainreplication.application.models.ApplicationReply;
 import async.chainreplication.application.models.ApplicationRequest;
 import async.chainreplication.application.models.Outcome;
@@ -80,7 +80,7 @@ public class ApplicationRequestHandler implements IApplicationRequestHandler{
 			int accountNum = applicationRequest.getAccountNum();
 			int amount = applicationRequest.getAmount();
 			reply = new ApplicationReply();
-			switch (applicationRequest.getRequestType()) {
+			switch (applicationRequest.getApplicationRequestType()) {
 			case DEPOSIT:
 				handleDeposit(accountNum, amount, reply);
 				break;

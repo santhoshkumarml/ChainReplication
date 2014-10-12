@@ -3,7 +3,7 @@ package async.chainreplication.server;
 import async.chainreplication.communication.message.models.AckMessage;
 import async.chainreplication.communication.message.models.ChainReplicationMessage;
 import async.chainreplication.communication.message.models.RequestMessage;
-import async.chainreplication.communication.message.models.SyncMessage;
+import async.chainreplication.communication.message.models.ResponseOrSyncMessage;
 import async.chainreplication.master.models.Master;
 import async.chainreplication.master.models.Server;
 import async.generic.message.queue.models.MessageQueue;
@@ -30,8 +30,8 @@ public class ServerChainReplicationFacade {
 		if(message instanceof RequestMessage) {
 			this.chainReplicationMessageHandler.handleRequestMessage(
 					(RequestMessage)message);
-		} else if(message instanceof SyncMessage) {
-			this.chainReplicationMessageHandler.handleSyncMessage((SyncMessage) message);
+		} else if(message instanceof ResponseOrSyncMessage) {
+			this.chainReplicationMessageHandler.handleSyncMessage((ResponseOrSyncMessage) message);
 		} else if(message instanceof AckMessage) {
 			this.chainReplicationMessageHandler.handleAckMessage((AckMessage) message);
 		}

@@ -1,5 +1,5 @@
 package async.chainreplication.client.server.communication.models;
-public enum QueryOrUpdate {
+public enum RequestType {
 	QUERY,
 	UPDATE;
 }

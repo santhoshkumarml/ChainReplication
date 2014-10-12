@@ -11,7 +11,7 @@ public class ApplicationRequest  extends Request implements Serializable{
 	 * 
 	 */
 	private static final long serialVersionUID = -8844277582877496842L;
-	RequestType requestType;
+	ApplicationRequestType applicationRequestType;
 	int accountNum;
 	int amount;
 	String destBank;
@@ -19,15 +19,15 @@ public class ApplicationRequest  extends Request implements Serializable{
 
 	public ApplicationRequest(Client client, String requestId) {
 		super(client, requestId);
-		// TODO Auto-generated constructor stub
 	}
 
-	public RequestType getRequestType() {
-		return requestType;
+	public ApplicationRequestType getApplicationRequestType() {
+		return applicationRequestType;
 	}
 
-	public void setRequestType(RequestType requestType) {
-		this.requestType = requestType;
+	public void setRequestType(ApplicationRequestType applicationRequestType) {
+		this.applicationRequestType = applicationRequestType;
+		this.setRequestType(applicationRequestType.getRequestType());
 	}
 
 	public int getAccountNum() {
@@ -72,7 +72,7 @@ public class ApplicationRequest  extends Request implements Serializable{
 		result = prime * result
 				+ ((destBank == null) ? 0 : destBank.hashCode());
 		result = prime * result
-				+ ((requestType == null) ? 0 : requestType.hashCode());
+				+ ((applicationRequestType == null) ? 0 : applicationRequestType.hashCode());
 		return result;
 	}
 
@@ -96,7 +96,7 @@ public class ApplicationRequest  extends Request implements Serializable{
 				return false;
 		} else if (!destBank.equals(other.destBank))
 			return false;
-		if (requestType != other.requestType)
+		if (applicationRequestType != other.applicationRequestType)
 			return false;
 		return true;
 	}

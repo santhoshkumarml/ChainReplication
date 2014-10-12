@@ -1,16 +1,12 @@
-package async.chainreplication.client.thread;
-
-import java.util.HashMap;
-import java.util.Map;
+package async.chainreplication.client;
 
 import async.chainreplication.client.threads.MasterUpdateListenerThread;
-import async.chainreplication.master.models.Chain;
+import async.chainreplication.client.threads.ResponseListener;
 
 
 public class ClientImpl {
-	
-	Map<String, Chain> chainNameToChainMap = new HashMap<String, Chain>();
-	MasterUpdateListenerThread masterUpdateListenerThread;
+	MasterUpdateListenerThread masterUpdateListener;
+	ResponseListener responseListener;
 
 	public static void main(String args[]) {
 		String clientId = args[0];
@@ -35,8 +31,10 @@ public class ClientImpl {
 	}
 
 	private void initAndStartClient() {
-		masterUpdateListenerThread = new MasterUpdateListenerThread();
-		masterUpdateListenerThread.start();
+		masterUpdateListener = new MasterUpdateListenerThread();
+		masterUpdateListener.start();
+		responseListener = new ResponseListener();
+		responseListener.start();
 		
 	}
 
