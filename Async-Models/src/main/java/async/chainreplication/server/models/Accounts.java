@@ -14,10 +14,12 @@ public class Accounts {
 		}
 	}
 
-	public void updateAccount(int accountNum, float balance) {
+	public AccountSnapshot addAccount(int accountNum) {
+		AccountSnapshot accountSnapShot;
 		synchronized (accountNumToAccountSnapShot) {
-			getAccountSnapshot(accountNum).setBalance(balance);	
+			accountSnapShot = new AccountSnapshot(accountNum, 0);
+			accountNumToAccountSnapShot.put(accountNum, accountSnapShot);
+			return accountSnapShot;
 		}
 	}
-
 }

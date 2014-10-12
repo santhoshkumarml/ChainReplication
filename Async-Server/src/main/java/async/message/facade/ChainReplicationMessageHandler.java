@@ -66,7 +66,6 @@ public class ChainReplicationMessageHandler {
 	public void sync(Request request, Reply reply) {
 		this.setCurrentRequest(request);
 		this.setCurrentReply(reply);
-		accounts.updateAccount(request.getRequestDetails().getAccountNum(), reply.getBalance());
 		historyOfRequests.addToHistory(request);
 		Server sucessor = this.server.getAdjacencyList().getSucessor();
 		if(sucessor != null) {
