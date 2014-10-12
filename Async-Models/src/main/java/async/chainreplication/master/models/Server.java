@@ -10,13 +10,13 @@ public class Server implements Serializable{
 	private static final long serialVersionUID = -7755158858181878162L;
 	String serverId;
 	String bankName;
-	ServerProcessDetails serverProcessDetails;
+	ProcessDetails serverProcessDetails;
 	AdjacencyList adjacencyList;
 	
 	public Server(String serverId, String bankName, String host,int port) {
 		this.serverId = serverId;
 		this.bankName = bankName;
-		this.serverProcessDetails = new ServerProcessDetails();
+		this.serverProcessDetails = new ProcessDetails();
 		this.serverProcessDetails.setHost(host);
 		this.serverProcessDetails.setPort(port);
 	}
@@ -27,7 +27,7 @@ public class Server implements Serializable{
 	public String getBankName() {
 		return bankName;
 	}
-	public ServerProcessDetails getServerProcessDetails() {
+	public ProcessDetails getServerProcessDetails() {
 		return serverProcessDetails;
 	}
 	public AdjacencyList getAdjacencyList() {

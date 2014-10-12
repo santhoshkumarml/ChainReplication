@@ -3,19 +3,21 @@ package async.chainreplication.client.server.communication.models;
 import java.io.Serializable;
 import java.util.UUID;
 
+import async.chainreplication.master.models.Client;
+
 public class Request implements Serializable{
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 2145253058392283227L;
 	String requestId;
-	String clientId;
+	Client client;
 
 	RequestDetails requestDetails;
 
-	public Request(String clientId, RequestDetails requestDetails) {
+	public Request(Client client, RequestDetails requestDetails) {
 		requestId = UUID.randomUUID().toString();
-		this.clientId = clientId; 
+		this.client = client; 
 		this.requestDetails = requestDetails;
 	}
 
@@ -27,8 +29,8 @@ public class Request implements Serializable{
 		this.requestId = requestId;
 	}
 	
-	public String getClientId() {
-		return clientId;
+	public Client getClient() {
+		return client;
 	}
 
 	public RequestDetails getRequestDetails() {
@@ -40,7 +42,7 @@ public class Request implements Serializable{
 		final int prime = 31;
 		int result = 1;
 		result = prime * result
-				+ ((clientId == null) ? 0 : clientId.hashCode());
+				+ ((client == null) ? 0 : client.hashCode());
 		result = prime * result
 				+ ((requestDetails == null) ? 0 : requestDetails.hashCode());
 		result = prime * result
@@ -57,10 +59,10 @@ public class Request implements Serializable{
 		if (getClass() != obj.getClass())
 			return false;
 		Request other = (Request) obj;
-		if (clientId == null) {
-			if (other.clientId != null)
+		if (client == null) {
+			if (other.client != null)
 				return false;
-		} else if (!clientId.equals(other.clientId))
+		} else if (!client.equals(other.client))
 			return false;
 		if (requestDetails == null) {
 			if (other.requestDetails != null)

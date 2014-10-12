@@ -8,7 +8,6 @@ public class ChainReplicationFacade {
 	ChainReplicationMessageHandler chainReplicationMessageHandler;
 
 	public ChainReplicationFacade(Server server, Master master) {
-		super();
 		this.chainReplicationMessageHandler = new ChainReplicationMessageHandler(server, master);
 	}
 	

@@ -2,7 +2,7 @@ package async.chainreplication.master.models;
 
 import java.io.Serializable;
 
-public class ServerProcessDetails implements Serializable{
+public class ProcessDetails implements Serializable{
 	/**
 	 * 
 	 */
@@ -37,5 +37,4 @@ public class ServerProcessDetails implements Serializable{
 	public void setUdpPort(int udpPort) {
 		this.udpPort = udpPort;
 	}
-
 }
