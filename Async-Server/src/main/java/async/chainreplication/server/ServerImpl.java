@@ -27,10 +27,11 @@ public class ServerImpl extends ChainReplicationImpl{
 		String serverId = args[1];
 		String chainName = args[2];
 		ServerImpl serverImpl = new ServerImpl(config,chainName, serverId);
-		serverImpl.initServer();
+		serverImpl.init();
 	}
 
 	public ServerImpl(Config config,String chainName, String serverId) {
+		super(chainName+"-"+serverId);
 		this.serverChainReplicationFacade = new ServerChainReplicationFacade(
 				config.getChainToServerMap().get(chainName).get(serverId),
 				config.getChains(),
@@ -59,7 +60,8 @@ public class ServerImpl extends ChainReplicationImpl{
 	}
 
 
-	public void initServer() {
+	public void init() {
+		super.init();
 		heartBeatSenderTimer = new Timer();
 		HeartBeatSenderTask heartBeatSender = new HeartBeatSenderTask(this);
 		heartBeatSenderTimer.schedule(heartBeatSender, (heartBeatTimeOut-3000));
@@ -69,10 +71,11 @@ public class ServerImpl extends ChainReplicationImpl{
 		chainMessageListenerThread.start();
 	}
 
-	public void stopServer() {
+	public void stop() {
 		heartBeatSenderTimer.cancel();
 		requestOrQueryUpdateThread.stopThread();
 		chainMessageListenerThread.stopThread();
+		super.stop();
 	}
 
 }

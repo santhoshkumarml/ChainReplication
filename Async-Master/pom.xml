@@ -18,5 +18,10 @@
 			<artifactId>Async-Models</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
+		<dependency>
+			<groupId>Async.Async-Project</groupId>
+			<artifactId>Async-Util</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 </project>

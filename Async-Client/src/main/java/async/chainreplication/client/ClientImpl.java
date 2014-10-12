@@ -4,9 +4,10 @@ import async.chainreplication.client.threads.MasterUpdateListenerThread;
 import async.chainreplication.client.threads.ResponseListener;
 import async.common.util.Config;
 import async.common.util.ConfigUtil;
+import aync.chainreplication.base.impl.ChainReplicationImpl;
 
 
-public class ClientImpl {
+public class ClientImpl extends ChainReplicationImpl{
 	MasterUpdateListenerThread masterUpdateListener;
 	ResponseListener responseListener;
 	ClientChainReplicationFacade clientChainReplicationFacade;
@@ -15,12 +16,13 @@ public class ClientImpl {
 		ClientImpl clientImpl = new ClientImpl(
 				ConfigUtil.convertToConfig(args[0]),
 				args[1]);
-		clientImpl.initAndStartClient();
+		clientImpl.init();
 		clientImpl.performOperations();
-		clientImpl.stopClient();
+		clientImpl.stop();
 	}
 
 	public ClientImpl(Config config, String clientId) {
+		super(clientId);
 		clientChainReplicationFacade = new ClientChainReplicationFacade(
 				config.getClients().get(clientId), config.getChains(),
 				config.getMaster());
@@ -34,16 +36,18 @@ public class ClientImpl {
 
 	}
 
-	private void initAndStartClient() {
+	public void init() {
+		super.init();
 		masterUpdateListener = new MasterUpdateListenerThread(this);
 		masterUpdateListener.start();
 		responseListener = new ResponseListener(this);
 		responseListener.start();
 	}
 
-	private void stopClient() {
+	public void stop() {
 		masterUpdateListener.stopThread();
 		responseListener.stopThread();
+		super.stop();
 	}
 
 }
