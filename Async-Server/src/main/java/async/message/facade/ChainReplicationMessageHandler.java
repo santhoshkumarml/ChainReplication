@@ -2,14 +2,14 @@ package async.message.facade;
 
 import async.chainreplication.client.server.communication.models.Reply;
 import async.chainreplication.client.server.communication.models.Request;
+import async.chainreplication.communication.message.models.AckMessage;
+import async.chainreplication.communication.message.models.ChainReplicationMessage;
+import async.chainreplication.communication.message.models.SyncMessage;
 import async.chainreplication.master.models.Master;
 import async.chainreplication.master.models.Server;
 import async.chainreplication.server.models.Accounts;
 import async.chainreplication.server.models.HistoryOfRequests;
 import async.chainreplication.server.models.SentHistory;
-import async.chainreplication.server2server.communication.models.AckMessage;
-import async.chainreplication.server2server.communication.models.ChainReplicationMessage;
-import async.chainreplication.server2server.communication.models.SyncMessage;
 import async.connection.util.TCPClientHelper;
 import async.connection.util.UDPClientHelper;
 

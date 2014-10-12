@@ -1,4 +1,4 @@
-package async.chainreplication.server2server.communication.models;
+package async.chainreplication.communication.message.models;
 
 import java.io.Serializable;
 

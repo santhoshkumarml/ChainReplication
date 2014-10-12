@@ -1,4 +1,4 @@
-package async.chainreplication.master.communication.models;
+package async.chainreplication.communication.message.models;
 
 public class MasterMessage {
 	public enum MasterMessageEnum {

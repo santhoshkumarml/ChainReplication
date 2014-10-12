@@ -1,6 +1,6 @@
 package async.server;
 
-import async.chainreplication.master.communication.models.MasterMessage;
+import async.chainreplication.communication.message.models.MasterMessage;
 import async.connection.message.MessageQueue;
 
 public class MasterUpdateListenerThread {
