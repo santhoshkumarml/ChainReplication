@@ -6,9 +6,9 @@ import java.util.Queue;
 
 public class MessageQueue<T> {
 
-	Queue<Message<T>> messages = new PriorityQueue(new Comparator<Message<T>>() {
+	Queue<Message<T>> messages = new PriorityQueue<Message<T>>(new Comparator<Message<T>>() {
 		@Override
-		public int compare(Message o1, Message o2) {
+		public int compare(Message<T> o1, Message<T> o2) {
 			return Long.compare(o1.getTimestamp(), o2.getTimestamp());
 		}
 	});
@@ -19,9 +19,9 @@ public class MessageQueue<T> {
 		}
 	}
 
-	public void enqueueMessage(Object messageObject) {
+	public void enqueueMessage(T messageObject) {
 		synchronized (messages) {
-			messages.add(new Message(System.currentTimeMillis(), messageObject));
+			messages.add(new Message<T>(System.currentTimeMillis(), messageObject));
 		}
 	}
 

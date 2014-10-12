@@ -2,7 +2,6 @@ package async.chainreplication.client;
 
 import async.chainreplication.client.threads.MasterUpdateListenerThread;
 import async.chainreplication.client.threads.ResponseListener;
-import async.chainreplication.communication.messages.ChainReplicationMessage;
 
 
 public class ClientImpl {
@@ -48,9 +47,5 @@ public class ClientImpl {
 		masterUpdateListener.stopThread();
 		responseListener.stopThread();
 	}
-
-
-
-
 
 }
