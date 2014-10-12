@@ -11,14 +11,14 @@ import async.generic.message.queue.MessageQueue;
 
 public class ServerChainReplicationFacade {
 
-	ChainReplicationMessageHandler chainReplicationMessageHandler;
+	ServerMessageHandler serverMessageHandler;
 
 	MessageQueue<ChainReplicationMessage> messages = 
 			new MessageQueue<ChainReplicationMessage>();
 
 	public ServerChainReplicationFacade(Server server, Master master) {
-		this.chainReplicationMessageHandler = 
-				new ChainReplicationMessageHandler(server, master);
+		this.serverMessageHandler = 
+				new ServerMessageHandler(server, master);
 	}
 
 	public void deliverMessage(ChainReplicationMessage message) {
@@ -28,26 +28,26 @@ public class ServerChainReplicationFacade {
 
 	public void handleMessage(ChainReplicationMessage message)  {
 		if(message instanceof RequestMessage) {
-			this.chainReplicationMessageHandler.handleRequestMessage(
+			this.serverMessageHandler.handleRequestMessage(
 					(RequestMessage)message);
 		} else if(message instanceof ResponseOrSyncMessage) {
-			this.chainReplicationMessageHandler.handleSyncMessage((ResponseOrSyncMessage) message);
+			this.serverMessageHandler.handleSyncMessage((ResponseOrSyncMessage) message);
 		} else if(message instanceof AckMessage) {
-			this.chainReplicationMessageHandler.handleAckMessage((AckMessage) message);
+			this.serverMessageHandler.handleAckMessage((AckMessage) message);
 		}
 	}
 
 	public boolean isHeadInTheChain() {
-		return this.chainReplicationMessageHandler.getServer().isHead();
+		return this.serverMessageHandler.getServer().isHead();
 	}
 	public boolean isTailInTheChain() {
-		return this.chainReplicationMessageHandler.getServer().isTail();
+		return this.serverMessageHandler.getServer().isTail();
 	}
 
 	public Server getServer() {
-		return this.chainReplicationMessageHandler.getServer();
+		return this.serverMessageHandler.getServer();
 	}
 	public Master getMaster() {
-		return this.chainReplicationMessageHandler.getMaster();
+		return this.serverMessageHandler.getMaster();
 	}
 }

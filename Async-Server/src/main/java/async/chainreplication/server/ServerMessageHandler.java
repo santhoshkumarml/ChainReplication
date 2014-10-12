@@ -14,7 +14,7 @@ import async.connection.util.IClientHelper;
 import async.connection.util.TCPClientHelper;
 import async.connection.util.UDPClientHelper;
 
-public class ChainReplicationMessageHandler {
+public class ServerMessageHandler {
 	Request currentRequest;
 	Reply currentReply;
 	SentHistory sentHistory;
@@ -27,7 +27,7 @@ public class ChainReplicationMessageHandler {
 	IClientHelper syncOrAckSendClientHelper;
 	IClientHelper tailResponseClientHelper;
 
-	public ChainReplicationMessageHandler(Server server, Master master) {
+	public ServerMessageHandler(Server server, Master master) {
 		this.server  = server;
 		this.master =  master;
 		try {

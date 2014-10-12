@@ -7,16 +7,16 @@ import async.chainreplication.application.models.ApplicationRequest;
 import async.chainreplication.application.models.Outcome;
 import async.chainreplication.client.server.communication.models.Reply;
 import async.chainreplication.client.server.communication.models.Request;
-import async.chainreplication.server.ChainReplicationMessageHandler;
+import async.chainreplication.server.ServerMessageHandler;
 import async.chainreplication.server.IApplicationRequestHandler;
 
 
 public class ApplicationRequestHandler implements IApplicationRequestHandler{
 	Accounts accounts;
-	ChainReplicationMessageHandler chainReplicationMessageHandler;
+	ServerMessageHandler chainReplicationMessageHandler;
 
 	public ApplicationRequestHandler(
-			ChainReplicationMessageHandler chainReplicationMessageHandler) {
+			ServerMessageHandler chainReplicationMessageHandler) {
 		this.accounts = new Accounts();
 		this.chainReplicationMessageHandler = chainReplicationMessageHandler;
 	}

@@ -14,7 +14,9 @@ public class ApplicationReplyHandler implements IApplicationReplyHandler {
 
 	@Override
 	public void handleResponse(Request request, Reply reply) {
-		Response response = new Response(request.getRequestId(), (ApplicationReply)reply);
+		Response response = new Response(
+				request.getRequestId(),
+				(ApplicationReply)reply);
 		responseMessages.enqueueMessage(response);
 	}
 
