@@ -15,6 +15,7 @@ public class ClientChainReplicationFacade {
 		this.clientMessageHandler = 
 				new ClientMessageHandler();
 	}
+	
 
 	public void deliverMessage(ChainReplicationMessage message) {
 		messages.enqueueMessage(message);
@@ -26,8 +27,8 @@ public class ClientChainReplicationFacade {
 			this.clientMessageHandler.handleClientRequestMessage(
 					(ClientRequestMessage)message);
 		} else if(message instanceof ResponseOrSyncMessage) {
-		//	this.clientMessageHandler.handleReponseMessage(
-			//		(ResponseOrSyncMessage)message);
+			this.clientMessageHandler.handleReponseMessage(
+					(ResponseOrSyncMessage)message);
 		} else if (message instanceof MasterMessage) {
 			//TODO: In Phase 3
 		}

@@ -3,6 +3,7 @@ package async.chainreplication.client;
 import java.util.HashMap;
 import java.util.Map;
 
+import async.chainreplication.communication.messages.ResponseOrSyncMessage;
 import async.chainreplication.master.models.Chain;
 import async.chainreplication.master.models.Server;
 import async.chainreplicaton.client.message.ClientRequestMessage;
@@ -38,8 +39,7 @@ public class ClientMessageHandler {
 		}
 	}
 
-
-
+	//---------------------------------------------------------------------------------
 	//Client Handler Methods
 	public void handleClientRequestMessage(ClientRequestMessage message) {
 		String chainName = message.getChainName();
@@ -58,6 +58,13 @@ public class ClientMessageHandler {
 			break;
 		}
 		clientMessageClientHelper.sendMessage(message.getRequestMessage());
+	}
+
+	public void handleReponseMessage(ResponseOrSyncMessage message) {
+		this.applicationReplyHandler.handleResponse(
+				message.getRequest(),
+				message.getReply());
+
 	}
 
 }
