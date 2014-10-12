@@ -20,8 +20,16 @@ public class ApplicationReplyHandler implements IApplicationReplyHandler {
 		responseMessages.enqueueMessage(response);
 	}
 
-	public MessageQueue<Response> getResponseMessages() {
-		return responseMessages;
+
+	@Override
+	public Reply getResponseForRequestId(Request request) {
+		while(responseMessages.hasMoreMessages()) {
+			Response response = (Response) responseMessages.dequeueMessage();
+			if(response.getRequestId().equals(request.getRequestId())) {
+				return response.getApplicationReply();
+			}
+		}
+		return null;
 	}
 
 }
