@@ -1,5 +1,7 @@
 package async.chainreplication.server;
 
+import java.lang.reflect.InvocationTargetException;
+
 import async.chainreplication.client.server.communication.models.Reply;
 import async.chainreplication.client.server.communication.models.Request;
 import async.chainreplication.communication.messages.AckMessage;
@@ -31,14 +33,18 @@ public class ServerMessageHandler {
 		this.server  = server;
 		this.master =  master;
 		try {
-			this.applicationRequestHandler = 
-					(IApplicationRequestHandler) Class.forName(
-							"async.chainreplication.app.server."
-									+ "handler.ApplicationRequestHandler").newInstance();
+			this.applicationRequestHandler = (IApplicationRequestHandler) Class.forName(
+					"async.chainreplication."
+							+ "app.server."
+							+ "handler.ApplicationRequestHandler").getConstructor(
+									ServerMessageHandler.class).newInstance(this);
 		} catch (InstantiationException | IllegalAccessException
-				| ClassNotFoundException e) {
+				| ClassNotFoundException | IllegalArgumentException |
+				InvocationTargetException | NoSuchMethodException |
+				SecurityException e) {
 			e.printStackTrace();
 		}
+
 	}
 
 	public Request getCurrentRequest() {

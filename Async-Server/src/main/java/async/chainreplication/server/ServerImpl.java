@@ -17,8 +17,9 @@ public class ServerImpl {
 	ChainMessageListenerThread chainMessageListenerThread;
 	RequestQueryOrUpdateThread requestOrQueryUpdateThread;
 	ServerChainReplicationFacade serverChainReplicationFacade;
-	
-	
+	IApplicationRequestHandler appServerRequestHandler;
+
+
 	public static void main(String args[]) {
 		String serverId = args[0];
 		String chainName = args[1];
@@ -40,8 +41,8 @@ public class ServerImpl {
 				new Master(masterHost, masterPort));
 	}
 
-	public void deliverMessage(ChainReplicationMessage message) {
-		this.serverChainReplicationFacade.deliverMessage(message);
+	public ServerChainReplicationFacade getServerChainReplicationFacade() {
+		return serverChainReplicationFacade;
 	}
 
 	public Server getServer() {
@@ -70,7 +71,7 @@ public class ServerImpl {
 		chainMessageListenerThread = new ChainMessageListenerThread(this);
 		chainMessageListenerThread.start();
 	}
-	
+
 	public void stopServer() {
 		heartBeatSenderTimer.cancel();
 		requestOrQueryUpdateThread.stopThread();

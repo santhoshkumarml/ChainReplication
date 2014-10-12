@@ -18,7 +18,7 @@ public class ResponseListener extends Thread{
 		while(shouldStillRun) {
 			ChainReplicationMessage responseMessage = 
 					(ChainReplicationMessage)this.responseServerHelper.acceptAndReadObjectConnection();
-			clientImpl.deliverMessage(responseMessage);
+			clientImpl.getClientChainReplicationFacade().deliverMessage(responseMessage);
 			
 		}
 	}

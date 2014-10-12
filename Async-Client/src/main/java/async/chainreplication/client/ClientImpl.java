@@ -29,9 +29,8 @@ public class ClientImpl {
 		clientChainReplicationFacade = new ClientChainReplicationFacade();
 	}
 
-	public void deliverMessage(ChainReplicationMessage message) {
-		this.clientChainReplicationFacade.deliverMessage(message);
-
+	public ClientChainReplicationFacade getClientChainReplicationFacade() {
+		return clientChainReplicationFacade;
 	}
 
 	private void performOperations() {

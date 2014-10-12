@@ -20,7 +20,7 @@ public class ChainMessageListenerThread extends Thread{
 		while(shouldStillRun) {
 	       ChainReplicationMessage message = 
 	    		   (ChainReplicationMessage)this.chainMessagesListener.acceptAndReadObjectConnection();
-	       this.serverImpl.deliverMessage(message); 
+	       this.serverImpl.getServerChainReplicationFacade().deliverMessage(message); 
 		}
 		this.chainMessagesListener.stopServer();
 	}

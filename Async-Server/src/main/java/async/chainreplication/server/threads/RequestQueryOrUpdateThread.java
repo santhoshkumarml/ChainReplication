@@ -24,7 +24,7 @@ public class RequestQueryOrUpdateThread extends Thread{
 				||this.serverImpl.isHeadInTheChain())) {
              ChainReplicationMessage message = 
             		 (ChainReplicationMessage)this.requestServerHelper.acceptAndReadObjectConnection();
-             this.serverImpl.deliverMessage(message);
+             this.serverImpl.getServerChainReplicationFacade().deliverMessage(message);
 		}
 		this.requestServerHelper.stopServer();
 	}
