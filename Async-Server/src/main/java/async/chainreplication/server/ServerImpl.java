@@ -4,6 +4,7 @@ import java.util.Timer;
 
 import async.chainreplication.master.models.Master;
 import async.chainreplication.master.models.Server;
+import async.chainreplication.server.exception.ServerChainReplicationException;
 import async.chainreplication.server.threads.ChainMessageListenerThread;
 import async.chainreplication.server.threads.HeartBeatSenderTask;
 import async.chainreplication.server.threads.MasterUpdateListenerThread;
@@ -32,11 +33,15 @@ public class ServerImpl extends ChainReplicationImpl{
 
 	public ServerImpl(Config config,String chainName, String serverId) {
 		super(chainName+"-"+serverId);
-		this.serverChainReplicationFacade = new ServerChainReplicationFacade(
-				config.getChainToServerMap().get(chainName).get(serverId),
-				config.getChains(),
-				config.getMaster()
-				);
+		try {
+			this.serverChainReplicationFacade = new ServerChainReplicationFacade(
+					config.getChainToServerMap().get(chainName).get(serverId),
+					config.getChains(),
+					config.getMaster(),
+					this);
+		} catch (ServerChainReplicationException e) {
+			this.logMessage(e.getMessage());
+		}
 	}
 
 	public ServerChainReplicationFacade getServerChainReplicationFacade() {
@@ -57,6 +62,10 @@ public class ServerImpl extends ChainReplicationImpl{
 
 	public boolean isTailInTheChain() {
 		return this.serverChainReplicationFacade.isTailInTheChain();
+	}
+	
+	public void logMessage(String message) {
+		this.getLogMessages().enqueueMessage(message);
 	}
 
 

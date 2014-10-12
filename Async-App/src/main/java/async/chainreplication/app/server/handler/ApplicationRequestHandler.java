@@ -30,6 +30,7 @@ public class ApplicationRequestHandler implements IApplicationRequestHandler{
 				AccountSnapshot accountSnapshot = accounts.getAccountSnapshot(
 						applicationRequest.getAccountNum());
 				reply.setBalance(accountSnapshot.getBalance());
+	           //TODO : Inconsistent history
 				reply.setOutcome(Outcome.Processed);
 				reply.setReqID(request.getRequestId());
 			}
@@ -45,9 +46,13 @@ public class ApplicationRequestHandler implements IApplicationRequestHandler{
 			float balance;
 			if(accountSnapshot != null)  {
 				balance = accountSnapshot.getBalance();
-				balance -= amount;
-				accountSnapshot.setBalance(balance);
-				reply.setOutcome(Outcome.Processed);
+				if(balance>=amount) {
+					balance -= amount;
+					accountSnapshot.setBalance(balance);
+				    reply.setOutcome(Outcome.Processed);
+				} else {
+					reply.setOutcome(Outcome.InsufficientFunds);
+				}
 			} else {
 				accountSnapshot = accounts.addAccount(accountNum);
 				balance = accountSnapshot.getBalance();

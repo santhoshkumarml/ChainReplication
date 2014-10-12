@@ -72,4 +72,10 @@ public class Request implements Serializable{
 		return true;
 	}
 
+	@Override
+	public String toString() {
+		return "Request [requestId=" + requestId + ", requestType="
+				+ requestType + ", client=" + client.getClientId() + "]";
+	}
+
 }

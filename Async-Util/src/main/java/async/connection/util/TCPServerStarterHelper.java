@@ -7,22 +7,21 @@ import java.net.Socket;
 
 public class TCPServerStarterHelper implements IServerStarterHelper{
 	ServerSocket serverSocket;
-	
-	public TCPServerStarterHelper() {
-		initAndStartTCPServer();
-	}
-	
-	private void initAndStartTCPServer() {
-		try {
-			serverSocket = new ServerSocket(0);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} finally {
+	int port;
 
+	public TCPServerStarterHelper(int port) {
+		this.port = port;
+	}
+
+	@Override
+	public void initAndStartServer() throws ConnectServerException {
+		try {
+			serverSocket = new ServerSocket(port);
+		} catch (IOException e) {
+			throw new ConnectServerException(e);
 		}
 	}
-	
+
 	@Override
 	public int getServerPort() {
 		return serverSocket.getLocalPort();
@@ -30,7 +29,7 @@ public class TCPServerStarterHelper implements IServerStarterHelper{
 
 
 	@Override
-	public Object acceptAndReadObjectConnection() {
+	public Object acceptAndReadObjectConnection() throws ConnectServerException {
 		Object message = null;
 		Socket serviceSocket = null;
 		try {
@@ -38,11 +37,9 @@ public class TCPServerStarterHelper implements IServerStarterHelper{
 			ObjectInputStream ois = new ObjectInputStream(serviceSocket.getInputStream());
 			message =  ois.readObject();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new ConnectServerException(e);
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new ConnectServerException(e);
 		} finally {
 			if(serviceSocket != null) {
 				try {
@@ -55,7 +52,7 @@ public class TCPServerStarterHelper implements IServerStarterHelper{
 		}
 		return message;
 	}
-	
+
 	@Override	
 	public void stopServer() {
 		try {
@@ -64,7 +61,7 @@ public class TCPServerStarterHelper implements IServerStarterHelper{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 	}
 
 }

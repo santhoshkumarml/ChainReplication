@@ -56,7 +56,7 @@ public class Server implements Serializable{
 	public String toString() {
 		return "Server [serverId=" + serverId + ", chainName=" + chainName
 				+ ", serverProcessDetails=" + serverProcessDetails.toString()
-				+ ", adjacencyList=" + adjacencyList + "]";
+				+ ", adjacencyList=" + adjacencyList.toString() + "]";
 	}
 	
 	

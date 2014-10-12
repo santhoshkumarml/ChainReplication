@@ -16,7 +16,8 @@ public class UDPClientHelper implements IClientHelper{
 		this.port = port;
 	}
 
-	public void sendMessage(Object message) {
+	@Override
+	public void sendMessage(Object message) throws ConnectClientException {
 		DatagramSocket clientSocket = null;
 		try {
 			clientSocket = new DatagramSocket();
@@ -28,8 +29,7 @@ public class UDPClientHelper implements IClientHelper{
 				os.writeObject(message);
 				data = baos.toByteArray();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				throw new ConnectClientException(e);
 			} finally {
 				if(os != null) {
 					try {
@@ -47,11 +47,10 @@ public class UDPClientHelper implements IClientHelper{
 				clientSocket.send(dp);     
 			} catch(IOException e)
 			{
-				e.printStackTrace();
+				throw new ConnectClientException(e);
 			}
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new ConnectClientException(e);
 		} finally {
 			if(clientSocket != null) {
 				clientSocket.close();

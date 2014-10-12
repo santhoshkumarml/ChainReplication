@@ -10,9 +10,9 @@ public class ApplicationReply extends Reply {
 	private static final long serialVersionUID = -6447168651450761939L;
 	
 	Outcome outcome;
-	float balance;
 	int accountNum;
-	
+	float balance;
+
 	public int getAccountNum() {
 		return accountNum;
 	}
@@ -30,6 +30,12 @@ public class ApplicationReply extends Reply {
 	}
 	public void setBalance(float balance) {
 		this.balance = balance;
+	}
+	
+	@Override
+	public String toString() {
+		return "ApplicationReply [outcome=" + outcome + ", accountNum="
+				+ accountNum + ", balance=" + balance + "]";
 	}
 
 }

@@ -26,5 +26,12 @@ public class AdjacencyList implements Serializable{
 	public void setSucessor(Server sucessor) {
 		this.sucessor = sucessor;
 	}
+	@Override
+	public String toString() {
+		return "AdjacencyList [predecessor=" + predecessor.getServerId()+ ", sucessor="
+				+ sucessor.getServerId() + "]";
+	}
+	
+	
 	
 }

@@ -15,7 +15,8 @@ public class TCPClientHelper implements IClientHelper{
 	}
 
 
-	public void sendMessage(Object message) {
+	@Override
+	public void sendMessage(Object message) throws ConnectClientException {
 		Socket clientSocket = null;
 		try {
 			clientSocket = new Socket();
@@ -25,8 +26,7 @@ public class TCPClientHelper implements IClientHelper{
 				os = new ObjectOutputStream(clientSocket.getOutputStream());
 				os.writeObject(message);
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				throw new ConnectClientException(e);
 			} finally {
 				if(os != null) {
 					try {
@@ -39,8 +39,7 @@ public class TCPClientHelper implements IClientHelper{
 			}
 
 		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			throw new ConnectClientException(e1);
 		} finally {
 			if(clientSocket != null) {
 				try {

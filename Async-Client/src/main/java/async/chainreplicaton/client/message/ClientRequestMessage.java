@@ -34,4 +34,10 @@ public class ClientRequestMessage extends ChainReplicationMessage {
 		this.requestMessage = requestMessage;
 	}
 
+	@Override
+	public String toString() {
+		return "ClientRequestMessage [chainName=" + chainName
+				+ ", requestMessage=" + requestMessage.toString() + "]";
+	}
+
 }

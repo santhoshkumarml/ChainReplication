@@ -26,6 +26,12 @@ public class ResponseOrSyncMessage extends ChainReplicationMessage{
 	public void setReply(Reply reply) {
 		this.reply = reply;
 	}
+		
+	@Override
+	public String toString() {
+		return "ResponseOrSyncMessage [request=" + request.toString() + ", reply=" + reply.toString()
+				+ "]";
+	}
 	
 
 }

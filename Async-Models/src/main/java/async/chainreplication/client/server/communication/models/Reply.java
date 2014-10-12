@@ -16,4 +16,9 @@ public class Reply implements Serializable{
 	public void setReqID(String reqID) {
 		this.reqID = reqID;
 	}
+	
+	@Override
+	public String toString() {
+		return "Reply [reqID=" + reqID + "]";
+	}
 }

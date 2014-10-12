@@ -22,4 +22,9 @@ public class RequestMessage extends ChainReplicationMessage{
 		this.request = request;
 	}
 
+	@Override
+	public String toString() {
+		return "RequestMessage [request=" + request.toString() + "]";
+	}
+
 }

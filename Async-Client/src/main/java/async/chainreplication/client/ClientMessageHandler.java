@@ -3,6 +3,7 @@ package async.chainreplication.client;
 import java.util.HashMap;
 import java.util.Map;
 
+import async.chainreplication.client.exception.ClientChainReplicationException;
 import async.chainreplication.client.server.communication.models.Reply;
 import async.chainreplication.client.server.communication.models.Request;
 import async.chainreplication.communication.messages.ResponseOrSyncMessage;
@@ -11,6 +12,7 @@ import async.chainreplication.master.models.Client;
 import async.chainreplication.master.models.Master;
 import async.chainreplication.master.models.Server;
 import async.chainreplicaton.client.message.ClientRequestMessage;
+import async.connection.util.ConnectClientException;
 import async.connection.util.IClientHelper;
 import async.connection.util.UDPClientHelper;
 
@@ -21,19 +23,23 @@ public class ClientMessageHandler {
 	Master master;
 	IClientHelper clientMessageClientHelper;
 	IApplicationReplyHandler applicationReplyHandler;
+	ClientChainReplicationFacade clientChainReplicationFacade;
 
 	public ClientMessageHandler(Client client,
-			Map<String, Chain> chainNameToChainMap, Master master) {
+			Map<String, Chain> chainNameToChainMap, Master master,
+			ClientChainReplicationFacade clientChainReplicationFacade) throws ClientChainReplicationException {
 		this.client = client;
 		this.chainNameToChainMap.putAll(chainNameToChainMap);
 		this.master = master;
+		this.clientChainReplicationFacade = clientChainReplicationFacade;
+
 		try {
 			this.applicationReplyHandler = (IApplicationReplyHandler) Class.forName(
 					"async.chainreplication.app.client."
 							+ "handler.ApplicationReplyHandler").newInstance();
 		} catch (InstantiationException | IllegalAccessException
 				| ClassNotFoundException e) {
-			e.printStackTrace();
+			throw new ClientChainReplicationException(e);
 		}
 	}
 
@@ -49,9 +55,17 @@ public class ClientMessageHandler {
 		}
 	}
 
+	public Client getClient() {
+		return this.client;
+	}
+
+	public Master getMaster() {
+		return this.master;
+	}
+
 	//---------------------------------------------------------------------------------
 	//Client Handler Methods
-	public void handleClientRequestMessage(ClientRequestMessage message) {
+	public void handleClientRequestMessage(ClientRequestMessage message) throws ClientChainReplicationException {
 		String chainName = message.getChainName();
 		switch(message.getRequestMessage().getRequest().getRequestType()) {
 		case QUERY:
@@ -67,7 +81,11 @@ public class ClientMessageHandler {
 					head.getServerProcessDetails().getPort());
 			break;
 		}
-		clientMessageClientHelper.sendMessage(message.getRequestMessage());
+		try {
+			clientMessageClientHelper.sendMessage(message.getRequestMessage());
+		} catch (ConnectClientException e) {
+			throw new ClientChainReplicationException(e);
+		}
 	}
 
 	public void handleReponseMessage(ResponseOrSyncMessage message) {
@@ -85,5 +103,6 @@ public class ClientMessageHandler {
 			return this.applicationReplyHandler.getResponseForRequestId(request);
 		}		
 	}
+
 
 }

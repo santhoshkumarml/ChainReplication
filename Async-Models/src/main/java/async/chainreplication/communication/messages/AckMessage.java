@@ -16,5 +16,10 @@ public class AckMessage extends ChainReplicationMessage{
 	public AckMessage(Request request) {
 		this.request = request;
 	}
+
+	@Override
+	public String toString() {
+		return "AckMessage [request=" + request.toString() + "]";
+	}
 	
 }

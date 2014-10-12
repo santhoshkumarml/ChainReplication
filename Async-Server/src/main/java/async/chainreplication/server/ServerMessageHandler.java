@@ -13,8 +13,10 @@ import async.chainreplication.communication.messages.ResponseOrSyncMessage;
 import async.chainreplication.master.models.Chain;
 import async.chainreplication.master.models.Master;
 import async.chainreplication.master.models.Server;
+import async.chainreplication.server.exception.ServerChainReplicationException;
 import async.chainreplication.server.models.HistoryOfRequests;
 import async.chainreplication.server.models.SentHistory;
+import async.connection.util.ConnectClientException;
 import async.connection.util.IClientHelper;
 import async.connection.util.TCPClientHelper;
 import async.connection.util.UDPClientHelper;
@@ -32,14 +34,18 @@ public class ServerMessageHandler {
 
 	IClientHelper syncOrAckSendClientHelper;
 	IClientHelper tailResponseClientHelper;
+	
+	ServerChainReplicationFacade serverChainReplicationFacade;
 
 	public ServerMessageHandler(
 			Server server, 
 			Map<String,Chain> chainNameToChainMap,
-			Master master) {
+			Master master,
+			ServerChainReplicationFacade serverChainReplicationFacade) throws ServerChainReplicationException {
 		this.server  = server;
 		this.chainNameToChainMap.putAll(chainNameToChainMap);
 		this.master =  master;
+		this.serverChainReplicationFacade = serverChainReplicationFacade;
 		try {
 			this.applicationRequestHandler = (IApplicationRequestHandler) Class.forName(
 					"async.chainreplication."
@@ -50,7 +56,7 @@ public class ServerMessageHandler {
 				| ClassNotFoundException | IllegalArgumentException |
 				InvocationTargetException | NoSuchMethodException |
 				SecurityException e) {
-			e.printStackTrace();
+			throw new ServerChainReplicationException(e);
 		}
 
 	}
@@ -110,7 +116,7 @@ public class ServerMessageHandler {
 	//---------------------------------------------------------------------------------
 	//Handle Chain Operation
 
-	public void sync(Request request, Reply reply) {
+	public void sync(Request request, Reply reply) throws ServerChainReplicationException {
 		this.setCurrentRequest(request);
 		this.setCurrentReply(reply);
 		historyOfRequests.addToHistory(request);
@@ -121,7 +127,11 @@ public class ServerMessageHandler {
 					sucessor.getServerProcessDetails().getHost(),
 					sucessor.getServerProcessDetails().getTcpPort());
 			ChainReplicationMessage syncMessage = new ResponseOrSyncMessage(request, reply);
-			syncOrAckSendClientHelper.sendMessage(syncMessage);
+			try {
+				syncOrAckSendClientHelper.sendMessage(syncMessage);
+			} catch (ConnectClientException e) {
+				throw new ServerChainReplicationException(e);
+			}
 			sentHistory.addToSentHistory(request.getRequestId());
 			//send sync
 		} else {
@@ -130,13 +140,17 @@ public class ServerMessageHandler {
 			tailResponseClientHelper = new UDPClientHelper(
 					request.getClient().getClientProcessDetails().getHost()	,
 					request.getClient().getClientProcessDetails().getUdpPort());
-			tailResponseClientHelper.sendMessage(reply);
+			try {
+				tailResponseClientHelper.sendMessage(reply);
+			} catch (ConnectClientException e) {
+				throw new ServerChainReplicationException(e);
+			}
 			//ACk so that other servers can remove the messages from Sent
 			ACK(request);
 		}
 	}
 
-	public void ACK(Request request) {
+	public void ACK(Request request) throws ServerChainReplicationException {
 		sentHistory.removeFromSent(request.getRequestId());
 		Server predecessor = this.server.getAdjacencyList().getPredecessor();
 		//Terminate propagation once we reach head
@@ -146,7 +160,11 @@ public class ServerMessageHandler {
 					predecessor.getServerProcessDetails().getTcpPort());
 			ChainReplicationMessage ackMessage = new AckMessage(request);
 			//change it to ACK Message
-			syncOrAckSendClientHelper.sendMessage(ackMessage);
+			try {
+				syncOrAckSendClientHelper.sendMessage(ackMessage);
+			} catch (ConnectClientException e) {
+				throw new ServerChainReplicationException(e);
+			}
 		}
 
 	}
@@ -163,17 +181,17 @@ public class ServerMessageHandler {
 	//-------------------------------------------------------------------------------------
 	//Message Handle Methods
 
-	public void handleRequestMessage(RequestMessage message) {
+	public void handleRequestMessage(RequestMessage message) throws ServerChainReplicationException {
 		Reply reply = this.applicationRequestHandler.handleRequest(message.getRequest());
 		sync(message.getRequest(), reply);
 	}
 
-	public void handleSyncMessage(ResponseOrSyncMessage message) {
+	public void handleSyncMessage(ResponseOrSyncMessage message) throws ServerChainReplicationException {
 		this.applicationRequestHandler.handleSyncUpdate(message.getReply());
 		sync(message.getRequest(), message.getReply());
 	}
 
-	public void handleAckMessage(AckMessage message) {
+	public void handleAckMessage(AckMessage message) throws ServerChainReplicationException {
 		ACK(message.getRequest());
 	}
 

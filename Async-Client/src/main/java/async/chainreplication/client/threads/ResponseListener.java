@@ -3,6 +3,7 @@ package async.chainreplication.client.threads;
 import async.chainreplication.client.ClientImpl;
 import async.chainreplication.communication.messages.ChainReplicationMessage;
 import async.connection.util.IServerStarterHelper;
+import async.connection.util.ConnectServerException;
 import async.connection.util.UDPServerStarterHelper;
 
 public class ResponseListener extends Thread{
@@ -11,15 +12,21 @@ public class ResponseListener extends Thread{
 	boolean shouldStillRun = true;
 
 	public ResponseListener(ClientImpl clientImpl) {
-		this.responseServerHelper = new UDPServerStarterHelper();
+		this.responseServerHelper = new UDPServerStarterHelper(
+				this.clientImpl.getClient().getClientProcessDetails().getUdpPort());
 		this.clientImpl = clientImpl;
 	}
 	public void run() {
 		while(shouldStillRun) {
-			ChainReplicationMessage responseMessage = 
-					(ChainReplicationMessage)this.responseServerHelper.acceptAndReadObjectConnection();
-			clientImpl.getClientChainReplicationFacade().deliverMessage(responseMessage);
-			
+			ChainReplicationMessage responseMessage = null;
+			try {
+				responseMessage = (ChainReplicationMessage)this.responseServerHelper.acceptAndReadObjectConnection();
+			} catch (ConnectServerException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			clientImpl.getClientChainReplicationFacade().deliverMessage(
+					responseMessage);	
 		}
 	}
 	

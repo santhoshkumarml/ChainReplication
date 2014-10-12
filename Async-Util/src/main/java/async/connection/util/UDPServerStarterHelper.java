@@ -8,29 +8,27 @@ import java.net.DatagramSocket;
 
 public class UDPServerStarterHelper implements IServerStarterHelper{
 	DatagramSocket serverSocket;
+	int port;
 
-	public UDPServerStarterHelper() {
-		initAndStartUDPServer();
+	public UDPServerStarterHelper(int port) {
+		this.port = port;
 	}
-
 	@Override
 	public int getServerPort() {
 		return serverSocket.getLocalPort();
 	}
 
-	private void initAndStartUDPServer() {
+	@Override
+	public void initAndStartServer() throws ConnectServerException {
 		try {
 			serverSocket = new DatagramSocket(0);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} finally {
-
+			throw new ConnectServerException(e);
 		}
 	}
 
 	@Override
-	public Object acceptAndReadObjectConnection() {
+	public Object acceptAndReadObjectConnection() throws ConnectServerException {
 		Object message = null;
 		byte[] receiveData = new byte[2048];
 		ObjectInputStream oos = null;
@@ -41,11 +39,9 @@ public class UDPServerStarterHelper implements IServerStarterHelper{
 			oos = new ObjectInputStream(baos);
 			message = oos.readObject();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new ConnectServerException(e);
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new ConnectServerException(e);
 		} finally {
 			if(oos != null) {
 				try {
