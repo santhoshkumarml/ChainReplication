@@ -1,4 +1,4 @@
-package async.message.facade;
+package async.chainreplication.server;
 
 import async.chainreplication.application.models.AccountSnapshot;
 import async.chainreplication.application.models.Accounts;

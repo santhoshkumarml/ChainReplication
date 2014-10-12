@@ -17,5 +17,7 @@
 		<module>Async-Util</module>
 		<module>Async-Server</module>
 		<module>Async-Master</module>
+		<module>Async-Client</module>
+		<module>Async-App</module>
 	</modules>
 </project>

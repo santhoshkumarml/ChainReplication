@@ -1,4 +1,4 @@
-package async.message.facade;
+package async.chainreplication.server;
 
 import async.chainreplication.client.server.communication.models.Reply;
 import async.chainreplication.client.server.communication.models.Request;

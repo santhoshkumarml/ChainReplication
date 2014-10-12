@@ -1,4 +1,4 @@
-package async.message.facade;
+package async.chainreplication.server;
 
 import async.chainreplication.communication.message.models.AckMessage;
 import async.chainreplication.communication.message.models.ChainReplicationMessage;
@@ -12,13 +12,18 @@ import async.generic.message.queue.models.MessageQueue;
 public class ChainReplicationFacade {
 
 	ChainReplicationMessageHandler chainReplicationMessageHandler;
-	
+
 	MessageQueue<ChainReplicationMessage> messages = 
 			new MessageQueue<ChainReplicationMessage>();
 
 	public ChainReplicationFacade(Server server, Master master) {
 		this.chainReplicationMessageHandler = 
 				new ChainReplicationMessageHandler(server, master);
+	}
+
+	public void deliverMessage(ChainReplicationMessage message) {
+		messages.enqueueMessage(message);
+
 	}
 
 	public void handleMessage(ChainReplicationMessage message)  {
