@@ -5,17 +5,17 @@ import java.util.List;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 
-import async.chainreplication.application.models.Bank;
+import async.chainreplication.master.models.Chain;
 import async.chainreplication.master.models.Server;
 
 public class MasterDataPersister {
-	ConcurrentHashMap<String, Bank> bankNameToBankMap = 
-			new ConcurrentHashMap<String, Bank>();
+	ConcurrentHashMap<String, Chain> bankNameToBankMap = 
+			new ConcurrentHashMap<String, Chain>();
 	ConcurrentHashMap<String,TreeMap<String, Server>> bankToAllServersMap =
 			new ConcurrentHashMap<String, TreeMap<String,Server>>();
 
 
-	public ConcurrentHashMap<String, Bank> getBankNameToBankMap() {
+	public ConcurrentHashMap<String, Chain> getBankNameToBankMap() {
 		return bankNameToBankMap;
 	}
 
@@ -27,7 +27,7 @@ public class MasterDataPersister {
 
 	public void calculateChanges(
 			ConcurrentHashMap<String,TreeMap<String, Server>> bankToAllServersMap) {
-		List<Bank> changedBanks = new ArrayList<Bank>();
+		List<Chain> changedBanks = new ArrayList<Chain>();
 		synchronized (this.getBankNameToBankMap()) {
 
 		}

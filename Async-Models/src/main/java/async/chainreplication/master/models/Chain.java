@@ -1,28 +1,26 @@
-package async.chainreplication.application.models;
+package async.chainreplication.master.models;
 
 import java.io.Serializable;
 
-import async.chainreplication.master.models.Server;
 
-
-public class Bank implements Serializable{
+public class Chain implements Serializable{
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1094492046636943340L;
-	String bankName;
+	String chainName;
 	Server head;
 	Server tail;
-	public Bank(String bankName, Server head, Server tail) {
-		this.bankName = bankName;
+	public Chain(String bankName, Server head, Server tail) {
+		this.chainName = bankName;
 		this.head = head;
 		this.tail = tail;
 	}
-	public String getBankName() {
-		return bankName;
+	public String getChainName() {
+		return chainName;
 	}
-	public void setBankName(String bankName) {
-		this.bankName = bankName;
+	public void setChainName(String chainName) {
+		this.chainName = chainName;
 	}
 	public Server getHead() {
 		return head;

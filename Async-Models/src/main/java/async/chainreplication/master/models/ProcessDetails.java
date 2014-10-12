@@ -2,6 +2,7 @@ package async.chainreplication.master.models;
 
 import java.io.Serializable;
 
+//Contain Process Details about each of the server
 public class ProcessDetails implements Serializable{
 	/**
 	 * 

@@ -1,21 +1,21 @@
 package async.chainreplication.communication.message.models;
 
-import async.chainreplication.master.models.Server;
+import async.chainreplication.master.models.Chain;
 
 public class MasterOtherChainChangeMessage extends ChainReplicationMessage{
-	
+
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -1891843269349186453L;
-	
-	Server server;
 
-	public MasterOtherChainChangeMessage(Server server) {
-		this.server = server;
+	Chain chain;
+
+	public MasterOtherChainChangeMessage(Chain chain) {
+		this.chain = chain;
 	}
 
-	public Server getServer() {
-		return server;
+	public Chain getChain() {
+		return chain;
 	}
 }
