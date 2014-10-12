@@ -2,19 +2,23 @@ package async.server;
 
 import java.util.TimerTask;
 
+import async.chainreplication.communication.message.models.ChainReplicationMessage;
+import async.chainreplication.communication.message.models.HeartBeatMessage;
 import async.connection.util.TCPClientHelper;
 
 public class HeartBeatSenderTask extends TimerTask{
 	TCPClientHelper clientHelper;
-	ServerImpl server;
-	public HeartBeatSenderTask(ServerImpl server) {
-		this.server = server;
+	ServerImpl serverImpl;
+	public HeartBeatSenderTask(ServerImpl serverImpl) {
+		this.serverImpl = serverImpl;
 		clientHelper = new TCPClientHelper(
-				server.getMaster().getMasterHost(),
-				server.getMaster().getMasterPort());
+				serverImpl.getChainReplicationFacade().getMaster().getMasterHost(),
+				serverImpl.getChainReplicationFacade().getMaster().getMasterPort());
 	} 
-	
+
 	public void run() {
-		clientHelper.sendMessageOverTCPConnection(server.getServerMetadata());
+		ChainReplicationMessage heartBeatMessage = new HeartBeatMessage(
+				this.serverImpl.getChainReplicationFacade().getServer());
+		clientHelper.sendMessage(heartBeatMessage);
 	}
 }

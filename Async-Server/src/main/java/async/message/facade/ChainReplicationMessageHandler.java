@@ -10,6 +10,7 @@ import async.chainreplication.master.models.Master;
 import async.chainreplication.master.models.Server;
 import async.chainreplication.server.models.HistoryOfRequests;
 import async.chainreplication.server.models.SentHistory;
+import async.connection.util.IClientHelper;
 import async.connection.util.TCPClientHelper;
 import async.connection.util.UDPClientHelper;
 
@@ -23,8 +24,8 @@ public class ChainReplicationMessageHandler {
 
 	IApplicationRequestHandler applicationRequestHandler;
 
-	TCPClientHelper tcpClientHelper;
-	UDPClientHelper udpClientHelper;
+	IClientHelper syncOrAckSendClientHelper;
+	IClientHelper tailResponseClientHelper;
 
 	public ChainReplicationMessageHandler(Server server, Master master) {
 		this.server  = server;
@@ -63,6 +64,25 @@ public class ChainReplicationMessageHandler {
 	public void setHistoryOfRequests(HistoryOfRequests historyOfRequests) {
 		this.historyOfRequests = historyOfRequests;
 	}
+	
+	
+	public Server getServer() {
+		return server;
+	}
+
+	public void setServer(Server server) {
+		this.server = server;
+	}
+
+	public Master getMaster() {
+		return master;
+	}
+
+	public void setMaster(Master master) {
+		this.master = master;
+	}
+
+
 
 
 	//---------------------------------------------------------------------------------
@@ -75,19 +95,19 @@ public class ChainReplicationMessageHandler {
 		Server sucessor = this.server.getAdjacencyList().getSucessor();
 		if(sucessor != null) {
 			//Non tail operation is to sync
-			tcpClientHelper = new TCPClientHelper(
+			syncOrAckSendClientHelper = new TCPClientHelper(
 					sucessor.getServerProcessDetails().getHost(),
 					sucessor.getServerProcessDetails().getTcpPort());
 			ChainReplicationMessage syncMessage = new SyncMessage(request, reply);
-			tcpClientHelper.sendMessageOverTCPConnection(syncMessage);
+			syncOrAckSendClientHelper.sendMessage(syncMessage);
 			//send sync
 		} else {
 			//Tail operation reply
 			//TODO Change here for Transfer Have to wait for ACK before reply
-			udpClientHelper = new UDPClientHelper(
+			tailResponseClientHelper = new UDPClientHelper(
 					request.getClient().getClientProcessDetails().getHost()	,
 					request.getClient().getClientProcessDetails().getUdpPort());
-			udpClientHelper.sendMessageOverUDPConnection(reply);
+			tailResponseClientHelper.sendMessage(reply);
 			//ACk so that other servers can remove the messages from Sent
 			ACK(request);
 		}
@@ -97,13 +117,14 @@ public class ChainReplicationMessageHandler {
 	public void ACK(Request request) {
 		sentHistory.removeFromSent(request.getRequestId());
 		Server predecessor = this.server.getAdjacencyList().getPredecessor();
+		//Terminate propagation once we reach head
 		if(predecessor != null) {
-			tcpClientHelper = new TCPClientHelper(
+			syncOrAckSendClientHelper = new TCPClientHelper(
 					predecessor.getServerProcessDetails().getHost(),
 					predecessor.getServerProcessDetails().getTcpPort());
 			ChainReplicationMessage ackMessage = new AckMessage(request);
 			//change it to ACK Message
-			tcpClientHelper.sendMessageOverTCPConnection(ackMessage);
+			syncOrAckSendClientHelper.sendMessage(ackMessage);
 		}
 
 	}

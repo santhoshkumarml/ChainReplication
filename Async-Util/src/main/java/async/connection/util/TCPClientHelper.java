@@ -5,7 +5,7 @@ import java.io.ObjectOutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 
-public class TCPClientHelper {
+public class TCPClientHelper implements IClientHelper{
 	String serverHost;
 	int port;
 
@@ -15,7 +15,7 @@ public class TCPClientHelper {
 	}
 
 
-	public void sendMessageOverTCPConnection(Object message) {
+	public void sendMessage(Object message) {
 		Socket clientSocket = null;
 		try {
 			clientSocket = new Socket();

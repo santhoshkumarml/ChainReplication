@@ -5,14 +5,14 @@ import java.io.ObjectInputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-public class TCPServerStarterHelper {
+public class TCPServerStarterHelper implements IServerStarterHelper{
 	ServerSocket serverSocket;
 	
 	public TCPServerStarterHelper() {
 		initAndStartTCPServer();
 	}
 	
-	public void initAndStartTCPServer() {
+	private void initAndStartTCPServer() {
 		try {
 			serverSocket = new ServerSocket(0);
 		} catch (IOException e) {
@@ -23,12 +23,14 @@ public class TCPServerStarterHelper {
 		}
 	}
 	
+	@Override
 	public int getServerPort() {
 		return serverSocket.getLocalPort();
 	}
 
 
-	public Object acceptAndReadObjectFromTCPConnections() {
+	@Override
+	public Object acceptAndReadObjectConnection() {
 		Object message = null;
 		Socket serviceSocket = null;
 		try {
@@ -53,8 +55,9 @@ public class TCPServerStarterHelper {
 		}
 		return message;
 	}
-		
-	public void stopTcpServer() {
+	
+	@Override	
+	public void stopServer() {
 		try {
 			serverSocket.close();
 		} catch (IOException e) {

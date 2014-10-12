@@ -1,4 +1,4 @@
-package async.connection.message;
+package async.generic.message.queue.models;
 
 import java.util.Comparator;
 import java.util.PriorityQueue;

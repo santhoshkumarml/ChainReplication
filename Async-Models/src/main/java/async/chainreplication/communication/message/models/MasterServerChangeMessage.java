@@ -2,7 +2,7 @@ package async.chainreplication.communication.message.models;
 
 import async.chainreplication.master.models.Chain;
 
-public class MasterServerChangeMessage extends ChainReplicationMessage{
+public class MasterServerChangeMessage extends MasterMessage{
 	
 	/**
 	 * 

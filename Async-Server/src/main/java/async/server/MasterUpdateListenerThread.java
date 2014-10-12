@@ -1,10 +1,14 @@
 package async.server;
 
-import async.chainreplication.communication.message.models.MasterOtherChainChangeMessage;
-import async.connection.message.MessageQueue;
+import async.chainreplication.communication.message.models.MasterMessage;
+import async.generic.message.queue.models.MessageQueue;
 
 public class MasterUpdateListenerThread {
-	
-	MessageQueue<MasterOtherChainChangeMessage> masterUpdateQueue = new MessageQueue<MasterOtherChainChangeMessage>();
+	MessageQueue<MasterMessage> masterUpdateQueue = 
+			new MessageQueue<MasterMessage>();
 
+	public MessageQueue<MasterMessage> getMasterUpdateQueue() {
+		return masterUpdateQueue;
+	}
+	
 }

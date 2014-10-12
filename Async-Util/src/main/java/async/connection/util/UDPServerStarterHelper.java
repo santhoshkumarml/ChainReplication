@@ -6,18 +6,19 @@ import java.io.ObjectInputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 
-public class UDPServerStarterHelper {
+public class UDPServerStarterHelper implements IServerStarterHelper{
 	DatagramSocket serverSocket;
 
 	public UDPServerStarterHelper() {
 		initAndStartUDPServer();
 	}
 
+	@Override
 	public int getServerPort() {
 		return serverSocket.getLocalPort();
 	}
 
-	public void initAndStartUDPServer() {
+	private void initAndStartUDPServer() {
 		try {
 			serverSocket = new DatagramSocket(0);
 		} catch (IOException e) {
@@ -28,7 +29,8 @@ public class UDPServerStarterHelper {
 		}
 	}
 
-	public Object acceptAndReadObjectFromUDPConnections() {
+	@Override
+	public Object acceptAndReadObjectConnection() {
 		Object message = null;
 		byte[] receiveData = new byte[2048];
 		ObjectInputStream oos = null;
@@ -57,7 +59,8 @@ public class UDPServerStarterHelper {
 		return message;
 	}
 
-	public void stopUDPServer() {
+	@Override
+	public void stopServer() {
 		serverSocket.close();
 	}
 }

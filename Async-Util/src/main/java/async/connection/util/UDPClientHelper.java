@@ -7,7 +7,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 
-public class UDPClientHelper {
+public class UDPClientHelper implements IClientHelper{
 	String serverHost;
 	int port;
 
@@ -16,7 +16,7 @@ public class UDPClientHelper {
 		this.port = port;
 	}
 
-	public void sendMessageOverUDPConnection(Object message) {
+	public void sendMessage(Object message) {
 		DatagramSocket clientSocket = null;
 		try {
 			clientSocket = new DatagramSocket();
