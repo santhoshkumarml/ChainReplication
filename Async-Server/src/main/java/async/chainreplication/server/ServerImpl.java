@@ -2,7 +2,7 @@ package async.chainreplication.server;
 
 import java.util.Timer;
 
-import async.chainreplication.communication.message.models.ChainReplicationMessage;
+import async.chainreplication.communication.messages.ChainReplicationMessage;
 import async.chainreplication.master.models.Master;
 import async.chainreplication.master.models.Server;
 import async.chainreplication.server.threads.ChainMessageListenerThread;

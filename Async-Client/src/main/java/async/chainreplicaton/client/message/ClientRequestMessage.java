@@ -1,7 +1,7 @@
 package async.chainreplicaton.client.message;
 
-import async.chainreplication.communication.message.models.ChainReplicationMessage;
-import async.chainreplication.communication.message.models.RequestMessage;
+import async.chainreplication.communication.messages.ChainReplicationMessage;
+import async.chainreplication.communication.messages.RequestMessage;
 
 public class ClientRequestMessage extends ChainReplicationMessage {
 

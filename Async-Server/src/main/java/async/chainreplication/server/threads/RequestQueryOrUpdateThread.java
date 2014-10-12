@@ -1,6 +1,6 @@
 package async.chainreplication.server.threads;
 
-import async.chainreplication.communication.message.models.ChainReplicationMessage;
+import async.chainreplication.communication.messages.ChainReplicationMessage;
 import async.chainreplication.server.ServerImpl;
 import async.connection.util.IServerStarterHelper;
 import async.connection.util.UDPServerStarterHelper;

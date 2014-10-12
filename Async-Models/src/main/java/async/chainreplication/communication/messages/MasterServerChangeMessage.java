@@ -1,4 +1,4 @@
-package async.chainreplication.communication.message.models;
+package async.chainreplication.communication.messages;
 
 import async.chainreplication.master.models.Chain;
 

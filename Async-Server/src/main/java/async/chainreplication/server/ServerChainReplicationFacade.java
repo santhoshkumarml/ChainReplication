@@ -1,12 +1,12 @@
 package async.chainreplication.server;
 
-import async.chainreplication.communication.message.models.AckMessage;
-import async.chainreplication.communication.message.models.ChainReplicationMessage;
-import async.chainreplication.communication.message.models.RequestMessage;
-import async.chainreplication.communication.message.models.ResponseOrSyncMessage;
+import async.chainreplication.communication.messages.AckMessage;
+import async.chainreplication.communication.messages.ChainReplicationMessage;
+import async.chainreplication.communication.messages.RequestMessage;
+import async.chainreplication.communication.messages.ResponseOrSyncMessage;
 import async.chainreplication.master.models.Master;
 import async.chainreplication.master.models.Server;
-import async.generic.message.queue.models.MessageQueue;
+import async.generic.message.queue.MessageQueue;
 
 
 public class ServerChainReplicationFacade {

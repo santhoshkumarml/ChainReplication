@@ -2,10 +2,10 @@ package async.chainreplication.server;
 
 import async.chainreplication.client.server.communication.models.Reply;
 import async.chainreplication.client.server.communication.models.Request;
-import async.chainreplication.communication.message.models.AckMessage;
-import async.chainreplication.communication.message.models.ChainReplicationMessage;
-import async.chainreplication.communication.message.models.RequestMessage;
-import async.chainreplication.communication.message.models.ResponseOrSyncMessage;
+import async.chainreplication.communication.messages.AckMessage;
+import async.chainreplication.communication.messages.ChainReplicationMessage;
+import async.chainreplication.communication.messages.RequestMessage;
+import async.chainreplication.communication.messages.ResponseOrSyncMessage;
 import async.chainreplication.master.models.Master;
 import async.chainreplication.master.models.Server;
 import async.chainreplication.server.models.HistoryOfRequests;

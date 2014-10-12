@@ -1,10 +1,10 @@
 package async.chainreplication.client;
 
-import async.chainreplication.communication.message.models.ChainReplicationMessage;
-import async.chainreplication.communication.message.models.MasterMessage;
-import async.chainreplication.communication.message.models.ResponseOrSyncMessage;
+import async.chainreplication.communication.messages.ChainReplicationMessage;
+import async.chainreplication.communication.messages.MasterMessage;
+import async.chainreplication.communication.messages.ResponseOrSyncMessage;
 import async.chainreplicaton.client.message.ClientRequestMessage;
-import async.generic.message.queue.models.MessageQueue;
+import async.generic.message.queue.MessageQueue;
 
 public class ClientChainReplicationFacade {
 	MessageQueue<ChainReplicationMessage> messages = 

@@ -5,7 +5,7 @@ import async.chainreplication.application.models.ApplicationReply;
 import async.chainreplication.client.IApplicationReplyHandler;
 import async.chainreplication.client.server.communication.models.Reply;
 import async.chainreplication.client.server.communication.models.Request;
-import async.generic.message.queue.models.MessageQueue;
+import async.generic.message.queue.MessageQueue;
 
 
 public class ApplicationReplyHandler implements IApplicationReplyHandler {

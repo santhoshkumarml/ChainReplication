@@ -2,8 +2,8 @@ package async.chainreplication.server.threads;
 
 import java.util.TimerTask;
 
-import async.chainreplication.communication.message.models.ChainReplicationMessage;
-import async.chainreplication.communication.message.models.HeartBeatMessage;
+import async.chainreplication.communication.messages.ChainReplicationMessage;
+import async.chainreplication.communication.messages.HeartBeatMessage;
 import async.chainreplication.server.ServerImpl;
 import async.connection.util.TCPClientHelper;
 

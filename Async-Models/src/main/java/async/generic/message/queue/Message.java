@@ -1,4 +1,4 @@
-package async.generic.message.queue.models;
+package async.generic.message.queue;
 
 public class Message<T> {
 	long timestamp;
