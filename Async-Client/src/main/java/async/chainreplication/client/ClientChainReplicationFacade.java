@@ -1,5 +1,7 @@
 package async.chainreplication.client;
 
+import async.chainreplication.client.server.communication.models.Reply;
+import async.chainreplication.client.server.communication.models.Request;
 import async.chainreplication.communication.messages.ChainReplicationMessage;
 import async.chainreplication.communication.messages.MasterMessage;
 import async.chainreplication.communication.messages.ResponseOrSyncMessage;
@@ -20,6 +22,10 @@ public class ClientChainReplicationFacade {
 	public void deliverMessage(ChainReplicationMessage message) {
 		messages.enqueueMessage(message);
 
+	}
+	
+	public Reply readResponsesForRequest(Request request) {
+		return this.clientMessageHandler.readResponses(request);
 	}
 
 	public void handleMessage(ChainReplicationMessage message)  {
