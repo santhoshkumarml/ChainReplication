@@ -5,9 +5,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.UnsupportedEncodingException;
 
 public class ConfigUtil {
-	public static byte[] convertToBytes(Config config) {
+	public static String convertToStringBytes(Config config) {
+		String result = null;
 		ByteArrayOutputStream b = new ByteArrayOutputStream();
 		ObjectOutputStream o;
 		try {
@@ -17,11 +19,23 @@ public class ConfigUtil {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return b.toByteArray();
+		try {
+			result = new String(b.toByteArray(),"UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return result;
 	}
 
 	public static Config convertToConfig(String string) {
-		byte[] bytes =  string.getBytes();
+		byte[] bytes =  null;
+		try {
+			bytes = string.getBytes("UTF-8");
+		} catch (UnsupportedEncodingException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		Config config = null;
 		ByteArrayInputStream b = new ByteArrayInputStream(bytes);
 		ObjectInputStream o;

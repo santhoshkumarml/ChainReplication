@@ -18,9 +18,17 @@ public class AppStarter {
 		String configFile = args[0];
 		try{
 			Config config = AppConfigUtil.readConfigFromFile(configFile);
-			createMaster(config);
-			createServersForChains(config);
-			createClients(config);
+			ProcessBuilder masterProcessBuilder = createMaster(config);
+			List<ProcessBuilder> serverProcessBuilders = createServersForChains(config);
+			List<ProcessBuilder> clientProcessBuilders = createClients(config);
+			masterProcessBuilder.start();
+			for(ProcessBuilder pb : serverProcessBuilders) {
+				pb.start();
+			}
+			for(ProcessBuilder pb : clientProcessBuilders) {
+				pb.start();
+			}
+			
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
@@ -47,7 +55,7 @@ public class AppStarter {
 		ProcessBuilder pb = new ProcessBuilder(
 				"java",
 				ServerImpl.class.getName(),
-				new String(ConfigUtil.convertToBytes(config)),
+				ConfigUtil.convertToStringBytes(config),
 				server.getBankName(),
 				server.getServerId());
 		pb.environment().putAll(envs);
@@ -72,7 +80,7 @@ public class AppStarter {
 		ProcessBuilder pb = new ProcessBuilder(
 				"java",
 				ClientImpl.class.getName(),
-				new String(ConfigUtil.convertToBytes(config)),
+				ConfigUtil.convertToStringBytes(config),
 				client.getClientId());
 		pb.environment().putAll(envs);
 		return pb;
@@ -80,12 +88,14 @@ public class AppStarter {
 	
 	private static ProcessBuilder createMaster(Config config) {
 		Map<String,String> envs = System.getenv();
+		String classPathValue = System.getProperty("java.class.path");
 		ProcessBuilder pb = new ProcessBuilder(
 				"java",
 				MasterImpl.class.getName(),
-				new String(ConfigUtil.convertToBytes(config)),
+				new String(ConfigUtil.convertToStringBytes(config)),
 				config.getMaster().getMasterName());
 		pb.environment().putAll(envs);
+		pb.environment().put("CLASSPATH", classPathValue);
 		return pb;
 	}
 }

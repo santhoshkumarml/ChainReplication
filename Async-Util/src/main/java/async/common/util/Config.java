@@ -1,5 +1,6 @@
 package async.common.util;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -8,8 +9,11 @@ import async.chainreplication.master.models.Client;
 import async.chainreplication.master.models.Master;
 import async.chainreplication.master.models.Server;
 
-public class Config {
-
+public class Config implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5331163161507115921L;
 	Map<String,Chain> chains = new HashMap<String, Chain>();
 	Map<String,Map<String,Server>> chainToServerMap = 
 			new HashMap<String, Map<String,Server>>();

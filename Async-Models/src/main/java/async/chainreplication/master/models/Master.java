@@ -1,6 +1,12 @@
 package async.chainreplication.master.models;
 
-public class Master {
+import java.io.Serializable;
+
+public class Master implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3255536825088625386L;
 	String masterHost;
 	int masterPort;
 	String masterName;
