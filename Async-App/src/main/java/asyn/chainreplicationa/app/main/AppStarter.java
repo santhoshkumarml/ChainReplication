@@ -78,8 +78,8 @@ public class AppStarter {
 		ProcessBuilder pb;
 		pb = new ProcessBuilder(
 				"java",
-				//"-Xdebug",
-				//"-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=13000",
+				"-Xdebug",
+				"-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=13000",
 				ServerImpl.class.getName(),
 				ConfigUtil.serializeToFile(config),
 				server.getChainName(),
@@ -108,8 +108,8 @@ public class AppStarter {
 		String classPathValue = System.getProperty("java.class.path");
 		ProcessBuilder pb = new ProcessBuilder(
 				"java",
-				//"-Xdebug",
-				//"-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=13001",
+				"-Xdebug",
+				"-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=13001",
 				ClientImpl.class.getName(),
 				ConfigUtil.serializeToFile(config),
 				client.getClientId());

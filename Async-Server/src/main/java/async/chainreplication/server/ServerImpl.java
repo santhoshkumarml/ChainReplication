@@ -20,7 +20,6 @@ public class ServerImpl extends ChainReplicationImpl{
 	ChainMessageListenerThread chainMessageListenerThread;
 	RequestQueryOrUpdateThread requestOrQueryUpdateThread;
 	ServerChainReplicationFacade serverChainReplicationFacade;
-	IApplicationRequestHandler appServerRequestHandler;
 
 
 	public static void main(String args[]) {

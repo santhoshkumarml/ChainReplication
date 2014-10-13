@@ -11,7 +11,7 @@ import async.generic.message.queue.MessageQueue;
 public class ChainReplicationLoggerThread extends Thread{
 	ChainReplicationImpl chainReplicationImpl;
 	Logger chainReplicationlogger;
-	boolean shouldStillRun = true;
+	volatile boolean shouldStillRun = true;
 	public ChainReplicationLoggerThread(ChainReplicationImpl chainReplicationImpl) {
 		this.chainReplicationImpl = chainReplicationImpl;
 		chainReplicationlogger = Logger.getLogger(this.chainReplicationImpl.getUniqueId());
@@ -35,7 +35,6 @@ public class ChainReplicationLoggerThread extends Thread{
 			if(messageQueue.hasMoreMessages()) {
 				String message =(String)messageQueue.dequeueMessage();
 				chainReplicationlogger.info(message);
-
 			}			
 		}
 	}

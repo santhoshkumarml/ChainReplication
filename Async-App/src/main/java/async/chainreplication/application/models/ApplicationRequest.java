@@ -106,7 +106,10 @@ public class ApplicationRequest  extends Request implements Serializable{
 		return "ApplicationRequest [applicationRequestType="
 				+ applicationRequestType + ", accountNum=" + accountNum
 				+ ", amount=" + amount + ", destBank=" + destBank
-				+ ", destAccountNum=" + destAccountNum + "]";
+				+ ", destAccountNum=" + destAccountNum + ", requestId="
+				+ getRequestId() + ", requestType=" + getRequestType() + ", client="
+				+ getClient().getClientId() + "]";
 	}
+
 
 }

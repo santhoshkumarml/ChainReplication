@@ -24,8 +24,8 @@ import async.connection.util.UDPClientHelper;
 public class ServerMessageHandler {
 	Request currentRequest;
 	Reply currentReply;
-	SentHistory sentHistory;
-	HistoryOfRequests historyOfRequests;
+	SentHistory sentHistory = new SentHistory();
+	HistoryOfRequests historyOfRequests = new HistoryOfRequests();
 	Server server;
 	Master master;
 	Map<String,Chain> chainNameToChainMap = new HashMap<String, Chain>(); 
@@ -119,7 +119,7 @@ public class ServerMessageHandler {
 	public void sync(Request request, Reply reply) throws ServerChainReplicationException {
 		this.setCurrentRequest(request);
 		this.setCurrentReply(reply);
-		historyOfRequests.addToHistory(request);
+		this.applicationRequestHandler.handleSyncUpdate(request,reply);
 		Server sucessor = this.server.getAdjacencyList().getSucessor();
 		if(sucessor != null) {
 			//Non tail operation is to sync
@@ -134,7 +134,6 @@ public class ServerMessageHandler {
 					throw new ServerChainReplicationException(e);
 				}	
 			}
-			sentHistory.addToSentHistory(request.getRequestId());
 			//send sync
 		} else {
 			//Tail operation reply
@@ -143,7 +142,7 @@ public class ServerMessageHandler {
 					request.getClient().getClientProcessDetails().getHost()	,
 					request.getClient().getClientProcessDetails().getUdpPort());
 			try {
-				tailResponseClientHelper.sendMessage(reply);
+				tailResponseClientHelper.sendMessage(new ResponseOrSyncMessage(request, reply));
 			} catch (ConnectClientException e) {
 				throw new ServerChainReplicationException(e);
 			}
@@ -153,8 +152,8 @@ public class ServerMessageHandler {
 	}
 
 	public void ACK(Request request) throws ServerChainReplicationException {
-		sentHistory.removeFromSent(request.getRequestId());
 		Server predecessor = this.server.getAdjacencyList().getPredecessor();
+		this.applicationRequestHandler.handleAck(request);
 		//Terminate propagation once we reach head
 		if(predecessor != null) {
 			synchronized (syncOrAckSendClientHelper) {
@@ -170,7 +169,7 @@ public class ServerMessageHandler {
 				}	
 			}
 		}
-
+		this.applicationRequestHandler.handleAck(request);
 	}
 
 	/*public void IN_TRANSIT_UPDATES(String lastRequestId) {
@@ -191,7 +190,6 @@ public class ServerMessageHandler {
 	}
 
 	public void handleSyncMessage(ResponseOrSyncMessage message) throws ServerChainReplicationException {
-		this.applicationRequestHandler.handleSyncUpdate(message.getReply());
 		sync(message.getRequest(), message.getReply());
 	}
 

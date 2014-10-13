@@ -1,5 +1,6 @@
 package async.chainreplication.client;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -11,6 +12,7 @@ import async.chainreplication.master.models.Chain;
 import async.chainreplication.master.models.Client;
 import async.chainreplication.master.models.Master;
 import async.chainreplication.master.models.Server;
+import async.chainreplication.server.ServerMessageHandler;
 import async.chainreplicaton.client.message.ClientRequestMessage;
 import async.connection.util.ConnectClientException;
 import async.connection.util.IClientHelper;
@@ -36,11 +38,17 @@ public class ClientMessageHandler {
 		try {
 			this.applicationReplyHandler = (IApplicationReplyHandler) Class.forName(
 					"async.chainreplication.app.client."
-							+ "handler.ApplicationReplyHandler").newInstance();
+							+ "handler.ApplicationReplyHandler").getConstructor(
+									ClientMessageHandler.class).newInstance(this);
 		} catch (InstantiationException | IllegalAccessException
-				| ClassNotFoundException e) {
+				| ClassNotFoundException | IllegalArgumentException | InvocationTargetException
+				| NoSuchMethodException | SecurityException e) {
 			throw new ClientChainReplicationException(e);
 		}
+	}
+
+	public ClientChainReplicationFacade getClientChainReplicationFacade() {
+		return clientChainReplicationFacade;
 	}
 
 	private Server getHeadForChain(String chainName) {

@@ -1,21 +1,23 @@
 package async.chainreplication.server.models;
 
+import java.util.HashSet;
 import java.util.Set;
-import java.util.TreeSet;
+
+import async.chainreplication.client.server.communication.models.RequestKey;
 
 public class SentHistory {
 	//TODO: Add support for comparator so as to remove all 
 	//less sequence number messages when ACKED
 	//TODO: Enhance for Transfer
-	Set<String> requestIds = new TreeSet<String>();
-	public void addToSentHistory(String requestId) {
-		synchronized (this.requestIds) {
-			requestIds.add(requestId);
+	Set<RequestKey> requestKeys = new HashSet<RequestKey>();
+	public void addToSentHistory(RequestKey requestKey) {
+		synchronized (this.requestKeys) {
+			requestKeys.add(requestKey);
 		}
 	}
-	public void removeFromSent(String requestId) {
-		synchronized (requestIds) {
-			this.requestIds.remove(requestId);
+	public void removeFromSent(RequestKey requestKey) {
+		synchronized (requestKeys) {
+			this.requestKeys.remove(requestKey);
 		}
 	}
 

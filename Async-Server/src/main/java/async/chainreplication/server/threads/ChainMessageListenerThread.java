@@ -40,5 +40,6 @@ public class ChainMessageListenerThread extends Thread{
 
 	public void stopThread() {
 		shouldStillRun = false;
+		chainMessagesListener.stopServer();
 	}
 }

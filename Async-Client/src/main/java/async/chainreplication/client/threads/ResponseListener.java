@@ -10,7 +10,7 @@ import async.connection.util.UDPServerStarterHelper;
 public class ResponseListener extends Thread{
 	IServerStarterHelper responseServerHelper;
 	ClientImpl clientImpl;
-	boolean shouldStillRun = true;
+	volatile boolean shouldStillRun = true;
 
 	public ResponseListener(ClientImpl clientImpl) throws ClientChainReplicationException {
 		this.clientImpl = clientImpl;
@@ -28,17 +28,20 @@ public class ResponseListener extends Thread{
 			ChainReplicationMessage responseMessage = null;
 			try {
 				responseMessage = (ChainReplicationMessage)this.responseServerHelper.acceptAndReadObjectConnection();
-			} catch (ConnectServerException e) {
-				// TODO Auto-generated catch block
+				clientImpl.getClientChainReplicationFacade().deliverMessage(
+						responseMessage);
+			} catch (ClientChainReplicationException | ConnectServerException e) {
+				shouldStillRun = false;
 				e.printStackTrace();
-			}
-			clientImpl.getClientChainReplicationFacade().deliverMessage(
-					responseMessage);	
+				break;
+			}	
 		}
 	}
 	
 	public void stopThread() {
 		shouldStillRun = false;
+		responseServerHelper.stopServer();
+		this.stop();
 	}
 
 }

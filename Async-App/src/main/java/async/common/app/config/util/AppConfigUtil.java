@@ -40,8 +40,8 @@ public class AppConfigUtil {
 					String chainName = requestStringSplit[0].trim();
 					testCases.setClient(client);
 					testCases.setChainName(chainName);
-					testCases.getRequests().add(request);
 				}
+				testCases.getRequests().add(request);
 				config.getTestCases().put(client, testCases);
 			}
 

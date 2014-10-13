@@ -39,11 +39,15 @@ public class ClientChainReplicationFacade {
     	this.clientImpl.logMessage(message);
     }
     
-	public void deliverMessage(ChainReplicationMessage message) {
+	public void deliverMessage(ChainReplicationMessage message) throws ClientChainReplicationException {
 		if(message != null) {
 			messages.enqueueMessage(message);
 		}
-		this.logMessage("Message Delivered"+message.toString());
+		this.logMessage("Message Delivered to client:"+message.toString());
+		while(messages.hasMoreMessages()) {
+			ChainReplicationMessage oldMessage = (ChainReplicationMessage) messages.dequeueMessage();
+			handleMessage(oldMessage);
+		}
 	}
 
 	public Reply readResponsesForRequest(Request request) {
@@ -51,16 +55,16 @@ public class ClientChainReplicationFacade {
 	}
 
 	public void handleMessage(ChainReplicationMessage message) throws ClientChainReplicationException  {
-		if(message instanceof ClientRequestMessage) {
+		if(message.getClass() ==  ClientRequestMessage.class) {
 			this.clientMessageHandler.handleClientRequestMessage(
 					(ClientRequestMessage)message);
-		} else if(message instanceof ResponseOrSyncMessage) {
+		} else if(message.getClass() ==  ResponseOrSyncMessage.class) {
 			this.clientMessageHandler.handleReponseMessage(
 					(ResponseOrSyncMessage)message);
 		} else if (message instanceof MasterMessage) {
 			//TODO: In Phase 3
 		}
-		this.logMessage("ProcessedMessage:"+message.toString());
+		//this.logMessage("ProcessedMessage:"+message.toString());
 	}
 
 }

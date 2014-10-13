@@ -4,11 +4,13 @@ import async.app.models.AccountSnapshot;
 import async.app.models.Accounts;
 import async.chainreplication.application.models.ApplicationReply;
 import async.chainreplication.application.models.ApplicationRequest;
+import async.chainreplication.application.models.ApplicationRequestKey;
 import async.chainreplication.application.models.Outcome;
 import async.chainreplication.client.server.communication.models.Reply;
 import async.chainreplication.client.server.communication.models.Request;
-import async.chainreplication.server.ServerMessageHandler;
+import async.chainreplication.client.server.communication.models.RequestKey;
 import async.chainreplication.server.IApplicationRequestHandler;
+import async.chainreplication.server.ServerMessageHandler;
 
 
 public class ApplicationRequestHandler implements IApplicationRequestHandler{
@@ -22,28 +24,49 @@ public class ApplicationRequestHandler implements IApplicationRequestHandler{
 	}
 
 	private ApplicationReply checkForExistingTransactionHistoryAndReply(Request request) {
+		ApplicationRequest applicationRequest = (ApplicationRequest)request;
+		ApplicationRequestKey requestKey = new ApplicationRequestKey(applicationRequest.getRequestId(),
+				applicationRequest.getAccountNum());
 		if(chainReplicationMessageHandler.getHistoryOfRequests().isHistoryPresent(
-				request)) {
+				requestKey)) {
 			ApplicationReply reply = new ApplicationReply();
-			ApplicationRequest applicationRequest = (ApplicationRequest)request;
-			synchronized (accounts) {
-				AccountSnapshot accountSnapshot = accounts.getAccountSnapshot(
-						applicationRequest.getAccountNum());
-				reply.setBalance(accountSnapshot.getBalance());
-				//TODO : Inconsistent history
-				reply.setOutcome(Outcome.Processed);
-				reply.setReqID(request.getRequestId());
+			if(!isInconsistentWithHistory(request)) {
+				reply = 
+						(ApplicationReply)chainReplicationMessageHandler.getHistoryOfRequests().getExisistingReply(
+								requestKey);
+			} else {
+				synchronized (accounts) {
+					AccountSnapshot accountSnapshot = accounts.getAccountSnapshot(
+							applicationRequest.getAccountNum());
+					reply.setBalance(accountSnapshot.getBalance());
+					reply.setOutcome(Outcome.InconsistentWithHistory);
+					reply.setReqID(request.getRequestId());
+				}
 			}
+			return reply;
 		}
 		return null;
 	}
 
+
+	private boolean isInconsistentWithHistory(Request request) {
+		ApplicationRequest applicationRequest = (ApplicationRequest)request;
+		ApplicationRequest existingRequest = 
+				(ApplicationRequest)this.chainReplicationMessageHandler.getHistoryOfRequests().getExisistingRequest(
+						new ApplicationRequestKey(applicationRequest.getRequestId(),
+								applicationRequest.getAccountNum()));
+		if(applicationRequest.equals(existingRequest)) {
+			return true;
+		}
+		return false;
+	}
 
 	private void handleWithdrawOrTransfer(int accountNum, int amount, ApplicationReply reply) {
 		synchronized (accounts) {
 			AccountSnapshot accountSnapshot = 
 					this.accounts.getAccountSnapshot(accountNum);
 			float balance;
+			reply.setAccountNum(accountNum);
 			if(accountSnapshot != null)  {
 				balance = accountSnapshot.getBalance();
 				if(balance>=amount) {
@@ -76,7 +99,7 @@ public class ApplicationRequestHandler implements IApplicationRequestHandler{
 			reply.setBalance(balance);
 		}
 	}
-	
+
 	private void handleGetBalance(int accountNum, ApplicationReply reply) {
 		synchronized (accounts) {
 			AccountSnapshot accountSnapshot = 
@@ -85,7 +108,7 @@ public class ApplicationRequestHandler implements IApplicationRequestHandler{
 			reply.setBalance(accountSnapshot.getBalance());
 			reply.setAccountNum(accountSnapshot.getAccountNum());
 		}
-		
+
 	}
 
 	//--------------------------------------------------------------------------
@@ -115,18 +138,32 @@ public class ApplicationRequestHandler implements IApplicationRequestHandler{
 				break;
 			}
 			reply.setReqID(request.getRequestId());
-			//this.chainReplicationMessageHandler.getHistoryOfRequests().addToHistory(request);
-			//this.chainReplicationMessageHandler.getSentHistory().addToSentHistory(request.getRequestId());
 		}
 		return reply;
+	}
+
+	@Override
+	public void updateHistories(Request request, Reply reply) {
+		RequestKey requestKey = new ApplicationRequestKey(
+				request.getRequestId(), ((ApplicationRequest)request).getAccountNum());
+		this.chainReplicationMessageHandler.getHistoryOfRequests().addToHistory(requestKey, request, reply);
+		this.chainReplicationMessageHandler.getSentHistory().addToSentHistory(requestKey);
+	}
+
+	@Override 
+	public void handleAck(Request request) {
+		RequestKey requestKey = new ApplicationRequestKey(
+				request.getRequestId(), ((ApplicationRequest)request).getAccountNum());
+		this.chainReplicationMessageHandler.getSentHistory().removeFromSent(requestKey);	
 	}
 
 
 
 	@Override
-	public void handleSyncUpdate(Reply reply) {
+	public void handleSyncUpdate(Request request, Reply reply) {
 		synchronized (accounts) {
 			ApplicationReply applicationReply = (ApplicationReply)reply;
+			this.updateHistories(request, reply);
 			AccountSnapshot accountSnapshot =  
 					accounts.getAccountSnapshot(applicationReply.getAccountNum());
 			accountSnapshot.setBalance(applicationReply.getBalance());

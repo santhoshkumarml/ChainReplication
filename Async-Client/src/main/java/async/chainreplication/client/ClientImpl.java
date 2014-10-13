@@ -11,12 +11,11 @@ import async.chainreplicaton.client.message.ClientRequestMessage;
 import async.common.util.Config;
 import async.common.util.ConfigUtil;
 import async.common.util.TestCases;
-import async.connection.util.ConnectServerException;
 import aync.chainreplication.base.impl.ChainReplicationImpl;
 
 
 public class ClientImpl extends ChainReplicationImpl{
-	long responseWaitTime = 3000;
+	long responseWaitTime = 4000;
 	MasterUpdateListenerThread masterUpdateListener;
 	ResponseListener responseListener;
 	ClientChainReplicationFacade clientChainReplicationFacade;
@@ -64,7 +63,7 @@ public class ClientImpl extends ChainReplicationImpl{
 		for(Request request : testcases.getRequests()) {
 			RequestMessage requestMessage = new RequestMessage(request);
 			ClientRequestMessage clientRequestMessage = new ClientRequestMessage(testcases.getChainName(), requestMessage);
-			this.clientChainReplicationFacade.handleMessage(clientRequestMessage);
+			this.clientChainReplicationFacade.deliverMessage(clientRequestMessage);
 			try {
 				Thread.sleep(responseWaitTime);
 			} catch(InterruptedException e) {
@@ -72,16 +71,16 @@ public class ClientImpl extends ChainReplicationImpl{
 			}
 			Reply reply = this.clientChainReplicationFacade.readResponsesForRequest(request);
 			if(reply != null)
-				this.logMessage(reply.toString());
+				this.logMessage("Reply from Server for request - "+request.toString()+":"+reply.toString());
 			else
-				this.logMessage("Did not get a reply for request"+ request.toString());
+				this.logMessage("Did not get a reply for request - "+ request.toString());
 		}
 	}
 
 	public void init() {
 		super.init();
-		masterUpdateListener = new MasterUpdateListenerThread(this);
-		masterUpdateListener.start();
+		//masterUpdateListener = new MasterUpdateListenerThread(this);
+		//masterUpdateListener.start();
 		try {
 			responseListener = new ResponseListener(this);
 		} catch (ClientChainReplicationException e) {
@@ -94,7 +93,6 @@ public class ClientImpl extends ChainReplicationImpl{
 	}
 
 	public void stop() {
-		masterUpdateListener.stopThread();
 		responseListener.stopThread();
 		super.stop();
 	}

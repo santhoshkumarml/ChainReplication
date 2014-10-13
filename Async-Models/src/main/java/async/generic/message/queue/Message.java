@@ -14,4 +14,12 @@ public class Message<T> {
 	public T getMessageObject() {
 		return messageObject;
 	}
+	
+	@Override
+	public String toString() {
+		return "Message [timestamp=" + timestamp + ", messageObject="
+				+ messageObject + "]";
+	}
+	
+	
 }

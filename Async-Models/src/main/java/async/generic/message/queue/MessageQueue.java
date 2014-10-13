@@ -31,4 +31,11 @@ public class MessageQueue<T> {
 		}
 	}
 
+	@Override
+	public String toString() {
+		return "MessageQueue [messages=" + messages + "]";
+	}
+	
+	
+
 }

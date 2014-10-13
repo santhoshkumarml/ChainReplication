@@ -35,7 +35,8 @@ public class ApplicationReply extends Reply {
 	@Override
 	public String toString() {
 		return "ApplicationReply [outcome=" + outcome + ", accountNum="
-				+ accountNum + ", balance=" + balance + "]";
+				+ accountNum + ", balance=" + balance + ", reqID=" + getReqID()
+				+ "]";
 	}
 
 }

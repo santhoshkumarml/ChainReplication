@@ -45,5 +45,6 @@ public class RequestQueryOrUpdateThread extends Thread{
 
 	public void stopThread() {
 		shouldStillRun = false;
+		requestServerHelper.stopServer();
 	}
 }
