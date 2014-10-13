@@ -3,6 +3,7 @@ package asyn.chainreplicationa.app.main;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -23,25 +24,35 @@ public class AppStarter {
 			ProcessBuilder masterProcessBuilder = createMaster(config);
 			List<ProcessBuilder> serverProcessBuilders = createServersForChains(config);
 			List<ProcessBuilder> clientProcessBuilders = createClients(config);
-			masterProcessBuilder.start();
+			List<Process> serverProcesses = new ArrayList<Process>();
+			List<Process> clientProcesses = new ArrayList<Process>();
+			Process masterProcess = masterProcessBuilder.start();
 			for(ProcessBuilder pb : serverProcessBuilders) {
 				Process p =pb.start();
-				/*BufferedReader is;  // reader for output of process
-				String line;
-
-				// getInputStream gives an Input stream connected to
-				// the process standard output. Just use it to make
-				// a BufferedReader to readLine() what the program writes out.
-				is = new BufferedReader(new InputStreamReader(p.getInputStream()));
-
-				while ((line = is.readLine()) != null)
-				  System.out.println(line);*/
-				p.waitFor();
+				serverProcesses.add(p);
 			}
 			for(ProcessBuilder pb : clientProcessBuilders) {
-				pb.start();
+				Process p =pb.start();
+				clientProcesses.add(p);
 			}
-			
+
+			while(clientProcesses.size() > 0) {
+				Iterator<Process> clientProcessIterator = clientProcesses.iterator();
+				while(clientProcessIterator.hasNext()) {
+					Process p = clientProcessIterator.next();
+					if(!p.isAlive()) {
+						clientProcessIterator.remove();
+					}
+				}
+			}
+
+			for(Process serverProcess : serverProcesses) {
+				serverProcess.destroy();
+			}
+			masterProcess.destroy();
+			System.out.println("All Done Happily");
+
+
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
@@ -83,13 +94,13 @@ public class AppStarter {
 			Config config) {
 		List<ProcessBuilder> clientProcesses = new ArrayList<ProcessBuilder>();
 		for(Map.Entry<String, Client> clientEntry :  config.getClients().entrySet()) {
-				ProcessBuilder pb = createProcessForClient(config, clientEntry.getValue());
-				clientProcesses.add(pb);
+			ProcessBuilder pb = createProcessForClient(config, clientEntry.getValue());
+			clientProcesses.add(pb);
 		}
 		return clientProcesses;
 
 	}
-	
+
 	private static ProcessBuilder createProcessForClient(
 			Config config, Client client ) {
 		Map<String,String> envs = System.getenv();
@@ -103,7 +114,7 @@ public class AppStarter {
 		pb.environment().put("CLASSPATH", classPathValue);
 		return pb;
 	}
-	
+
 	private static ProcessBuilder createMaster(Config config) {
 		Map<String,String> envs = System.getenv();
 		String classPathValue = System.getProperty("java.class.path");
