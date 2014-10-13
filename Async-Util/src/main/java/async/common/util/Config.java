@@ -125,6 +125,7 @@ public class Config implements Serializable{
 		
 		
 		config.getChains().put(chain2.getChainName(), chain2);
+		temp = chain2.getHead();
 		Map<String,Server> serverIdToServerMap2 =  new HashMap<String, Server>();
 		while(temp != null) {
 			serverIdToServerMap2.put(temp.getServerId(), temp);
