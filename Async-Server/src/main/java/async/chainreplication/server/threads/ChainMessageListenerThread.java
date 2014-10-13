@@ -30,10 +30,13 @@ public class ChainMessageListenerThread extends Thread{
 			try {
 				message = (ChainReplicationMessage)this.chainMessagesListener.acceptAndReadObjectConnection();
 			} catch (ConnectServerException e) {
-				// TODO Auto-generated catch block
+				this.serverImpl.logMessage("Internal Error:"+e.getMessage());
 				e.printStackTrace();
 			}
-			this.serverImpl.getServerChainReplicationFacade().deliverMessage(message); 
+			this.serverImpl.getServerChainReplicationFacade().deliverMessage(message);
+			this.serverImpl.getServerChainReplicationFacade().getServerMessageHandler().incrementReceiveSequenceNumber();
+			int receiveSequenceNumber = this.serverImpl.getServerChainReplicationFacade().getServerMessageHandler().getReceiveSequenceNumber();
+			this.serverImpl.logMessage("Incoming Message-"+receiveSequenceNumber+":"+message.toString());
 		}
 		this.chainMessagesListener.stopServer();
 	}

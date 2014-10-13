@@ -17,7 +17,7 @@ public class RequestQueryOrUpdateThread extends Thread{
 	public RequestQueryOrUpdateThread(ServerImpl serverImpl) throws ServerChainReplicationException {
 		this.serverImpl = serverImpl;
 		if(this.serverImpl.isHeadInTheChain()
-				||this.serverImpl.isHeadInTheChain()) {
+				||this.serverImpl.isTailInTheChain()) {
 			this.requestServerHelper = new UDPServerStarterHelper(
 					this.serverImpl.getServer().getServerProcessDetails(
 							).getUdpPort());
@@ -30,15 +30,19 @@ public class RequestQueryOrUpdateThread extends Thread{
 	}
 	public void run() {
 		while(shouldStillRun && (this.serverImpl.isHeadInTheChain()
-				||this.serverImpl.isHeadInTheChain())) {
+				||this.serverImpl.isTailInTheChain())) {
 			ChainReplicationMessage message = null;
 			try {
 				message = (ChainReplicationMessage)this.requestServerHelper.acceptAndReadObjectConnection();
 			} catch (ConnectServerException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
+				this.serverImpl.logMessage("Internal Error:"+e.getMessage());
+				break;
 			}
 			this.serverImpl.getServerChainReplicationFacade().deliverMessage(message);
+			this.serverImpl.getServerChainReplicationFacade().getServerMessageHandler().incrementReceiveSequenceNumber();
+			int receiveSequenceNumber = this.serverImpl.getServerChainReplicationFacade().getServerMessageHandler().getReceiveSequenceNumber();
+			this.serverImpl.logMessage("Incoming Message-"+receiveSequenceNumber+":"+message.toString());
 		}
 		this.requestServerHelper.stopServer();
 	}

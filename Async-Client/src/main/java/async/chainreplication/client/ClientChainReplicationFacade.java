@@ -41,11 +41,10 @@ public class ClientChainReplicationFacade {
     
 	public void deliverMessage(ChainReplicationMessage message) throws ClientChainReplicationException {
 		if(message != null) {
-			messages.enqueueMessage(message);
+			messages.enqueueMessageObject(message);
 		}
-		this.logMessage("Message Delivered to client:"+message.toString());
 		while(messages.hasMoreMessages()) {
-			ChainReplicationMessage oldMessage = (ChainReplicationMessage) messages.dequeueMessage();
+			ChainReplicationMessage oldMessage = (ChainReplicationMessage) messages.dequeueMessageAndReturnMessageObject();
 			handleMessage(oldMessage);
 		}
 	}
@@ -64,7 +63,6 @@ public class ClientChainReplicationFacade {
 		} else if (message instanceof MasterMessage) {
 			//TODO: In Phase 3
 		}
-		//this.logMessage("ProcessedMessage:"+message.toString());
 	}
 
 }

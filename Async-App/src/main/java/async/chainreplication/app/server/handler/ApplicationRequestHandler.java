@@ -56,9 +56,9 @@ public class ApplicationRequestHandler implements IApplicationRequestHandler{
 						new ApplicationRequestKey(applicationRequest.getRequestId(),
 								applicationRequest.getAccountNum()));
 		if(applicationRequest.equals(existingRequest)) {
-			return true;
+			return false;
 		}
-		return false;
+		return true;
 	}
 
 	private void handleWithdrawOrTransfer(int accountNum, int amount, ApplicationReply reply) {
@@ -95,6 +95,7 @@ public class ApplicationRequestHandler implements IApplicationRequestHandler{
 			}
 			float balance = accountSnapshot.getBalance();
 			balance += amount;
+			reply.setAccountNum(accountNum);
 			reply.setOutcome(Outcome.Processed);
 			reply.setBalance(balance);
 		}
@@ -105,8 +106,13 @@ public class ApplicationRequestHandler implements IApplicationRequestHandler{
 			AccountSnapshot accountSnapshot = 
 					this.accounts.getAccountSnapshot(accountNum);
 			reply.setOutcome(Outcome.Processed);
-			reply.setBalance(accountSnapshot.getBalance());
-			reply.setAccountNum(accountSnapshot.getAccountNum());
+			reply.setAccountNum(accountNum);			
+			if(accountSnapshot != null) {
+				reply.setBalance(accountSnapshot.getBalance());
+			} else {
+				reply.setBalance(0);
+
+			}
 		}
 
 	}
@@ -166,7 +172,8 @@ public class ApplicationRequestHandler implements IApplicationRequestHandler{
 			this.updateHistories(request, reply);
 			AccountSnapshot accountSnapshot =  
 					accounts.getAccountSnapshot(applicationReply.getAccountNum());
-			accountSnapshot.setBalance(applicationReply.getBalance());
+			if(accountSnapshot != null) //For get balance if we give a sync it will not find any account
+				accountSnapshot.setBalance(applicationReply.getBalance());
 		}
 	}
 

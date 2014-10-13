@@ -12,7 +12,6 @@ import async.chainreplication.master.models.Chain;
 import async.chainreplication.master.models.Client;
 import async.chainreplication.master.models.Master;
 import async.chainreplication.master.models.Server;
-import async.chainreplication.server.ServerMessageHandler;
 import async.chainreplicaton.client.message.ClientRequestMessage;
 import async.connection.util.ConnectClientException;
 import async.connection.util.IClientHelper;
@@ -26,6 +25,9 @@ public class ClientMessageHandler {
 	IClientHelper clientMessageClientHelper;
 	IApplicationReplyHandler applicationReplyHandler;
 	ClientChainReplicationFacade clientChainReplicationFacade;
+	
+	volatile int sendSequenceNumber = 0;
+	volatile int receiveSequenceNumber = 0;
 
 	public ClientMessageHandler(Client client,
 			Map<String, Chain> chainNameToChainMap, Master master,
@@ -49,6 +51,22 @@ public class ClientMessageHandler {
 
 	public ClientChainReplicationFacade getClientChainReplicationFacade() {
 		return clientChainReplicationFacade;
+	}
+	
+	public void incrementSendSequenceNumber() {
+		sendSequenceNumber++;
+	}
+	
+	public void incrementReceiveSequenceNumber() {
+		receiveSequenceNumber++;
+	}
+	
+	public int getSendSequenceNumber() {
+		return sendSequenceNumber;
+	}
+
+	public int getReceiveSequenceNumber() {
+		return receiveSequenceNumber;
 	}
 
 	private Server getHeadForChain(String chainName) {
@@ -94,6 +112,8 @@ public class ClientMessageHandler {
 		} catch (ConnectClientException e) {
 			throw new ClientChainReplicationException(e);
 		}
+		incrementSendSequenceNumber();
+		this.getClientChainReplicationFacade().logMessage("Outgoing Message-"+this.sendSequenceNumber+":"+ message.toString());
 	}
 
 	public void handleReponseMessage(ResponseOrSyncMessage message) {

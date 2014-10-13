@@ -35,12 +35,18 @@ public class ServerChainReplicationFacade {
 		this.serverImpl = serverImpl;
 	}
 	
-	
-	
+	public ServerMessageHandler getServerMessageHandler() {
+		return serverMessageHandler;
+	}
+
+
+
+
+
 	public void startProcessingMessages() throws ServerChainReplicationException {
 	  while(!isServerStopping) {
 		  if(messageQueue.hasMoreMessages()) {
-			  ChainReplicationMessage message = (ChainReplicationMessage)messageQueue.dequeueMessage();
+			  ChainReplicationMessage message = (ChainReplicationMessage)messageQueue.dequeueMessageAndReturnMessageObject();
 			  this.handleMessage(message);
 		  }
 	  }
@@ -56,10 +62,8 @@ public class ServerChainReplicationFacade {
 
 	public void deliverMessage(ChainReplicationMessage message) {
 		if(message != null) {
-			messageQueue.enqueueMessage(message);
+			messageQueue.enqueueMessageObject(message);
 		}
-		this.logMessage("Message Delivered to Server:"+message.toString());
-
 	}
 
 	public void handleMessage(ChainReplicationMessage message) throws ServerChainReplicationException  {
@@ -71,7 +75,6 @@ public class ServerChainReplicationFacade {
 		} else if(message.getClass() ==  AckMessage.class) {
 			this.serverMessageHandler.handleAckMessage((AckMessage) message);
 		}
-		//this.logMessage("ProcessedMessage:"+message.toString());
 	}
 
 	public boolean isHeadInTheChain() {

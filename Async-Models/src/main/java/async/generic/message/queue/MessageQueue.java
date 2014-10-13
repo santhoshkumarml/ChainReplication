@@ -13,13 +13,19 @@ public class MessageQueue<T> {
 		}
 	});
 
-	public Object dequeueMessage() {
+	public Object dequeueMessageAndReturnMessageObject() {
 		synchronized (messages) {
 			return messages.remove().getMessageObject();
 		}
 	}
 
-	public void enqueueMessage(T messageObject) {
+	public Message<T> dequeueMessage() {
+		synchronized (messages) {
+			return messages.remove();
+		}
+	}
+
+	public void enqueueMessageObject(T messageObject) {
 		synchronized (messages) {
 			messages.add(new Message<T>(System.currentTimeMillis(), messageObject));
 		}
@@ -35,7 +41,7 @@ public class MessageQueue<T> {
 	public String toString() {
 		return "MessageQueue [messages=" + messages + "]";
 	}
-	
-	
+
+
 
 }

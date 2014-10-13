@@ -23,14 +23,14 @@ public class ApplicationReplyHandler implements IApplicationReplyHandler {
 		Response response = new Response(
 				request.getRequestId(),
 				(ApplicationReply)reply);
-		responseMessages.enqueueMessage(response);
+		responseMessages.enqueueMessageObject(response);
 	}
 
 
 	@Override
 	public Reply getResponseForRequestId(Request request) {
 		while(responseMessages.hasMoreMessages()) {
-			Response response = (Response) responseMessages.dequeueMessage();
+			Response response = (Response) responseMessages.dequeueMessageAndReturnMessageObject();
 			if(response.getRequestId().equals(request.getRequestId())) {
 				return response.getApplicationReply();
 			}

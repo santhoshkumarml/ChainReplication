@@ -26,11 +26,5 @@ public abstract class ChainReplicationImpl {
 	
 	public void stop() {
 		chainReplicationLoggerThread.stopThread();
-		try {
-			chainReplicationLoggerThread.join();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	}
 }

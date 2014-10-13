@@ -35,13 +35,9 @@ public class Config implements Serializable{
 	}
 
 
-
-
 	public Map<String, Map<String, Server>> getChainToServerMap() {
 		return chainToServerMap;
 	}
-
-
 
 
 	public Map<String, Client> getClients() {
@@ -49,13 +45,9 @@ public class Config implements Serializable{
 	}
 
 
-
-
 	public Map<Client, TestCases> getTestCases() {
 		return testCases;
 	}
-
-
 
 
 	public static Config createDefaultValues() {
@@ -93,13 +85,13 @@ public class Config implements Serializable{
 		Chain chain1 = new Chain("chain1", server11, server13);
 		
 		
-		Server server21 = new Server(String.valueOf(11), "chain1", "localhost", 10201);
+		Server server21 = new Server(String.valueOf(21), "chain2", "localhost", 10201);
 		server21.getServerProcessDetails().setTcpPort(10211);
 		server21.getServerProcessDetails().setUdpPort(10221);
-		Server server22 = new Server(String.valueOf(12), "chain1", "localhost", 10202);
+		Server server22 = new Server(String.valueOf(22), "chain2", "localhost", 10202);
 		server22.getServerProcessDetails().setTcpPort(10212);
 		server22.getServerProcessDetails().setUdpPort(10222);
-		Server server23 = new Server(String.valueOf(13), "chain1", "localhost", 10203);
+		Server server23 = new Server(String.valueOf(23), "chain2", "localhost", 10203);
 		server23.getServerProcessDetails().setTcpPort(10213);
 		server23.getServerProcessDetails().setUdpPort(10223);
 		
@@ -124,18 +116,18 @@ public class Config implements Serializable{
 		config.getChainToServerMap().put(chain1.getChainName(), serverIdToServerMap1);
 		
 		
-		config.getChains().put(chain2.getChainName(), chain2);
+		/*config.getChains().put(chain2.getChainName(), chain2);
 		temp = chain2.getHead();
 		Map<String,Server> serverIdToServerMap2 =  new HashMap<String, Server>();
 		while(temp != null) {
 			serverIdToServerMap2.put(temp.getServerId(), temp);
 			temp = temp.getAdjacencyList().getSucessor();
 		}
-		config.getChainToServerMap().put(chain2.getChainName(), serverIdToServerMap2);
+		config.getChainToServerMap().put(chain2.getChainName(), serverIdToServerMap2);*/
 		
 		config.getClients().put(client1.getClientId(), client1);
 		config.getClients().put(client2.getClientId(), client2);
-		config.getClients().put(client3.getClientId(), client3);
+		//config.getClients().put(client3.getClientId(), client3);
 		
 		Master master = new Master("localhost",7300, "master");
 		config.setMaster(master);

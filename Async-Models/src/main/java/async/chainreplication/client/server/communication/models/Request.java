@@ -44,8 +44,6 @@ public class Request implements Serializable{
 		final int prime = 31;
 		int result = 1;
 		result = prime * result
-				+ ((client == null) ? 0 : client.hashCode());
-		result = prime * result
 				+ ((requestId == null) ? 0 : requestId.hashCode());
 		return result;
 	}
@@ -59,11 +57,6 @@ public class Request implements Serializable{
 		if (getClass() != obj.getClass())
 			return false;
 		Request other = (Request) obj;
-		if (client == null) {
-			if (other.client != null)
-				return false;
-		} else if (!client.equals(other.client))
-			return false;
 		if (requestId == null) {
 			if (other.requestId != null)
 				return false;

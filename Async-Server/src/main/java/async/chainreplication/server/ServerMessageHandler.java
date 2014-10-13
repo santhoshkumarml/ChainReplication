@@ -36,6 +36,25 @@ public class ServerMessageHandler {
 	IClientHelper tailResponseClientHelper;
 
 	ServerChainReplicationFacade serverChainReplicationFacade;
+	
+	volatile int sendSequenceNumber = 0;
+	volatile int receiveSequenceNumber = 0;
+	
+	public void incrementSendSequenceNumber() {
+		sendSequenceNumber++;
+	}
+	
+	public void incrementReceiveSequenceNumber() {
+		receiveSequenceNumber++;
+	}
+	
+	public int getSendSequenceNumber() {
+		return sendSequenceNumber;
+	}
+
+	public int getReceiveSequenceNumber() {
+		return receiveSequenceNumber;
+	}
 
 	public ServerMessageHandler(
 			Server server, 
@@ -123,16 +142,18 @@ public class ServerMessageHandler {
 		Server sucessor = this.server.getAdjacencyList().getSucessor();
 		if(sucessor != null) {
 			//Non tail operation is to sync
+			syncOrAckSendClientHelper = new TCPClientHelper(
+					sucessor.getServerProcessDetails().getHost(),
+					sucessor.getServerProcessDetails().getTcpPort());
 			synchronized (syncOrAckSendClientHelper) {
-				syncOrAckSendClientHelper = new TCPClientHelper(
-						sucessor.getServerProcessDetails().getHost(),
-						sucessor.getServerProcessDetails().getTcpPort());
 				ChainReplicationMessage syncMessage = new ResponseOrSyncMessage(request, reply);
 				try {
 					syncOrAckSendClientHelper.sendMessage(syncMessage);
 				} catch (ConnectClientException e) {
 					throw new ServerChainReplicationException(e);
-				}	
+				}
+				incrementSendSequenceNumber();
+				this.serverChainReplicationFacade.logMessage("Outgoing Message-"+this.sendSequenceNumber+":"+syncMessage.toString());
 			}
 			//send sync
 		} else {
@@ -141,11 +162,17 @@ public class ServerMessageHandler {
 			tailResponseClientHelper = new UDPClientHelper(
 					request.getClient().getClientProcessDetails().getHost()	,
 					request.getClient().getClientProcessDetails().getUdpPort());
-			try {
-				tailResponseClientHelper.sendMessage(new ResponseOrSyncMessage(request, reply));
-			} catch (ConnectClientException e) {
-				throw new ServerChainReplicationException(e);
+			synchronized (tailResponseClientHelper) {
+				ChainReplicationMessage responseMessage = new ResponseOrSyncMessage(request, reply);
+				try {
+					tailResponseClientHelper.sendMessage(responseMessage);
+				} catch (ConnectClientException e) {
+					throw new ServerChainReplicationException(e);
+				}
+				incrementSendSequenceNumber();
+				this.serverChainReplicationFacade.logMessage("Outgoing Message-"+this.sendSequenceNumber+":"+responseMessage.toString());	
 			}
+
 			//ACk so that other servers can remove the messages from Sent
 			ACK(request);
 		}
@@ -156,17 +183,19 @@ public class ServerMessageHandler {
 		this.applicationRequestHandler.handleAck(request);
 		//Terminate propagation once we reach head
 		if(predecessor != null) {
+			syncOrAckSendClientHelper = new TCPClientHelper(
+					predecessor.getServerProcessDetails().getHost(),
+					predecessor.getServerProcessDetails().getTcpPort());
 			synchronized (syncOrAckSendClientHelper) {
-				syncOrAckSendClientHelper = new TCPClientHelper(
-						predecessor.getServerProcessDetails().getHost(),
-						predecessor.getServerProcessDetails().getTcpPort());
 				ChainReplicationMessage ackMessage = new AckMessage(request);
 				//change it to ACK Message
 				try {
 					syncOrAckSendClientHelper.sendMessage(ackMessage);
 				} catch (ConnectClientException e) {
 					throw new ServerChainReplicationException(e);
-				}	
+				}
+				incrementSendSequenceNumber();
+				this.serverChainReplicationFacade.logMessage("Outgoing Message-"+this.sendSequenceNumber+":"+ackMessage.toString());
 			}
 		}
 		this.applicationRequestHandler.handleAck(request);

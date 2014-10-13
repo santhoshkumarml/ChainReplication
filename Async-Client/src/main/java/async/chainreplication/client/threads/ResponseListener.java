@@ -34,7 +34,10 @@ public class ResponseListener extends Thread{
 				shouldStillRun = false;
 				e.printStackTrace();
 				break;
-			}	
+			}
+			this.clientImpl.getClientChainReplicationFacade().getClientMessageHandler().incrementReceiveSequenceNumber();
+			int receiveSequenceNumber = this.clientImpl.getClientChainReplicationFacade().getClientMessageHandler().getReceiveSequenceNumber();
+			this.clientImpl.logMessage("Incoming Message-"+receiveSequenceNumber+":"+responseMessage.toString());
 		}
 	}
 	

@@ -15,7 +15,7 @@ import aync.chainreplication.base.impl.ChainReplicationImpl;
 
 
 public class ClientImpl extends ChainReplicationImpl{
-	long responseWaitTime = 4000;
+	long responseWaitTime = 10000;
 	MasterUpdateListenerThread masterUpdateListener;
 	ResponseListener responseListener;
 	ClientChainReplicationFacade clientChainReplicationFacade;
@@ -89,15 +89,17 @@ public class ClientImpl extends ChainReplicationImpl{
 			this.stop();
 		}
 		responseListener.start();
-		this.logMessage("Client Started"+this.clientId);
+		this.logMessage("Client Started");
 	}
 
 	public void stop() {
+		this.logMessage("Client Stopping");
 		responseListener.stopThread();
 		super.stop();
+		System.exit(-1);
 	}
 
 	public void logMessage(String message) {
-		this.getLogMessages().enqueueMessage(message);
+		this.getLogMessages().enqueueMessageObject(message);
 	}
 }

@@ -76,6 +76,7 @@ public class AppStarter {
 		Map<String,String> envs = System.getenv();
 		String classPathValue = System.getProperty("java.class.path");
 		ProcessBuilder pb;
+		if(server.isHead()) {
 		pb = new ProcessBuilder(
 				"java",
 				"-Xdebug",
@@ -84,7 +85,17 @@ public class AppStarter {
 				ConfigUtil.serializeToFile(config),
 				server.getChainName(),
 				server.getServerId());
-
+		} else {
+			pb = new ProcessBuilder(
+					"java",
+					//"-Xdebug",
+					//"-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=13000",
+					ServerImpl.class.getName(),
+					ConfigUtil.serializeToFile(config),
+					server.getChainName(),
+					server.getServerId());
+			
+		}
 		pb.environment().putAll(envs);
 		pb.environment().put("CLASSPATH", classPathValue);
 		return pb;
@@ -108,8 +119,8 @@ public class AppStarter {
 		String classPathValue = System.getProperty("java.class.path");
 		ProcessBuilder pb = new ProcessBuilder(
 				"java",
-				"-Xdebug",
-				"-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=13001",
+				//"-Xdebug",
+				//"-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=13001",
 				ClientImpl.class.getName(),
 				ConfigUtil.serializeToFile(config),
 				client.getClientId());

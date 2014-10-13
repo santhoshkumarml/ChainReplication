@@ -23,7 +23,7 @@ public class MasterImpl extends ChainReplicationImpl{
 	}
 	
     public void logMessage(String message) {
-    	this.getLogMessages().enqueueMessage(message);
+    	this.getLogMessages().enqueueMessageObject(message);
     }
 
 	public void init() {

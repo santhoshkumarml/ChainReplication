@@ -64,16 +64,16 @@ public class ServerImpl extends ChainReplicationImpl{
 	}
 
 	public void logMessage(String message) {
-		this.getLogMessages().enqueueMessage(message);
+		this.getLogMessages().enqueueMessageObject(message);
 	}
 
 
 	public void init() {
 		super.init();
 		this.logMessage("Server Starting"+this.getServer());
-		heartBeatSenderTimer = new Timer();
+		/*heartBeatSenderTimer = new Timer();
 		HeartBeatSenderTask heartBeatSender = new HeartBeatSenderTask(this);
-		//heartBeatSenderTimer.schedule(heartBeatSender, (heartBeatTimeOut-3000));
+		//heartBeatSenderTimer.schedule(heartBeatSender, (heartBeatTimeOut-3000));*/
 		try {
 			requestOrQueryUpdateThread = new RequestQueryOrUpdateThread(this);
 			requestOrQueryUpdateThread.start();
@@ -85,11 +85,12 @@ public class ServerImpl extends ChainReplicationImpl{
 			this.stop();
 			e.printStackTrace();
 		}
-		this.logMessage("Server started"+this.getServer().getChainName()+":"+this.getServer().getServerId());
+		this.logMessage("Server started");
 	}
 
 	public void stop() {
 		//heartBeatSenderTimer.cancel();
+		this.logMessage("Server Stopping");
 		requestOrQueryUpdateThread.stopThread();
 		chainMessageListenerThread.stopThread();
 		this.serverChainReplicationFacade.stopProcessing();
