@@ -28,8 +28,16 @@ public class AdjacencyList implements Serializable{
 	}
 	@Override
 	public String toString() {
-		return "AdjacencyList [predecessor=" + predecessor.getServerId()+ ", sucessor="
-				+ sucessor.getServerId() + "]";
+		String predecessorString = "";
+		String sucessorString = "";
+		if(predecessor != null) {
+			predecessorString = predecessor.getServerId();
+		}
+		if(sucessor != null) {
+			sucessorString = sucessor.getServerId();
+		}
+		return "AdjacencyList [predecessor=" + predecessorString+ ", sucessor="
+				+ sucessorString + "]";
 	}
 	
 	

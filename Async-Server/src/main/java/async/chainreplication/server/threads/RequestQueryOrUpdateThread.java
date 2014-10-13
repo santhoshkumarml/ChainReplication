@@ -2,6 +2,7 @@ package async.chainreplication.server.threads;
 
 import async.chainreplication.communication.messages.ChainReplicationMessage;
 import async.chainreplication.server.ServerImpl;
+import async.chainreplication.server.exception.ServerChainReplicationException;
 import async.connection.util.IServerStarterHelper;
 import async.connection.util.ConnectServerException;
 import async.connection.util.UDPServerStarterHelper;
@@ -13,13 +14,18 @@ public class RequestQueryOrUpdateThread extends Thread{
 	boolean shouldStillRun = true;
 
 
-	public RequestQueryOrUpdateThread(ServerImpl serverImpl) {
+	public RequestQueryOrUpdateThread(ServerImpl serverImpl) throws ServerChainReplicationException {
 		this.serverImpl = serverImpl;
 		if(this.serverImpl.isHeadInTheChain()
 				||this.serverImpl.isHeadInTheChain()) {
 			this.requestServerHelper = new UDPServerStarterHelper(
 					this.serverImpl.getServer().getServerProcessDetails(
 							).getUdpPort());
+			try {
+				this.requestServerHelper.initAndStartServer();
+			} catch (ConnectServerException e) {
+				throw new ServerChainReplicationException(e);
+			}
 		}
 	}
 	public void run() {

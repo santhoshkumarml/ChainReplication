@@ -33,7 +33,7 @@ public class UDPServerStarterHelper implements IServerStarterHelper{
 		byte[] receiveData = new byte[2048];
 		ObjectInputStream oos = null;
 		try {
-			DatagramPacket packet = new DatagramPacket(receiveData, receiveData.length );
+			DatagramPacket packet = new DatagramPacket(receiveData, receiveData.length);
 			serverSocket.receive(packet);
 			ByteArrayInputStream baos = new ByteArrayInputStream(receiveData);
 			oos = new ObjectInputStream(baos);

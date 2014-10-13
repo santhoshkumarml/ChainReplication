@@ -1,6 +1,7 @@
 package async.chainreplication.client;
 
 import async.chainreplication.client.exception.ClientChainReplicationException;
+import async.chainreplication.client.server.communication.models.Reply;
 import async.chainreplication.client.server.communication.models.Request;
 import async.chainreplication.client.threads.MasterUpdateListenerThread;
 import async.chainreplication.client.threads.ResponseListener;
@@ -10,6 +11,7 @@ import async.chainreplicaton.client.message.ClientRequestMessage;
 import async.common.util.Config;
 import async.common.util.ConfigUtil;
 import async.common.util.TestCases;
+import async.connection.util.ConnectServerException;
 import aync.chainreplication.base.impl.ChainReplicationImpl;
 
 
@@ -45,12 +47,13 @@ public class ClientImpl extends ChainReplicationImpl{
 			this.logMessage(e.getMessage());
 			e.printStackTrace();
 		}
+		this.logMessage("Client Started:"+config.getClients().get(clientId));
 	}
 
 	public ClientChainReplicationFacade getClientChainReplicationFacade() {
 		return clientChainReplicationFacade;
 	}
-	
+
 	public Client getClient() {
 		return this.clientChainReplicationFacade.getClientMessageHandler().getClient();
 	}
@@ -67,6 +70,11 @@ public class ClientImpl extends ChainReplicationImpl{
 			} catch(InterruptedException e) {
 				throw new ClientChainReplicationException(e);
 			}
+			Reply reply = this.clientChainReplicationFacade.readResponsesForRequest(request);
+			if(reply != null)
+				this.logMessage(reply.toString());
+			else
+				this.logMessage("Did not get a reply for request"+ request.toString());
 		}
 	}
 
@@ -74,7 +82,13 @@ public class ClientImpl extends ChainReplicationImpl{
 		super.init();
 		masterUpdateListener = new MasterUpdateListenerThread(this);
 		masterUpdateListener.start();
-		responseListener = new ResponseListener(this);
+		try {
+			responseListener = new ResponseListener(this);
+		} catch (ClientChainReplicationException e) {
+			this.logMessage(e.getMessage());
+			e.printStackTrace();
+			this.stop();
+		}
 		responseListener.start();
 		this.logMessage("Client Started"+this.clientId);
 	}

@@ -60,28 +60,28 @@ public class Config implements Serializable{
 
 	public static Config createDefaultValues() {
 		Config config = new Config();
-		Client client1 = new Client("client1", "localhost", 7001);
-		client1.getClientProcessDetails().setTcpPort(7011);
-		client1.getClientProcessDetails().setUdpPort(7021);
+		Client client1 = new Client("client1", "localhost", 10001);
+		client1.getClientProcessDetails().setTcpPort(10011);
+		client1.getClientProcessDetails().setUdpPort(10021);
 		
-		Client client2 = new Client("client2", "localhost", 7002);
-		client2.getClientProcessDetails().setTcpPort(7012);
-		client2.getClientProcessDetails().setUdpPort(7022);
+		Client client2 = new Client("client2", "localhost", 10002);
+		client2.getClientProcessDetails().setTcpPort(10012);
+		client2.getClientProcessDetails().setUdpPort(10022);
 		
-		Client client3 = new Client("client3", "localhost", 7003);	
-		client3.getClientProcessDetails().setTcpPort(7013);
-		client3.getClientProcessDetails().setUdpPort(7023);
+		Client client3 = new Client("client3", "localhost", 10003);	
+		client3.getClientProcessDetails().setTcpPort(10013);
+		client3.getClientProcessDetails().setUdpPort(10023);
 		
 		
-		Server server11 = new Server(String.valueOf(11), "chain1", "localhost", 7101);
-		server11.getServerProcessDetails().setTcpPort(7111);
-		server11.getServerProcessDetails().setUdpPort(7121);
-		Server server12 = new Server(String.valueOf(12), "chain1", "localhost", 7102);
-		server12.getServerProcessDetails().setTcpPort(7112);
-		server12.getServerProcessDetails().setUdpPort(7122);
-		Server server13 = new Server(String.valueOf(13), "chain1", "localhost", 7103);
-		server13.getServerProcessDetails().setTcpPort(7113);
-		server13.getServerProcessDetails().setUdpPort(7123);
+		Server server11 = new Server(String.valueOf(11), "chain1", "localhost", 10101);
+		server11.getServerProcessDetails().setTcpPort(10111);
+		server11.getServerProcessDetails().setUdpPort(10121);
+		Server server12 = new Server(String.valueOf(12), "chain1", "localhost", 10102);
+		server12.getServerProcessDetails().setTcpPort(10112);
+		server12.getServerProcessDetails().setUdpPort(10122);
+		Server server13 = new Server(String.valueOf(13), "chain1", "localhost", 10103);
+		server13.getServerProcessDetails().setTcpPort(10113);
+		server13.getServerProcessDetails().setUdpPort(10123);
 		
 		server11.getAdjacencyList().setPredecessor(null);
 		server11.getAdjacencyList().setSucessor(server12);
@@ -93,15 +93,15 @@ public class Config implements Serializable{
 		Chain chain1 = new Chain("chain1", server11, server13);
 		
 		
-		Server server21 = new Server(String.valueOf(11), "chain1", "localhost", 7201);
-		server21.getServerProcessDetails().setTcpPort(7211);
-		server21.getServerProcessDetails().setUdpPort(7221);
-		Server server22 = new Server(String.valueOf(12), "chain1", "localhost", 7202);
-		server22.getServerProcessDetails().setTcpPort(7212);
-		server22.getServerProcessDetails().setUdpPort(7222);
-		Server server23 = new Server(String.valueOf(13), "chain1", "localhost", 7203);
-		server23.getServerProcessDetails().setTcpPort(7213);
-		server23.getServerProcessDetails().setUdpPort(7223);
+		Server server21 = new Server(String.valueOf(11), "chain1", "localhost", 10201);
+		server21.getServerProcessDetails().setTcpPort(10211);
+		server21.getServerProcessDetails().setUdpPort(10221);
+		Server server22 = new Server(String.valueOf(12), "chain1", "localhost", 10202);
+		server22.getServerProcessDetails().setTcpPort(10212);
+		server22.getServerProcessDetails().setUdpPort(10222);
+		Server server23 = new Server(String.valueOf(13), "chain1", "localhost", 10203);
+		server23.getServerProcessDetails().setTcpPort(10213);
+		server23.getServerProcessDetails().setUdpPort(10223);
 		
 		server21.getAdjacencyList().setPredecessor(null);
 		server21.getAdjacencyList().setSucessor(server22);

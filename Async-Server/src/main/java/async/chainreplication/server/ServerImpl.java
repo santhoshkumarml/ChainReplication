@@ -14,7 +14,7 @@ import async.common.util.ConfigUtil;
 import aync.chainreplication.base.impl.ChainReplicationImpl;
 
 public class ServerImpl extends ChainReplicationImpl{	
-	long heartBeatTimeOut = 2000;
+	long heartBeatTimeOut = 5000;
 	Timer heartBeatSenderTimer; 
 	MasterUpdateListenerThread masterUpdateListener;
 	ChainMessageListenerThread chainMessageListenerThread;
@@ -74,12 +74,12 @@ public class ServerImpl extends ChainReplicationImpl{
 		this.logMessage("Server Starting"+this.getServer());
 		heartBeatSenderTimer = new Timer();
 		HeartBeatSenderTask heartBeatSender = new HeartBeatSenderTask(this);
-		heartBeatSenderTimer.schedule(heartBeatSender, (heartBeatTimeOut-3000));
-		requestOrQueryUpdateThread = new RequestQueryOrUpdateThread(this);
-		requestOrQueryUpdateThread.start();
-		chainMessageListenerThread = new ChainMessageListenerThread(this);
-		chainMessageListenerThread.start();
+		//heartBeatSenderTimer.schedule(heartBeatSender, (heartBeatTimeOut-3000));
 		try {
+			requestOrQueryUpdateThread = new RequestQueryOrUpdateThread(this);
+			requestOrQueryUpdateThread.start();
+			chainMessageListenerThread = new ChainMessageListenerThread(this);
+			chainMessageListenerThread.start();
 			this.serverChainReplicationFacade.startProcessingMessages();
 		} catch (ServerChainReplicationException e) {
 			this.logMessage(e.getMessage());
@@ -90,7 +90,7 @@ public class ServerImpl extends ChainReplicationImpl{
 	}
 
 	public void stop() {
-		heartBeatSenderTimer.cancel();
+		//heartBeatSenderTimer.cancel();
 		requestOrQueryUpdateThread.stopThread();
 		chainMessageListenerThread.stopThread();
 		this.serverChainReplicationFacade.stopProcessing();
