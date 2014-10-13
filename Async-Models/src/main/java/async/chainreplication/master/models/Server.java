@@ -24,7 +24,7 @@ public class Server implements Serializable{
 	public String getServerId() {
 		return serverId;
 	}
-	public String getBankName() {
+	public String getChainName() {
 		return chainName;
 	}
 	public ProcessDetails getServerProcessDetails() {

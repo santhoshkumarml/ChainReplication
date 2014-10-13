@@ -71,6 +71,7 @@ public class ServerImpl extends ChainReplicationImpl{
 
 	public void init() {
 		super.init();
+		this.logMessage("Server Starting"+this.getServer());
 		heartBeatSenderTimer = new Timer();
 		HeartBeatSenderTask heartBeatSender = new HeartBeatSenderTask(this);
 		heartBeatSenderTimer.schedule(heartBeatSender, (heartBeatTimeOut-3000));
@@ -85,6 +86,7 @@ public class ServerImpl extends ChainReplicationImpl{
 			this.stop();
 			e.printStackTrace();
 		}
+		this.logMessage("Server started"+this.getServer().getChainName()+":"+this.getServer().getServerId());
 	}
 
 	public void stop() {

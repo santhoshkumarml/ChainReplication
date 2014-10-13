@@ -76,6 +76,7 @@ public class ClientImpl extends ChainReplicationImpl{
 		masterUpdateListener.start();
 		responseListener = new ResponseListener(this);
 		responseListener.start();
+		this.logMessage("Client Started"+this.clientId);
 	}
 
 	public void stop() {

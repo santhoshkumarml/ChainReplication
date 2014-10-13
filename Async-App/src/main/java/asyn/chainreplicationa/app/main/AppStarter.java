@@ -1,5 +1,7 @@
 package asyn.chainreplicationa.app.main;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -23,7 +25,18 @@ public class AppStarter {
 			List<ProcessBuilder> clientProcessBuilders = createClients(config);
 			masterProcessBuilder.start();
 			for(ProcessBuilder pb : serverProcessBuilders) {
-				pb.start();
+				Process p =pb.start();
+				BufferedReader is;  // reader for output of process
+				String line;
+
+				// getInputStream gives an Input stream connected to
+				// the process standard output. Just use it to make
+				// a BufferedReader to readLine() what the program writes out.
+				is = new BufferedReader(new InputStreamReader(p.getInputStream()));
+
+				while ((line = is.readLine()) != null)
+				  System.out.println(line);
+				p.waitFor();
 			}
 			for(ProcessBuilder pb : clientProcessBuilders) {
 				pb.start();
@@ -53,10 +66,10 @@ public class AppStarter {
 			Config config, Server server ) {
 		Map<String,String> envs = System.getenv();
 		ProcessBuilder pb = new ProcessBuilder(
-				"java",
+				"java",//"-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=10000",
 				ServerImpl.class.getName(),
 				ConfigUtil.serializeToFile(config),
-				server.getBankName(),
+				server.getChainName(),
 				server.getServerId());
 		pb.environment().putAll(envs);
 		return pb;

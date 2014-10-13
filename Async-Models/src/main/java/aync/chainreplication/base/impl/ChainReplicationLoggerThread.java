@@ -17,7 +17,7 @@ public class ChainReplicationLoggerThread extends Thread{
 		chainReplicationlogger = Logger.getLogger(this.chainReplicationImpl.getUniqueId());
 		try {
 			FileHandler fh = new FileHandler(
-					"E:\\workspace\\Async-Project"+
+					"E:\\workspace\\Async-ChainReplication-"+
 							this.chainReplicationImpl.getUniqueId()+".log");
 			SimpleFormatter formatter = new SimpleFormatter();  
 			fh.setFormatter(formatter);  
