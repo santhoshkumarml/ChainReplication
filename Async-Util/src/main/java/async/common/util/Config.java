@@ -56,15 +56,15 @@ public class Config {
 
 	public static Config createDefaultValues() {
 		Config config = new Config();
-		Client client1 = new Client(String.valueOf(1), "localhost", 7001);
+		Client client1 = new Client("client1", "localhost", 7001);
 		client1.getClientProcessDetails().setTcpPort(7011);
 		client1.getClientProcessDetails().setUdpPort(7021);
 		
-		Client client2 = new Client(String.valueOf(2), "localhost", 7002);
+		Client client2 = new Client("client2", "localhost", 7002);
 		client2.getClientProcessDetails().setTcpPort(7012);
 		client2.getClientProcessDetails().setUdpPort(7022);
 		
-		Client client3 = new Client(String.valueOf(3), "localhost", 7003);	
+		Client client3 = new Client("client3", "localhost", 7003);	
 		client3.getClientProcessDetails().setTcpPort(7013);
 		client3.getClientProcessDetails().setUdpPort(7023);	
 		

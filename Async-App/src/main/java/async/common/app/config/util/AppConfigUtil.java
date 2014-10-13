@@ -37,7 +37,9 @@ public class AppConfigUtil {
 				TestCases testCases = config.getTestCases().get(client);
 				if(testCases == null) {
 					testCases = new TestCases();
+					String chainName = requestStringSplit[0].trim();
 					testCases.setClient(client);
+					testCases.setChainName(chainName);
 					testCases.getRequests().add(request);
 				}
 				config.getTestCases().put(client, testCases);
@@ -61,10 +63,10 @@ public class AppConfigUtil {
 	}
 
 	private static ApplicationRequest createRequest(Client client, String[] requestStringSplit) {
-		String reqId = requestStringSplit[1].trim();
-		String accountNum = requestStringSplit[2].trim();
+		String reqId = requestStringSplit[2].trim();
+		String accountNum = requestStringSplit[3].trim();
 		ApplicationRequestType applicationRequestType = 
-				ApplicationRequestType.valueOf(requestStringSplit[0].trim());
+				ApplicationRequestType.valueOf(requestStringSplit[1].toUpperCase().trim());
 		ApplicationRequest applicationRequest  = new ApplicationRequest(client, reqId);
 		applicationRequest.setApplicationRequestType(applicationRequestType);
 		applicationRequest.setAccountNum(Integer.valueOf(accountNum));
@@ -72,19 +74,19 @@ public class AppConfigUtil {
 		case GET_BALANCE:
 			break;
 		case TRANSFER:
-			int amount = Integer.valueOf(requestStringSplit[3].trim());
+			int amount = Integer.valueOf(requestStringSplit[4].trim());
 			applicationRequest.setAmount(amount);
-			String destBank = requestStringSplit[4];
+			String destBank = requestStringSplit[5];
 			applicationRequest.setDestBank(destBank);
-			int destAccountNum = Integer.valueOf(requestStringSplit[5].trim());
+			int destAccountNum = Integer.valueOf(requestStringSplit[6].trim());
 			applicationRequest.setAmount(destAccountNum);
 			break;
 		case DEPOSIT:
-			amount = Integer.valueOf(requestStringSplit[3].trim());
+			amount = Integer.valueOf(requestStringSplit[4].trim());
 			applicationRequest.setAmount(amount);
 			break;
 		case WITHDRAW:
-			amount = Integer.valueOf(requestStringSplit[3].trim());
+			amount = Integer.valueOf(requestStringSplit[4].trim());
 			applicationRequest.setAmount(amount);
 			break;
 		default:

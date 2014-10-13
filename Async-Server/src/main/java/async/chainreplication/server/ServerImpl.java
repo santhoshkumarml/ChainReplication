@@ -63,7 +63,7 @@ public class ServerImpl extends ChainReplicationImpl{
 	public boolean isTailInTheChain() {
 		return this.serverChainReplicationFacade.isTailInTheChain();
 	}
-	
+
 	public void logMessage(String message) {
 		this.getLogMessages().enqueueMessage(message);
 	}
@@ -78,13 +78,20 @@ public class ServerImpl extends ChainReplicationImpl{
 		requestOrQueryUpdateThread.start();
 		chainMessageListenerThread = new ChainMessageListenerThread(this);
 		chainMessageListenerThread.start();
+		try {
+			this.serverChainReplicationFacade.startProcessingMessages();
+		} catch (ServerChainReplicationException e) {
+			this.logMessage(e.getMessage());
+			this.stop();
+			e.printStackTrace();
+		}
 	}
 
 	public void stop() {
 		heartBeatSenderTimer.cancel();
 		requestOrQueryUpdateThread.stopThread();
 		chainMessageListenerThread.stopThread();
+		this.serverChainReplicationFacade.stopProcessing();
 		super.stop();
 	}
-
 }

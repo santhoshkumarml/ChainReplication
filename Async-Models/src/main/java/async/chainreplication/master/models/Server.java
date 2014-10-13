@@ -11,7 +11,7 @@ public class Server implements Serializable{
 	String serverId;
 	String chainName;
 	ProcessDetails serverProcessDetails;
-	AdjacencyList adjacencyList;
+	AdjacencyList adjacencyList = new AdjacencyList(null, null);
 	
 	public Server(String serverId, String chainName, String host,int port) {
 		this.serverId = serverId;

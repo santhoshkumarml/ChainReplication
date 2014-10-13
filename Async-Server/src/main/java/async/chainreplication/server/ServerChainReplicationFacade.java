@@ -16,8 +16,10 @@ import async.generic.message.queue.MessageQueue;
 public class ServerChainReplicationFacade {
 
 	ServerMessageHandler serverMessageHandler;
+	
+	boolean isServerStopping = false;
 
-	MessageQueue<ChainReplicationMessage> messages = 
+	MessageQueue<ChainReplicationMessage> messageQueue = 
 			new MessageQueue<ChainReplicationMessage>();
 	
 	ServerImpl serverImpl;
@@ -34,13 +36,26 @@ public class ServerChainReplicationFacade {
 	}
 	
 	
+	
+	public void startProcessingMessages() throws ServerChainReplicationException {
+	  while(!isServerStopping) {
+		  if(messageQueue.hasMoreMessages()) {
+			  this.handleMessage((ChainReplicationMessage)messageQueue.dequeueMessage());
+		  }
+	  }
+	}
+	
+	public void stopProcessing() {
+		this.isServerStopping = true;
+	}
+	
 	public void logMessage(String message) {
 		this.serverImpl.logMessage(message);
 	}
 
 	public void deliverMessage(ChainReplicationMessage message) {
 		if(message != null) {
-			messages.enqueueMessage(message);
+			messageQueue.enqueueMessage(message);
 		}
 		this.logMessage("Message Delivered"+message.toString());
 

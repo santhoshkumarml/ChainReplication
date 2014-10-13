@@ -19,7 +19,7 @@ public abstract class ChainReplicationImpl {
 		return uniqueId;
 	}
    
-	public void init() {
+	public void init(){
 		chainReplicationLoggerThread = new ChainReplicationLoggerThread(this);
 		chainReplicationLoggerThread.start();
 	}

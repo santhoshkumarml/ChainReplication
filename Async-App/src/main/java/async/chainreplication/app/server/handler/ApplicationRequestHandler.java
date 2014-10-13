@@ -99,6 +99,7 @@ public class ApplicationRequestHandler implements IApplicationRequestHandler{
 				break;
 			}
 			reply.setReqID(request.getRequestId());
+			this.chainReplicationMessageHandler.getHistoryOfRequests().addToHistory(request);
 		}
 		return reply;
 	}
