@@ -21,7 +21,7 @@ public class ClientImpl extends ChainReplicationImpl{
 	String clientId;
 
 	public static void main(String args[]) {
-		Config config = ConfigUtil.convertToConfig(args[0]);
+		Config config = ConfigUtil.deserializeFromFile(args[0]);
 		ClientImpl clientImpl = new ClientImpl(
 				config,
 				args[1]);

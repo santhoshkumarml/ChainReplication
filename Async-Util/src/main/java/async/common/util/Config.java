@@ -70,7 +70,7 @@ public class Config implements Serializable{
 		
 		Client client3 = new Client("client3", "localhost", 7003);	
 		client3.getClientProcessDetails().setTcpPort(7013);
-		client3.getClientProcessDetails().setUdpPort(7023);	
+		client3.getClientProcessDetails().setUdpPort(7023);
 		
 		
 		Server server11 = new Server(String.valueOf(11), "chain1", "localhost", 7101);
@@ -124,24 +124,18 @@ public class Config implements Serializable{
 		}
 		config.getChainToServerMap().put(chain1.getChainName(), serverIdToServerMap1);
 		
-		config.getChains().put(chain2.getChainName(), chain2);
+		
+		/*config.getChains().put(chain2.getChainName(), chain2);
 		Map<String,Server> serverIdToServerMap2 =  new HashMap<String, Server>();
 		while(temp != null) {
 			serverIdToServerMap2.put(temp.getServerId(), temp);
 			temp = temp.getAdjacencyList().getSucessor();
 		}
-		config.getChainToServerMap().put(chain2.getChainName(), serverIdToServerMap2);
-		
-		temp = chain2.getHead();
-		while(temp != null) {
-			Map<String,Server> serverIdToServerMap = new HashMap<String, Server>();
-			serverIdToServerMap.put(temp.getServerId(), temp);
-			temp = temp.getAdjacencyList().getSucessor();
-		}
+		config.getChainToServerMap().put(chain2.getChainName(), serverIdToServerMap2);*/
 		
 		config.getClients().put(client1.getClientId(), client1);
-		config.getClients().put(client2.getClientId(), client2);
-		config.getClients().put(client3.getClientId(), client3);
+		//config.getClients().put(client2.getClientId(), client2);
+		//config.getClients().put(client3.getClientId(), client3);
 		
 		config.setMaster(master);
 		return config;

@@ -24,7 +24,7 @@ public class ServerImpl extends ChainReplicationImpl{
 
 
 	public static void main(String args[]) {
-		Config config = ConfigUtil.convertToConfig(args[0]);
+		Config config = ConfigUtil.deserializeFromFile(args[0]);
 		String serverId = args[1];
 		String chainName = args[2];
 		ServerImpl serverImpl = new ServerImpl(config, chainName, serverId);

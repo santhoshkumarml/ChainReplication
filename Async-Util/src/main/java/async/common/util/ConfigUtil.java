@@ -1,50 +1,78 @@
 package async.common.util;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInput;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
-import java.io.UnsupportedEncodingException;
+import java.io.OutputStream;
 
 public class ConfigUtil {
-	public static String convertToStringBytes(Config config) {
-		String result = null;
-		ByteArrayOutputStream b = new ByteArrayOutputStream();
-		ObjectOutputStream o;
+	public static String serializeToFile(Config config) {
+		String fileName = "E:\\workspace\\cr.ser";
+		OutputStream fileOutputStream = null;
+		OutputStream bufferOutputStream = null;
+		ObjectOutput outputStream = null;
+		//serialize the config
 		try {
-			o = new ObjectOutputStream(b);
-			o.writeObject(config);
+			fileOutputStream = new FileOutputStream(fileName);
+			bufferOutputStream = new BufferedOutputStream(fileOutputStream);
+			outputStream = new ObjectOutputStream(bufferOutputStream);
+			outputStream.writeObject(config);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}  finally {
+			if(outputStream != null) {
+				try {
+					outputStream.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+			if (fileOutputStream!=null) {
+				try {
+					fileOutputStream.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
 		}
-		try {
-			result = new String(b.toByteArray(),"UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return result;
+		return fileName;
 	}
 
-	public static Config convertToConfig(String string) {
-		byte[] bytes =  null;
-		try {
-			bytes = string.getBytes("UTF-8");
-		} catch (UnsupportedEncodingException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+	public static Config deserializeFromFile(String filePath) {
+		InputStream fileInputStream = null;
+		InputStream bufferInputStream = null;
+		ObjectInput objectInput = null;
 		Config config = null;
-		ByteArrayInputStream b = new ByteArrayInputStream(bytes);
-		ObjectInputStream o;
+		//deserialize the config
 		try {
-			o = new ObjectInputStream(b);
-			config = (Config)o.readObject();
+			fileInputStream = new FileInputStream("E:\\worskapce\\cr.ser");
+			bufferInputStream = new BufferedInputStream(fileInputStream);
+			objectInput = new ObjectInputStream(bufferInputStream);
+			config = (Config) objectInput.readObject(); 
 		} catch (IOException | ClassNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}  finally {
+			if(objectInput != null) {
+				try {
+					objectInput.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+			if (fileInputStream!=null) {
+				try {
+					fileInputStream.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
 		}
 		return config;
 	}

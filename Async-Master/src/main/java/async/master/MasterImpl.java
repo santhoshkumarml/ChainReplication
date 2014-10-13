@@ -12,7 +12,7 @@ public class MasterImpl extends ChainReplicationImpl{
 
 	public static void main(String args[]) {
 		MasterImpl masterImpl = new MasterImpl(
-				ConfigUtil.convertToConfig(args[0]),
+				ConfigUtil.deserializeFromFile(args[0]),
 				args[1]);
 		masterImpl.init();
 		masterImpl.stop();
@@ -21,11 +21,16 @@ public class MasterImpl extends ChainReplicationImpl{
 	public MasterImpl(Config config, String masterId) {
 		super(masterId);
 	}
+	
+    public void logMessage(String message) {
+    	this.getLogMessages().enqueueMessage(message);
+    }
 
 	public void init() {
 		super.init();
 		listernerThread = new HeartBeatListenerThread();
 		listernerThread.start();
+		this.logMessage("Master Started:");
 	}
 
 	public void stop() {

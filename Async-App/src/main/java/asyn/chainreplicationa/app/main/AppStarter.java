@@ -55,7 +55,7 @@ public class AppStarter {
 		ProcessBuilder pb = new ProcessBuilder(
 				"java",
 				ServerImpl.class.getName(),
-				ConfigUtil.convertToStringBytes(config),
+				ConfigUtil.serializeToFile(config),
 				server.getBankName(),
 				server.getServerId());
 		pb.environment().putAll(envs);
@@ -80,7 +80,7 @@ public class AppStarter {
 		ProcessBuilder pb = new ProcessBuilder(
 				"java",
 				ClientImpl.class.getName(),
-				ConfigUtil.convertToStringBytes(config),
+				ConfigUtil.serializeToFile(config),
 				client.getClientId());
 		pb.environment().putAll(envs);
 		return pb;
@@ -92,7 +92,7 @@ public class AppStarter {
 		ProcessBuilder pb = new ProcessBuilder(
 				"java",
 				MasterImpl.class.getName(),
-				new String(ConfigUtil.convertToStringBytes(config)),
+				ConfigUtil.serializeToFile(config),
 				config.getMaster().getMasterName());
 		pb.environment().putAll(envs);
 		pb.environment().put("CLASSPATH", classPathValue);
