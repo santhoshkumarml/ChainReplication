@@ -52,7 +52,7 @@ public class ConfigUtil {
 		Config config = null;
 		//deserialize the config
 		try {
-			fileInputStream = new FileInputStream("E:\\worskapce\\cr.ser");
+			fileInputStream = new FileInputStream(filePath);
 			bufferInputStream = new BufferedInputStream(fileInputStream);
 			objectInput = new ObjectInputStream(bufferInputStream);
 			config = (Config) objectInput.readObject(); 

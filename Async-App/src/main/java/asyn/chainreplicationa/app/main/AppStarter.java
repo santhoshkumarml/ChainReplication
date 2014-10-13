@@ -26,7 +26,7 @@ public class AppStarter {
 			masterProcessBuilder.start();
 			for(ProcessBuilder pb : serverProcessBuilders) {
 				Process p =pb.start();
-				BufferedReader is;  // reader for output of process
+				/*BufferedReader is;  // reader for output of process
 				String line;
 
 				// getInputStream gives an Input stream connected to
@@ -35,7 +35,7 @@ public class AppStarter {
 				is = new BufferedReader(new InputStreamReader(p.getInputStream()));
 
 				while ((line = is.readLine()) != null)
-				  System.out.println(line);
+				  System.out.println(line);*/
 				p.waitFor();
 			}
 			for(ProcessBuilder pb : clientProcessBuilders) {
@@ -65,13 +65,16 @@ public class AppStarter {
 	private static ProcessBuilder createProcessForServer(
 			Config config, Server server ) {
 		Map<String,String> envs = System.getenv();
+		String classPathValue = System.getProperty("java.class.path");
 		ProcessBuilder pb = new ProcessBuilder(
-				"java",//"-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=10000",
+				"java",
+				"-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=10000",
 				ServerImpl.class.getName(),
 				ConfigUtil.serializeToFile(config),
 				server.getChainName(),
 				server.getServerId());
 		pb.environment().putAll(envs);
+		pb.environment().put("CLASSPATH", classPathValue);
 		return pb;
 	}
 
@@ -90,12 +93,14 @@ public class AppStarter {
 	private static ProcessBuilder createProcessForClient(
 			Config config, Client client ) {
 		Map<String,String> envs = System.getenv();
+		String classPathValue = System.getProperty("java.class.path");
 		ProcessBuilder pb = new ProcessBuilder(
 				"java",
 				ClientImpl.class.getName(),
 				ConfigUtil.serializeToFile(config),
 				client.getClientId());
 		pb.environment().putAll(envs);
+		pb.environment().put("CLASSPATH", classPathValue);
 		return pb;
 	}
 	
