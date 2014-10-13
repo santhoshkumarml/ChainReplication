@@ -72,13 +72,13 @@ public class ClientMessageHandler {
 			Server tail = getTailForChain(chainName);
 			clientMessageClientHelper = new UDPClientHelper(
 					tail.getServerProcessDetails().getHost(),
-					tail.getServerProcessDetails().getPort());
+					tail.getServerProcessDetails().getUdpPort());
 			break;
 		case UPDATE:
 			Server head = getHeadForChain(chainName);
 			clientMessageClientHelper = new UDPClientHelper(
 					head.getServerProcessDetails().getHost(),
-					head.getServerProcessDetails().getPort());
+					head.getServerProcessDetails().getUdpPort());
 			break;
 		}
 		try {

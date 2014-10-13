@@ -21,7 +21,7 @@ public class UDPServerStarterHelper implements IServerStarterHelper{
 	@Override
 	public void initAndStartServer() throws ConnectServerException {
 		try {
-			serverSocket = new DatagramSocket(0);
+			serverSocket = new DatagramSocket(port);
 		} catch (IOException e) {
 			throw new ConnectServerException(e);
 		}
@@ -30,7 +30,7 @@ public class UDPServerStarterHelper implements IServerStarterHelper{
 	@Override
 	public Object acceptAndReadObjectConnection() throws ConnectServerException {
 		Object message = null;
-		byte[] receiveData = new byte[2048];
+		byte[] receiveData = new byte[10240];
 		ObjectInputStream oos = null;
 		try {
 			DatagramPacket packet = new DatagramPacket(receiveData, receiveData.length);

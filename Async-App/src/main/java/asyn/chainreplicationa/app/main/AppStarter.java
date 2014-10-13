@@ -1,7 +1,5 @@
 package asyn.chainreplicationa.app.main;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -32,7 +30,7 @@ public class AppStarter {
 				serverProcesses.add(p);
 			}
 			for(ProcessBuilder pb : clientProcessBuilders) {
-				Process p =pb.start();
+				Process p = pb.start();
 				clientProcesses.add(p);
 			}
 
@@ -47,12 +45,12 @@ public class AppStarter {
 			}
 
 			for(Process serverProcess : serverProcesses) {
-				serverProcess.destroy();
+				if(serverProcess.isAlive())
+					serverProcess.destroy();
 			}
-			masterProcess.destroy();
+			if(masterProcess.isAlive())
+				masterProcess.destroy();
 			System.out.println("All Done Happily");
-
-
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
@@ -77,13 +75,16 @@ public class AppStarter {
 			Config config, Server server ) {
 		Map<String,String> envs = System.getenv();
 		String classPathValue = System.getProperty("java.class.path");
-		ProcessBuilder pb = new ProcessBuilder(
+		ProcessBuilder pb;
+		pb = new ProcessBuilder(
 				"java",
-				"-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=10000",
+				//"-Xdebug",
+				//"-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=13000",
 				ServerImpl.class.getName(),
 				ConfigUtil.serializeToFile(config),
 				server.getChainName(),
 				server.getServerId());
+
 		pb.environment().putAll(envs);
 		pb.environment().put("CLASSPATH", classPathValue);
 		return pb;
@@ -107,6 +108,8 @@ public class AppStarter {
 		String classPathValue = System.getProperty("java.class.path");
 		ProcessBuilder pb = new ProcessBuilder(
 				"java",
+				//"-Xdebug",
+				//"-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=13001",
 				ClientImpl.class.getName(),
 				ConfigUtil.serializeToFile(config),
 				client.getClientId());

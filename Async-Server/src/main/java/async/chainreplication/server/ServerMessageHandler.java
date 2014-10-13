@@ -34,7 +34,7 @@ public class ServerMessageHandler {
 
 	IClientHelper syncOrAckSendClientHelper;
 	IClientHelper tailResponseClientHelper;
-	
+
 	ServerChainReplicationFacade serverChainReplicationFacade;
 
 	public ServerMessageHandler(
@@ -123,14 +123,16 @@ public class ServerMessageHandler {
 		Server sucessor = this.server.getAdjacencyList().getSucessor();
 		if(sucessor != null) {
 			//Non tail operation is to sync
-			syncOrAckSendClientHelper = new TCPClientHelper(
-					sucessor.getServerProcessDetails().getHost(),
-					sucessor.getServerProcessDetails().getTcpPort());
-			ChainReplicationMessage syncMessage = new ResponseOrSyncMessage(request, reply);
-			try {
-				syncOrAckSendClientHelper.sendMessage(syncMessage);
-			} catch (ConnectClientException e) {
-				throw new ServerChainReplicationException(e);
+			synchronized (syncOrAckSendClientHelper) {
+				syncOrAckSendClientHelper = new TCPClientHelper(
+						sucessor.getServerProcessDetails().getHost(),
+						sucessor.getServerProcessDetails().getTcpPort());
+				ChainReplicationMessage syncMessage = new ResponseOrSyncMessage(request, reply);
+				try {
+					syncOrAckSendClientHelper.sendMessage(syncMessage);
+				} catch (ConnectClientException e) {
+					throw new ServerChainReplicationException(e);
+				}	
 			}
 			sentHistory.addToSentHistory(request.getRequestId());
 			//send sync
@@ -155,15 +157,17 @@ public class ServerMessageHandler {
 		Server predecessor = this.server.getAdjacencyList().getPredecessor();
 		//Terminate propagation once we reach head
 		if(predecessor != null) {
-			syncOrAckSendClientHelper = new TCPClientHelper(
-					predecessor.getServerProcessDetails().getHost(),
-					predecessor.getServerProcessDetails().getTcpPort());
-			ChainReplicationMessage ackMessage = new AckMessage(request);
-			//change it to ACK Message
-			try {
-				syncOrAckSendClientHelper.sendMessage(ackMessage);
-			} catch (ConnectClientException e) {
-				throw new ServerChainReplicationException(e);
+			synchronized (syncOrAckSendClientHelper) {
+				syncOrAckSendClientHelper = new TCPClientHelper(
+						predecessor.getServerProcessDetails().getHost(),
+						predecessor.getServerProcessDetails().getTcpPort());
+				ChainReplicationMessage ackMessage = new AckMessage(request);
+				//change it to ACK Message
+				try {
+					syncOrAckSendClientHelper.sendMessage(ackMessage);
+				} catch (ConnectClientException e) {
+					throw new ServerChainReplicationException(e);
+				}	
 			}
 		}
 

@@ -30,7 +30,7 @@ public class ApplicationRequestHandler implements IApplicationRequestHandler{
 				AccountSnapshot accountSnapshot = accounts.getAccountSnapshot(
 						applicationRequest.getAccountNum());
 				reply.setBalance(accountSnapshot.getBalance());
-	           //TODO : Inconsistent history
+				//TODO : Inconsistent history
 				reply.setOutcome(Outcome.Processed);
 				reply.setReqID(request.getRequestId());
 			}
@@ -49,7 +49,7 @@ public class ApplicationRequestHandler implements IApplicationRequestHandler{
 				if(balance>=amount) {
 					balance -= amount;
 					accountSnapshot.setBalance(balance);
-				    reply.setOutcome(Outcome.Processed);
+					reply.setOutcome(Outcome.Processed);
 				} else {
 					reply.setOutcome(Outcome.InsufficientFunds);
 				}
@@ -67,16 +67,29 @@ public class ApplicationRequestHandler implements IApplicationRequestHandler{
 		synchronized (accounts) {
 			AccountSnapshot accountSnapshot = 
 					this.accounts.getAccountSnapshot(accountNum);
-			accountSnapshot = accounts.addAccount(accountNum);
+			if(accountSnapshot == null) {
+				accountSnapshot = accounts.addAccount(accountNum);
+			}
 			float balance = accountSnapshot.getBalance();
 			balance += amount;
 			reply.setOutcome(Outcome.Processed);
 			reply.setBalance(balance);
 		}
 	}
+	
+	private void handleGetBalance(int accountNum, ApplicationReply reply) {
+		synchronized (accounts) {
+			AccountSnapshot accountSnapshot = 
+					this.accounts.getAccountSnapshot(accountNum);
+			reply.setOutcome(Outcome.Processed);
+			reply.setBalance(accountSnapshot.getBalance());
+			reply.setAccountNum(accountSnapshot.getAccountNum());
+		}
+		
+	}
 
-//--------------------------------------------------------------------------
-//Handler Methods
+	//--------------------------------------------------------------------------
+	//Handler Methods
 	@Override
 	public Reply handleRequest(Request request) {
 		ApplicationReply reply = checkForExistingTransactionHistoryAndReply(request);
@@ -94,6 +107,9 @@ public class ApplicationRequestHandler implements IApplicationRequestHandler{
 				break;
 			case TRANSFER:
 				handleWithdrawOrTransfer(accountNum, amount, reply);
+				break;
+			case GET_BALANCE:
+				handleGetBalance(accountNum, reply);
 				break;
 			default:
 				break;
