@@ -11,6 +11,7 @@ public class Request implements Serializable{
 	private static final long serialVersionUID = 2145253058392283227L;
 	String requestId;
 	RequestType requestType;
+	int retryCount = 0;
 	Client client;
 
 	public Request(Client client, String requestId) {
@@ -18,6 +19,18 @@ public class Request implements Serializable{
 		this.client = client; 
 		this.requestId =  requestId;
 	}
+
+	public int getRetryCount() {
+		return retryCount;
+	}
+
+
+
+	public void setRetryCount(int retryCount) {
+		this.retryCount = retryCount;
+	}
+
+
 
 	public String getRequestId() {
 		return requestId;

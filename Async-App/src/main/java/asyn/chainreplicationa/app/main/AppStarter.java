@@ -1,15 +1,16 @@
 package asyn.chainreplicationa.app.main;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import app.chainreplication.app.json.util.JSONUtility;
 import async.chainreplication.client.ClientImpl;
 import async.chainreplication.master.models.Client;
 import async.chainreplication.master.models.Server;
 import async.chainreplication.server.ServerImpl;
-import async.common.app.config.util.AppConfigUtil;
 import async.common.util.Config;
 import async.common.util.ConfigUtil;
 import async.master.MasterImpl;
@@ -17,8 +18,9 @@ import async.master.MasterImpl;
 public class AppStarter {
 	public static void main(String[] args) {
 		String configFile = args[0];
+		System.out.println("Starting Main"+new Date());
 		try{
-			Config config = AppConfigUtil.readConfigFromFile(configFile);
+			Config config = JSONUtility.readConfigFromJSON(configFile);
 			ProcessBuilder masterProcessBuilder = createMaster(config);
 			List<ProcessBuilder> serverProcessBuilders = createServersForChains(config);
 			List<ProcessBuilder> clientProcessBuilders = createClients(config);
@@ -50,7 +52,7 @@ public class AppStarter {
 			}
 			if(masterProcess.isAlive())
 				masterProcess.destroy();
-			System.out.println("All Done Happily");
+			System.out.println("Stopping Main"+new Date());
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
@@ -76,11 +78,11 @@ public class AppStarter {
 		Map<String,String> envs = System.getenv();
 		String classPathValue = System.getProperty("java.class.path");
 		ProcessBuilder pb;
-		if(server.isHead()) {
+		if(server.isTail()) {
 		pb = new ProcessBuilder(
 				"java",
-				"-Xdebug",
-				"-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=13000",
+				//"-Xdebug",
+				//"-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=13000",
 				ServerImpl.class.getName(),
 				ConfigUtil.serializeToFile(config),
 				server.getChainName(),

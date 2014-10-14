@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import async.chainreplication.client.server.communication.models.Request;
 import async.chainreplication.master.models.Client;
 
 public class TestCases implements Serializable{
@@ -13,8 +12,7 @@ public class TestCases implements Serializable{
 	 */
 	private static final long serialVersionUID = -397223799879846009L;
 	Client client;
-	String chainName;
-	List<Request> requests = new ArrayList<Request>();
+	List<RequestWithChain> requests = new ArrayList<RequestWithChain>();
 	
 	public Client getClient() {
 		return client;
@@ -23,14 +21,14 @@ public class TestCases implements Serializable{
 		this.client = client;
 	}
 	
-	public String getChainName() {
-		return chainName;
-	}
-	public void setChainName(String chainName) {
-		this.chainName = chainName;
-	}
-	public List<Request> getRequests() {
+	public List<RequestWithChain> getRequests() {
 		return requests;
 	}
+	@Override
+	public String toString() {
+		return "TestCases [client=" + client + "," + requests.toString() + "]";
+	}
+	
+	
 	
 }

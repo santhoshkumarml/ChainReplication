@@ -13,12 +13,11 @@ public class Server implements Serializable{
 	ProcessDetails serverProcessDetails;
 	AdjacencyList adjacencyList = new AdjacencyList(null, null);
 	
-	public Server(String serverId, String chainName, String host,int port) {
+	public Server(String serverId, String chainName, String host) {
 		this.serverId = serverId;
 		this.chainName = chainName;
 		this.serverProcessDetails = new ProcessDetails();
 		this.serverProcessDetails.setHost(host);
-		this.serverProcessDetails.setPort(port);
 	}
 	
 	public String getServerId() {

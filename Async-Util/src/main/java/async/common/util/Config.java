@@ -50,7 +50,7 @@ public class Config implements Serializable{
 	}
 
 
-	public static Config createDefaultValues() {
+/*	public static Config createDefaultValues() {
 		Config config = new Config();
 		Client client1 = new Client("client1", "localhost", 10001);
 		client1.getClientProcessDetails().setTcpPort(10011);
@@ -123,7 +123,7 @@ public class Config implements Serializable{
 			serverIdToServerMap2.put(temp.getServerId(), temp);
 			temp = temp.getAdjacencyList().getSucessor();
 		}
-		config.getChainToServerMap().put(chain2.getChainName(), serverIdToServerMap2);*/
+		config.getChainToServerMap().put(chain2.getChainName(), serverIdToServerMap2);
 		
 		config.getClients().put(client1.getClientId(), client1);
 		config.getClients().put(client2.getClientId(), client2);
@@ -133,7 +133,7 @@ public class Config implements Serializable{
 		config.setMaster(master);
 		
 		return config;
-	}
+	}*/
 
 
 	@Override

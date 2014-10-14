@@ -2,6 +2,7 @@ package async.common.util;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -14,12 +15,14 @@ import java.io.OutputStream;
 
 public class ConfigUtil {
 	public static String serializeToFile(Config config) {
-		String fileName = "E:\\workspace\\cr.ser";
 		OutputStream fileOutputStream = null;
 		OutputStream bufferOutputStream = null;
 		ObjectOutput outputStream = null;
+		String fileName = "";
 		//serialize the config
 		try {
+			File temp = File.createTempFile("temp", Long.toString(System.nanoTime())+".ser");
+			fileName = temp.getAbsolutePath();
 			fileOutputStream = new FileOutputStream(fileName);
 			bufferOutputStream = new BufferedOutputStream(fileOutputStream);
 			outputStream = new ObjectOutputStream(bufferOutputStream);

@@ -15,7 +15,8 @@ import async.common.util.TestCases;
 public class AppConfigUtil {
 
 	public static Config readConfigFromFile(String configFile) {
-		Config config = Config.createDefaultValues();
+		Config config = new Config(); 
+		//Config.createDefaultValues();
 		readTestCases(config, configFile);
 		return config;
 	}
@@ -39,9 +40,8 @@ public class AppConfigUtil {
 					testCases = new TestCases();
 					String chainName = requestStringSplit[0].trim();
 					testCases.setClient(client);
-					testCases.setChainName(chainName);
 				}
-				testCases.getRequests().add(request);
+				//testCases.getRequests().add(request);
 				config.getTestCases().put(client, testCases);
 			}
 

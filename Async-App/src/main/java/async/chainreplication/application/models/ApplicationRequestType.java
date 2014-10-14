@@ -5,8 +5,8 @@ import async.chainreplication.client.server.communication.models.RequestType;
 public enum ApplicationRequestType {
 	GET_BALANCE(RequestType.QUERY),
 	DEPOSIT(RequestType.UPDATE),
-	TRANSFER(RequestType.UPDATE),
-	WITHDRAW(RequestType.UPDATE);
+	WITHDRAW(RequestType.UPDATE),
+	TRANSFER(RequestType.UPDATE);
 
 	private RequestType requestType;
 

@@ -37,7 +37,7 @@ public class ClientRequestMessage extends ChainReplicationMessage {
 	@Override
 	public String toString() {
 		return "ClientRequestMessage [chainName=" + chainName
-				+ ", requestMessage=" + requestMessage.toString() + "]";
+				+ "," + requestMessage.toString() + "]";
 	}
 
 }

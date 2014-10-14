@@ -35,7 +35,7 @@ public class ChainReplicationLoggerThread extends Thread{
 			if(this.chainReplicationImpl.getLogMessages().hasMoreMessages()) {
 				MessageQueue<String> queue =  this.chainReplicationImpl.getLogMessages();
 				Message<String> message =(Message<String>)queue.dequeueMessage();
-				pw.println(new Date(message.getTimestamp())+":"+message.getMessageObject());
+				pw.println(new Date(message.getTimestamp())+":"+message.getMessageObject()+"\r\n");
 				pw.flush();
 			}			
 		}

@@ -19,7 +19,7 @@ public class AckMessage extends ChainReplicationMessage{
 
 	@Override
 	public String toString() {
-		return "AckMessage [request=" + request.toString() + "]";
+		return "Ack["+ request.toString() + "]";
 	}
 	
 }

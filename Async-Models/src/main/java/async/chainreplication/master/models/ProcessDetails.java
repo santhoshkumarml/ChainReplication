@@ -9,7 +9,6 @@ public class ProcessDetails implements Serializable{
 	 */
 	private static final long serialVersionUID = -449386447593161029L;
 	String host = "localhost";
-	int port = -1;
 	int tcpPort = -1;
 	int udpPort = -1;
 
@@ -19,12 +18,6 @@ public class ProcessDetails implements Serializable{
 	}
 	public void setHost(String host) {
 		this.host = host;
-	}
-	public int getPort() {
-		return port;
-	}
-	public void setPort(int port) {
-		this.port = port;
 	}
 	public int getTcpPort() {
 		return tcpPort;
@@ -41,7 +34,7 @@ public class ProcessDetails implements Serializable{
 	
 	@Override
 	public String toString() {
-		return "ProcessDetails [host=" + host + ", port=" + port + ", tcpPort="
+		return "ProcessDetails [host=" + host + ", tcpPort="
 				+ tcpPort + ", udpPort=" + udpPort + "]";
 	}
 	

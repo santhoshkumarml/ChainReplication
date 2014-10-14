@@ -103,7 +103,7 @@ public class ApplicationRequest  extends Request implements Serializable{
 
 	@Override
 	public String toString() {
-		return "ApplicationRequest [applicationRequestType="
+		return "Request [requestType="
 				+ applicationRequestType + ", accountNum=" + accountNum
 				+ ", amount=" + amount + ", destBank=" + destBank
 				+ ", destAccountNum=" + destAccountNum + ", requestId="

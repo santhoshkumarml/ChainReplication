@@ -8,13 +8,18 @@ public class Client implements Serializable{
 	 */
 	private static final long serialVersionUID = 1866788520095538461L;
 	String clientId;
+	long responseWaitTime;
 	ProcessDetails clientProcessDetails;
 
-	public Client(String clientId, String host,int port) {
+	public Client(String clientId,String host, long responseWaitTime) {
 		this.clientId = clientId;
 		this.clientProcessDetails = new ProcessDetails();
 		this.clientProcessDetails.setHost(host);
-		this.clientProcessDetails.setPort(port);
+		this.responseWaitTime = responseWaitTime;
+	}
+
+	public long getResponseWaitTime() {
+		return responseWaitTime;
 	}
 
 	public String getClientId() {

@@ -9,6 +9,7 @@ import async.chainreplication.application.models.Outcome;
 import async.chainreplication.client.server.communication.models.Reply;
 import async.chainreplication.client.server.communication.models.Request;
 import async.chainreplication.client.server.communication.models.RequestKey;
+import async.chainreplication.client.server.communication.models.RequestType;
 import async.chainreplication.server.IApplicationRequestHandler;
 import async.chainreplication.server.ServerMessageHandler;
 
@@ -172,8 +173,14 @@ public class ApplicationRequestHandler implements IApplicationRequestHandler{
 			this.updateHistories(request, reply);
 			AccountSnapshot accountSnapshot =  
 					accounts.getAccountSnapshot(applicationReply.getAccountNum());
-			if(accountSnapshot != null) //For get balance if we give a sync it will not find any account
+			if(accountSnapshot != null ) {
 				accountSnapshot.setBalance(applicationReply.getBalance());
+			} else {
+				if(request.getRequestType() != RequestType.QUERY) {
+					accountSnapshot = accounts.addAccount(applicationReply.getAccountNum());
+					accountSnapshot.setBalance(applicationReply.getBalance());
+				}
+			}
 		}
 	}
 
