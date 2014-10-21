@@ -21,8 +21,7 @@ public class ChainReplicationLoggerThread extends Thread{
 		this.chainReplicationImpl = chainReplicationImpl;
 		//chainReplicationlogger = Logger.getLogger(this.chainReplicationImpl.getUniqueId());
 		try {
-			pw= new PrintWriter(new File(
-					"E:\\workspace\\Async-ChainReplication-"+
+			pw= new PrintWriter(new File("ChainReplication-"+
 							this.chainReplicationImpl.getUniqueId()+".log"));
 		} catch (SecurityException | IOException e) {
 			// TODO Auto-generated catch block
