@@ -6,6 +6,7 @@ import async.chainreplication.master.models.Master;
 import async.chainreplication.master.models.Server;
 import async.chainreplication.server.exception.ServerChainReplicationException;
 import async.chainreplication.server.threads.ChainMessageListenerThread;
+import async.chainreplication.server.threads.HeartBeatSenderTask;
 import async.chainreplication.server.threads.MasterUpdateListenerThread;
 import async.chainreplication.server.threads.RequestQueryOrUpdateThread;
 import async.common.util.Config;
@@ -70,10 +71,10 @@ public class ServerImpl extends ChainReplicationImpl{
 	public void init() {
 		super.init();
 		this.logMessage("Server Starting"+this.getServer());
-		/*heartBeatSenderTimer = new Timer();
-		HeartBeatSenderTask heartBeatSender = new HeartBeatSenderTask(this);
-		//heartBeatSenderTimer.schedule(heartBeatSender, (heartBeatTimeOut-3000));*/
 		try {
+			heartBeatSenderTimer = new Timer();
+			HeartBeatSenderTask heartBeatSender = new HeartBeatSenderTask(this);
+			heartBeatSenderTimer.schedule(heartBeatSender, (heartBeatTimeOut-3000));
 			requestOrQueryUpdateThread = new RequestQueryOrUpdateThread(this);
 			requestOrQueryUpdateThread.start();
 			chainMessageListenerThread = new ChainMessageListenerThread(this);
@@ -88,11 +89,12 @@ public class ServerImpl extends ChainReplicationImpl{
 	}
 
 	public void stop() {
-		//heartBeatSenderTimer.cancel();
 		this.logMessage("Server Stopping");
+		heartBeatSenderTimer.cancel();
 		requestOrQueryUpdateThread.stopThread();
 		chainMessageListenerThread.stopThread();
 		this.serverChainReplicationFacade.stopProcessing();
 		super.stop();
+		this.logMessage("Server Stopped");
 	}
 }
