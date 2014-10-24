@@ -1,5 +1,7 @@
 package async.master;
 
+import java.util.Timer;
+
 import async.chainreplication.master.exception.MasterChainReplicationException;
 import async.chainreplication.master.models.Master;
 import async.common.util.Config;
@@ -8,10 +10,11 @@ import aync.chainreplication.base.impl.ChainReplicationImpl;
 
 
 public class MasterImpl extends ChainReplicationImpl{
-
 	Master master;
 	HeartBeatListenerThread listernerThread;
+	Timer checkerThread;
 	MasterChainReplicationFacade masterChainReplicationFacade;
+	long heartBeatTimeout = 5000;
 
 	public static void main(String args[]) {
 		MasterImpl masterImpl = new MasterImpl(
@@ -50,17 +53,22 @@ public class MasterImpl extends ChainReplicationImpl{
 		try {
 			super.init();
 			listernerThread = new HeartBeatListenerThread(this);
+			checkerThread = new Timer();
+			HeartBeatCheckerTask task = new HeartBeatCheckerTask(this);
+			checkerThread.schedule(task, heartBeatTimeout);
 			listernerThread.start();
 		} catch(MasterChainReplicationException e) {
 			this.logMessage("Internal Error:"+e.getMessage());
+			this.stop();
+			e.printStackTrace();
 		}
 		this.logMessage("Master Started:");
 	}
 
 	public void stop() {
 		this.logMessage("Master Stopping");
+		checkerThread.cancel();
 		listernerThread.stopThread();
 		super.stop();
-		this.logMessage("Master Stopped");
 	}
 }
