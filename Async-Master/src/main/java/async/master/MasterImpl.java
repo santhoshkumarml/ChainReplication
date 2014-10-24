@@ -7,8 +7,8 @@ import aync.chainreplication.base.impl.ChainReplicationImpl;
 
 public class MasterImpl extends ChainReplicationImpl{
 
-	//MasterDataPersister masterDataStructure = new MasterDataPersister();
 	HeartBeatListenerThread listernerThread;
+	MasterChainReplicationFacade masterChainReplicationFacade;
 
 	public static void main(String args[]) {
 		MasterImpl masterImpl = new MasterImpl(
@@ -20,6 +20,16 @@ public class MasterImpl extends ChainReplicationImpl{
 
 	public MasterImpl(Config config, String masterId) {
 		super(masterId);
+		try {
+			this.masterChainReplicationFacade = new MasterChainReplicationFacade(
+					config.getMaster(),
+					config.getChains(),
+					config.getChainToServerMap(),
+					config.getClients(),
+					this);
+		} catch (Exception e) {
+			this.logMessage(e.getMessage());
+		}
 	}
 	
     public void logMessage(String message) {
