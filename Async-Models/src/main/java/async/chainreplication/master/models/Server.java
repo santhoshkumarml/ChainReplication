@@ -50,6 +50,56 @@ public class Server implements Serializable{
 	public boolean isTail() {
 		return this.adjacencyList.getSucessor() == null;
 	}
+	
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((adjacencyList == null) ? 0 : adjacencyList.hashCode());
+		result = prime * result
+				+ ((chainName == null) ? 0 : chainName.hashCode());
+		result = prime * result
+				+ ((serverId == null) ? 0 : serverId.hashCode());
+		result = prime
+				* result
+				+ ((serverProcessDetails == null) ? 0 : serverProcessDetails
+						.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Server other = (Server) obj;
+		if (adjacencyList == null) {
+			if (other.adjacencyList != null)
+				return false;
+		} else if (!adjacencyList.equals(other.adjacencyList))
+			return false;
+		if (chainName == null) {
+			if (other.chainName != null)
+				return false;
+		} else if (!chainName.equals(other.chainName))
+			return false;
+		if (serverId == null) {
+			if (other.serverId != null)
+				return false;
+		} else if (!serverId.equals(other.serverId))
+			return false;
+		if (serverProcessDetails == null) {
+			if (other.serverProcessDetails != null)
+				return false;
+		} else if (!serverProcessDetails.equals(other.serverProcessDetails))
+			return false;
+		return true;
+	}
 
 	@Override
 	public String toString() {

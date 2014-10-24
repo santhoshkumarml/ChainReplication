@@ -14,6 +14,10 @@ public class MasterGenericServerChangeMessage extends MasterMessage {
 	
 	List<Server> diedServers = new ArrayList<Server>();
 
+	public MasterGenericServerChangeMessage(List<Server> diedServers) {
+		this.diedServers.addAll(diedServers);
+	}
+
 	public List<Server> getDiedServers() {
 		return diedServers;
 	}

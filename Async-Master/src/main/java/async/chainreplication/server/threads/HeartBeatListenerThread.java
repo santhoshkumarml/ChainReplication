@@ -1,9 +1,10 @@
-package async.master;
+package async.chainreplication.server.threads;
 
 import async.chainreplication.master.exception.MasterChainReplicationException;
 import async.connection.util.ConnectServerException;
 import async.connection.util.IServerStarterHelper;
 import async.connection.util.TCPServerStarterHelper;
+import async.master.MasterImpl;
 
 public class HeartBeatListenerThread extends Thread {
 	volatile boolean shouldStillRun = true;

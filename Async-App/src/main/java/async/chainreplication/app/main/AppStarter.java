@@ -1,4 +1,4 @@
-package asyn.chainreplicationa.app.main;
+package async.chainreplication.app.main;
 
 import java.util.ArrayList;
 import java.util.Date;

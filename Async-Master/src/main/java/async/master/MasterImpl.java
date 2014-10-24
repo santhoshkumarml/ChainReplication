@@ -4,6 +4,8 @@ import java.util.Timer;
 
 import async.chainreplication.master.exception.MasterChainReplicationException;
 import async.chainreplication.master.models.Master;
+import async.chainreplication.server.threads.HeartBeatCheckerTask;
+import async.chainreplication.server.threads.HeartBeatListenerThread;
 import async.common.util.Config;
 import async.common.util.ConfigUtil;
 import aync.chainreplication.base.impl.ChainReplicationImpl;
@@ -43,6 +45,11 @@ public class MasterImpl extends ChainReplicationImpl{
 
 	public Master getMaster() {
 		return master;
+	}
+	
+
+	public MasterChainReplicationFacade getMasterChainReplicationFacade() {
+		return masterChainReplicationFacade;
 	}
 
 	public void logMessage(String message) {
