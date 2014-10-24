@@ -29,6 +29,11 @@ import async.common.util.TestCases;
 
 public class JSONUtility {
 
+	/**
+	 * 
+	 * @param filePath
+	 * @return
+	 */
 	public static Config readConfigFromJSON(String filePath) {
 		Config config = new Config();
 		FileReader reader = null;
@@ -128,6 +133,7 @@ public class JSONUtility {
 			testCases = new TestCases();
 			testCases.setClient(client);
 		}
+		System.out.println("Probability Requests:"+requestWithChains.toString());
 		testCases.getRequests().addAll(requestWithChains);
 		config.getTestCases().put(client, testCases);
 	}
