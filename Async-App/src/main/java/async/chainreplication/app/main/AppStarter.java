@@ -60,7 +60,6 @@ public class AppStarter {
 
 	private static List<ProcessBuilder> createServersForChains(
 			Config config) {
-		//Map<String,Map<String, Server>>config.getChainToServerMap()
 		List<ProcessBuilder> serverProcesses = new ArrayList<ProcessBuilder>();
 		for(String chainId : config.getChains().keySet()) {
 			for(String serverId : config.getChainToServerMap().get(chainId).keySet()) {
