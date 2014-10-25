@@ -11,9 +11,9 @@ import async.chainreplication.client.ClientImpl;
 import async.chainreplication.master.models.Client;
 import async.chainreplication.master.models.Server;
 import async.chainreplication.server.ServerImpl;
+import async.chainreplocation.master.MasterImpl;
 import async.common.util.Config;
 import async.common.util.ConfigUtil;
-import async.master.MasterImpl;
 
 public class AppStarter {
 	public static void main(String[] args) {

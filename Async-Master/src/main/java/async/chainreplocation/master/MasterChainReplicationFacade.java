@@ -1,4 +1,4 @@
-package async.master;
+package async.chainreplocation.master;
 
 import java.util.Map;
 
