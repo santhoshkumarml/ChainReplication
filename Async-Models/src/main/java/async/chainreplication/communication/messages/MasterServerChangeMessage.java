@@ -17,11 +17,8 @@ public class MasterServerChangeMessage extends MasterMessage{
 
 	Set<Chain> otherChains = new HashSet<Chain>();
 
-	public MasterServerChangeMessage(Server server, Set<Chain> otherChains) {
+	public MasterServerChangeMessage(Server server) {
 		this.server = server;
-		if(server.isHead() || server.isTail()) {
-			this.otherChains = otherChains;
-		}
 	}
 
 	public Server getServer() {
@@ -29,6 +26,7 @@ public class MasterServerChangeMessage extends MasterMessage{
 	}
 
 	public Set<Chain> getOtherChains() {
+		assert this.server.isHead() || this.server.isTail();
 		return otherChains;
 	}
 

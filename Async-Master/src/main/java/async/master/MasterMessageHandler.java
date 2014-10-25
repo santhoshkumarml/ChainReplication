@@ -33,16 +33,48 @@ public class MasterMessageHandler {
 		Map<Client, MasterClientChangeMessage> clientMessageChanges = 
 				new HashMap<Client, MasterClientChangeMessage>();
 
-		for(String changedChain : chainChanges.getChainsChanged()) {
-			String chainId = changedChain;
-			Chain chain = this.masterDs.getChains().get(chainId);
-		}
-
-		for(Map.Entry<String, Set<String>> changedServersEntry : chainChanges.getChainToServersChanged().entrySet()) {
+		for(Map.Entry<String, Set<String>> changedServersEntry :
+			chainChanges.getChainToServersChanged().entrySet()) {
 			String chainId = changedServersEntry.getKey();
 			Set<String> serverIdsChanged = changedServersEntry.getValue();
 			for(String serverIdChanged : serverIdsChanged) {
 				Server server = this.masterDs.getChainToServerMap().get(chainId).get(serverIdChanged);
+				MasterServerChangeMessage serverMessage = serverMessageChanges.get(server);
+				if(serverMessage == null) {
+					serverMessage = new MasterServerChangeMessage(server);
+				}
+				serverMessageChanges.put(server, serverMessage);
+			}
+		}
+
+		for(String changedChain : chainChanges.getChainsChanged()) {
+			String chainId = changedChain;
+			Chain chain = this.masterDs.getChains().get(chainId);
+			for(Chain allChain : this.masterDs.getChains().values()) {
+				if(!allChain.getChainName().equals(chainId)) {
+					Server head = allChain.getHead();
+					Server tail = allChain.getTail();
+					MasterServerChangeMessage serverMessage = serverMessageChanges.get(head);
+					if(serverMessage == null) {
+						serverMessage = new MasterServerChangeMessage(head);
+					}
+					serverMessage.getOtherChains().add(chain);
+					serverMessageChanges.put(head, serverMessage);
+					serverMessage = serverMessageChanges.get(tail);
+					if(serverMessage == null) {
+						serverMessage = new MasterServerChangeMessage(tail);
+					}
+					serverMessage.getOtherChains().add(chain);
+					serverMessageChanges.put(tail, serverMessage);
+				}
+			}
+			for(Client client : this.masterDs.getClients().values()) {
+				MasterClientChangeMessage clientChangeMessage = clientMessageChanges.get(client);
+				if(clientChangeMessage == null) {
+					clientChangeMessage = new MasterClientChangeMessage(client);
+				}
+				clientChangeMessage.getChainChanges().add(chain);
+				clientMessageChanges.put(client, clientChangeMessage);
 			}
 		}
 
