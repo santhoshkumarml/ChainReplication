@@ -97,4 +97,24 @@ public class ServerImpl extends ChainReplicationImpl{
 		super.stop();
 		this.logMessage("Server Stopped");
 	}
+	
+	public void pauseAllThreads() {
+		this.logMessage("Pausing message handler threads for update");
+		try {
+			heartBeatSenderTimer.wait();
+			requestOrQueryUpdateThread.wait();
+			chainMessageListenerThread.wait();
+		} catch (InterruptedException e) {
+			this.logMessage("Internal Error:"+ e.getMessage());
+			e.printStackTrace();
+		}
+	}
+	
+	
+	public void resumeAllthreads() {
+		this.logMessage("Resuming message handler threads after update");
+		heartBeatSenderTimer.notifyAll();
+		requestOrQueryUpdateThread.notifyAll();
+		chainMessageListenerThread.notifyAll();
+	}
 }
