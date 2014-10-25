@@ -19,8 +19,6 @@ public class MasterClientChangeMessage extends MasterMessage{
 	public MasterClientChangeMessage(Client client) {
 		this.client = client;
 	}
-
-
 	public Set<Chain> getChainChanges() {
 		return chainChanges;
 	}
