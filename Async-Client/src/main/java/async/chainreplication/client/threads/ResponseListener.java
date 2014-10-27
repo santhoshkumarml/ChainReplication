@@ -3,8 +3,8 @@ package async.chainreplication.client.threads;
 import async.chainreplication.client.ClientImpl;
 import async.chainreplication.client.exception.ClientChainReplicationException;
 import async.chainreplication.communication.messages.ChainReplicationMessage;
-import async.connection.util.IServerStarterHelper;
 import async.connection.util.ConnectServerException;
+import async.connection.util.IServerStarterHelper;
 import async.connection.util.UDPServerStarterHelper;
 
 public class ResponseListener extends Thread{
@@ -40,11 +40,10 @@ public class ResponseListener extends Thread{
 			this.clientImpl.logMessage("Incoming Message-"+receiveSequenceNumber+":"+responseMessage.toString());
 		}
 	}
-	
+
 	public void stopThread() {
 		shouldStillRun = false;
 		responseServerHelper.stopServer();
-		this.stop();
 	}
 
 }

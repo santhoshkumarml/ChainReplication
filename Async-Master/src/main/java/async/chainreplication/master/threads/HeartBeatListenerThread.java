@@ -1,5 +1,6 @@
 package async.chainreplication.master.threads;
 
+import async.chainreplication.communication.messages.HeartBeatMessage;
 import async.chainreplication.master.exception.MasterChainReplicationException;
 import async.chainreplocation.master.MasterImpl;
 import async.connection.util.ConnectServerException;
@@ -24,8 +25,14 @@ public class HeartBeatListenerThread extends Thread {
 
 	public void run() {
 		while(shouldStillRun) {
-
-
+			try {
+				HeartBeatMessage heartBeatMessage = (HeartBeatMessage) this.heartBeatServerHelper.acceptAndReadObjectConnection();
+				
+			} catch (ConnectServerException e) {
+				this.heartBeatServerHelper.stopServer();
+				this.masterImpl.logMessage("Internal Error:"+e.getMessage());
+				e.printStackTrace();
+			}
 		}
 	}
 

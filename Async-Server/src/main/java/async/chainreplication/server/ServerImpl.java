@@ -7,7 +7,6 @@ import async.chainreplication.master.models.Server;
 import async.chainreplication.server.exception.ServerChainReplicationException;
 import async.chainreplication.server.threads.ChainMessageListenerThread;
 import async.chainreplication.server.threads.HeartBeatSenderTask;
-import async.chainreplication.server.threads.MasterUpdateListenerThread;
 import async.chainreplication.server.threads.RequestQueryOrUpdateThread;
 import async.common.util.Config;
 import async.common.util.ConfigUtil;
@@ -16,7 +15,6 @@ import aync.chainreplication.base.impl.ChainReplicationImpl;
 public class ServerImpl extends ChainReplicationImpl{	
 	long heartBeatTimeOut = 5000;
 	Timer heartBeatSenderTimer; 
-	MasterUpdateListenerThread masterUpdateListener;
 	ChainMessageListenerThread chainMessageListenerThread;
 	RequestQueryOrUpdateThread requestOrQueryUpdateThread;
 	ServerChainReplicationFacade serverChainReplicationFacade;
