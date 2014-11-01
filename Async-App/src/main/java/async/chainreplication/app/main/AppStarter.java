@@ -2,9 +2,11 @@ package async.chainreplication.app.main;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import app.chainreplication.app.json.util.JSONUtility;
 import async.chainreplication.client.ClientImpl;
@@ -18,19 +20,26 @@ import async.common.util.ConfigUtil;
 public class AppStarter {
 	public static void main(String[] args) {
 		String configFile = args[0];
+		Thread serverKillerThread = null;
 		System.out.println("Starting Main"+new Date());
 		try{
 			Config config = JSONUtility.readConfigFromJSON(configFile);
 			ProcessBuilder masterProcessBuilder = createMaster(config);
-			List<ProcessBuilder> serverProcessBuilders = createServersForChains(config);
+			Map<Server, ProcessBuilder> serverProcessBuilders = createServersForChains(config);
 			List<ProcessBuilder> clientProcessBuilders = createClients(config);
-			List<Process> serverProcesses = new ArrayList<Process>();
+			Map<Server, Process> serverProcesses = new HashMap<Server, Process>();
+			Map<Server, Long> serverToTimeToDie = new HashMap<Server, Long>();
 			List<Process> clientProcesses = new ArrayList<Process>();
 			Process masterProcess = masterProcessBuilder.start();
-			for(ProcessBuilder pb : serverProcessBuilders) {
-				Process p =pb.start();
-				serverProcesses.add(p);
+			for(Entry<Server, ProcessBuilder> pbEntry : serverProcessBuilders.entrySet()) {
+				Process p =pbEntry.getValue().start();
+				serverProcesses.put(pbEntry.getKey(), p);
+				Integer timeToLive = config.getServerToTimeToLive().get(pbEntry.getKey());
+				serverToTimeToDie.put(pbEntry.getKey(), System.currentTimeMillis()+timeToLive);
 			}
+			ServerKiller killer = new ServerKiller(serverToTimeToDie, serverProcesses);
+			serverKillerThread = new Thread(killer);
+			serverKillerThread.start();
 			for(ProcessBuilder pb : clientProcessBuilders) {
 				Process p = pb.start();
 				clientProcesses.add(p);
@@ -46,7 +55,7 @@ public class AppStarter {
 				}
 			}
 
-			for(Process serverProcess : serverProcesses) {
+			for(Process serverProcess : serverProcesses.values()) {
 				if(serverProcess.isAlive())
 					serverProcess.destroy();
 			}
@@ -55,17 +64,21 @@ public class AppStarter {
 			System.out.println("Stopping Main"+new Date());
 		} catch(Exception e) {
 			e.printStackTrace();
+		} finally {
+			if(serverKillerThread != null) {
+				serverKillerThread.stop();
+			}
 		}
 	}
 
-	private static List<ProcessBuilder> createServersForChains(
+	private static Map<Server, ProcessBuilder> createServersForChains(
 			Config config) {
-		List<ProcessBuilder> serverProcesses = new ArrayList<ProcessBuilder>();
+		Map<Server, ProcessBuilder> serverProcesses = new HashMap<Server, ProcessBuilder>();
 		for(String chainId : config.getChains().keySet()) {
 			for(String serverId : config.getChainToServerMap().get(chainId).keySet()) {
 				Server server =  config.getChainToServerMap().get(chainId).get(serverId);
 				ProcessBuilder pb = createProcessForServer(config, server);
-				serverProcesses.add(pb);
+				serverProcesses.put(server, pb);
 			}
 		}
 		return serverProcesses;
@@ -78,14 +91,14 @@ public class AppStarter {
 		String classPathValue = System.getProperty("java.class.path");
 		ProcessBuilder pb;
 		if(server.isTail()) {
-		pb = new ProcessBuilder(
-				"java",
-				//"-Xdebug",
-				//"-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=13000",
-				ServerImpl.class.getName(),
-				ConfigUtil.serializeToFile(config),
-				server.getChainName(),
-				server.getServerId());
+			pb = new ProcessBuilder(
+					"java",
+					//"-Xdebug",
+					//"-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=13000",
+					ServerImpl.class.getName(),
+					ConfigUtil.serializeToFile(config),
+					server.getChainName(),
+					server.getServerId());
 		} else {
 			pb = new ProcessBuilder(
 					"java",
@@ -95,7 +108,7 @@ public class AppStarter {
 					ConfigUtil.serializeToFile(config),
 					server.getChainName(),
 					server.getServerId());
-			
+
 		}
 		pb.environment().putAll(envs);
 		pb.environment().put("CLASSPATH", classPathValue);
@@ -141,5 +154,40 @@ public class AppStarter {
 		pb.environment().putAll(envs);
 		pb.environment().put("CLASSPATH", classPathValue);
 		return pb;
+	}
+
+
+	private static class ServerKiller implements Runnable {
+
+		Map<Server, Long> serverToTimeToDie;
+		Map<Server,Process> serverToProcess;
+		public ServerKiller(Map<Server, Long> serverToTimeToDie, Map<Server,Process> serverToProcess) {
+			this.serverToTimeToDie = serverToTimeToDie;
+			this.serverToProcess = serverToProcess;
+		}
+
+		@Override
+		public void run() {
+			List<Server> serversToKill = new ArrayList<Server>();
+			for(Entry<Server, Long> serverToTimeToDieEntry : this.serverToTimeToDie.entrySet()) {
+				long timeToDie = serverToTimeToDieEntry.getValue();
+				if(timeToDie<=System.currentTimeMillis()) {
+					serversToKill.add(serverToTimeToDieEntry.getKey());   
+				}
+			}
+			synchronized (serverToProcess) {
+				for(Server serverToKill : serversToKill) {
+					Process serverProcess = serverToProcess.get(serverToKill);
+					if(serverProcess.isAlive()) {
+						serverProcess.destroy();
+					}
+					synchronized (serverToTimeToDie) {
+						this.serverToTimeToDie.remove(serverToKill);
+					}
+				}	
+			}
+
+		}
+
 	}
 }

@@ -20,6 +20,7 @@ public class Config implements Serializable{
 	Map<String,Client> clients = new HashMap<String, Client>();
 	Master master;
 	Map<Client, TestCases> testCases = new HashMap<Client, TestCases>();
+	Map<Server, Integer> serverToTimeToLive = new HashMap<Server, Integer>();
 	
 	public Master getMaster() {
 		return master;
@@ -48,6 +49,12 @@ public class Config implements Serializable{
 	public Map<Client, TestCases> getTestCases() {
 		return testCases;
 	}
+	
+
+	public Map<Server, Integer> getServerToTimeToLive() {
+		return serverToTimeToLive;
+	}
+
 
 	@Override
 	public String toString() {

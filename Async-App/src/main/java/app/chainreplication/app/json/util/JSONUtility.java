@@ -180,6 +180,12 @@ public class JSONUtility {
 				server.getServerProcessDetails().setTcpPort(tcpPort);
 				server.getServerProcessDetails().setUdpPort(udpPort);
 				servers.put(serverId, server);
+
+				String timeToLiveString = (String) processDetails.get("TimeToLive");
+				if(timeToLiveString != null && !timeToLiveString.isEmpty()) {
+					int timeToLive = Integer.parseInt(timeToLiveString);
+					config.getServerToTimeToLive().put(server, timeToLive);
+				}
 			}
 			Server head = null;
 			Server tail = null;
@@ -216,7 +222,7 @@ public class JSONUtility {
 			String chainId = (String)requestObject.get("ChainId");
 			String clientId = (String)requestObject.get("ClientId");
 			String requestId = (String)requestObject.get("RequestId");
-			
+
 			int accountNum = Integer.parseInt((String)requestObject.get("AccountNumber"));
 			ApplicationRequestType requestType =
 					ApplicationRequestType.valueOf(
