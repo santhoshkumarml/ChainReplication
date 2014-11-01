@@ -15,6 +15,7 @@
 		<module>Async-Master</module>
 		<module>Async-Client</module>
 		<module>Async-App</module>
+		<module>Async-Assembly</module>
 	</modules>
 	<build>
 		<plugins>
