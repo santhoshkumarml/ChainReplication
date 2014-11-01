@@ -3,6 +3,7 @@ package async.chainreplocation.master;
 import java.util.Map;
 
 import async.chainreplication.communication.messages.ChainReplicationMessage;
+import async.chainreplication.communication.messages.HeartBeatMessage;
 import async.chainreplication.communication.messages.MasterGenericServerChangeMessage;
 import async.chainreplication.master.exception.MasterChainReplicationException;
 import async.chainreplication.master.models.Chain;
@@ -14,27 +15,41 @@ import async.generic.message.queue.MessageQueue;
 public class MasterChainReplicationFacade {
 	MasterImpl masterImpl;
 	MasterMessageHandler masterMessageHandler;
-	
+
 	MessageQueue<ChainReplicationMessage> messageQueue = 
+			new MessageQueue<ChainReplicationMessage>();
+
+	MessageQueue<ChainReplicationMessage> heartBeatMessageQueue = 
 			new MessageQueue<ChainReplicationMessage>();
 
 	public MasterChainReplicationFacade(Master master,
 			Map<String, Chain> chains,
 			Map<String, Map<String, Server>> chainToServerMap,
 			Map<String, Client> clients, MasterImpl masterImpl) {
-			this.masterImpl = masterImpl;
-			this.masterMessageHandler = new MasterMessageHandler(
-					master, chains, chainToServerMap,
-					clients, this);
+		this.masterImpl = masterImpl;
+		this.masterMessageHandler = new MasterMessageHandler(
+				master, chains, chainToServerMap,
+				clients, this);
 	}
 	
+
+	public MessageQueue<ChainReplicationMessage> getHeartBeatMessageQueue() {
+		return heartBeatMessageQueue;
+	}
+
 	public void logMessages(String message) {
 		this.masterImpl.logMessage(message);
 	}
-	
+
 	public void deliverMessage(ChainReplicationMessage message) {
 		if(message != null) {
-			messageQueue.enqueueMessageObject(message.getPritority().ordinal(), message);
+			if(message.getClass() ==  HeartBeatMessage.class) {
+				synchronized (heartBeatMessageQueue) {
+					heartBeatMessageQueue.enqueueMessageObject(message.getPriority().ordinal(), message);
+				}
+			}  else {
+				messageQueue.enqueueMessageObject(message.getPriority().ordinal(), message);
+			}
 		}
 	}
 
@@ -42,9 +57,7 @@ public class MasterChainReplicationFacade {
 		if(message.getClass() == MasterGenericServerChangeMessage.class) {
 			this.masterMessageHandler.handleGenericServerChangeMessage(
 					(MasterGenericServerChangeMessage)message);
-		} /*else if(message.getClass() ==  ResponseOrSyncMessage.class) {
-			this.serverMessageHandler.handleSyncMessage((ResponseOrSyncMessage) message);
-		} */
+		}
 	}
 
 }

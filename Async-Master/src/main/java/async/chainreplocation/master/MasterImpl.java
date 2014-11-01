@@ -47,7 +47,11 @@ public class MasterImpl extends ChainReplicationImpl{
 	public Master getMaster() {
 		return master;
 	}
-	
+
+
+	public long getHeartBeatTimeout() {
+		return heartBeatTimeout;
+	}
 
 	public MasterChainReplicationFacade getMasterChainReplicationFacade() {
 		return masterChainReplicationFacade;
@@ -55,7 +59,7 @@ public class MasterImpl extends ChainReplicationImpl{
 
 	public void logMessage(String message) {
 		LogMessage logMessage = new LogMessage(message);
-		this.getLogMessages().enqueueMessageObject(logMessage.getPritority().ordinal(), logMessage);
+		this.getLogMessages().enqueueMessageObject(logMessage.getPriority().ordinal(), logMessage);
 	}
 
 	public void init() {

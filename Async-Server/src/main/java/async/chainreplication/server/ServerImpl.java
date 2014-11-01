@@ -64,7 +64,7 @@ public class ServerImpl extends ChainReplicationImpl{
 
 	public void logMessage(String message) {
 		LogMessage logMessage = new LogMessage(message);
-		this.getLogMessages().enqueueMessageObject(logMessage.getPritority().ordinal(), logMessage);
+		this.getLogMessages().enqueueMessageObject(logMessage.getPriority().ordinal(), logMessage);
 	}
 
 

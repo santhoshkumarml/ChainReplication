@@ -27,7 +27,7 @@ public class HeartBeatListenerThread extends Thread {
 		while(shouldStillRun) {
 			try {
 				HeartBeatMessage heartBeatMessage = (HeartBeatMessage) this.heartBeatServerHelper.acceptAndReadObjectConnection();
-				
+				this.masterImpl.getMasterChainReplicationFacade().deliverMessage(heartBeatMessage);
 			} catch (ConnectServerException e) {
 				this.heartBeatServerHelper.stopServer();
 				this.masterImpl.logMessage("Internal Error:"+e.getMessage());

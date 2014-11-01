@@ -42,7 +42,7 @@ public class ClientChainReplicationFacade {
     
 	public void deliverMessage(ChainReplicationMessage message) throws ClientChainReplicationException {
 		if(message != null) {
-			messages.enqueueMessageObject(message.getPritority().ordinal(), message);
+			messages.enqueueMessageObject(message.getPriority().ordinal(), message);
 		}
 		while(messages.hasMoreMessages()) {
 			ChainReplicationMessage oldMessage = (ChainReplicationMessage) messages.dequeueMessageAndReturnMessageObject();
