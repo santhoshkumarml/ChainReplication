@@ -9,7 +9,11 @@ public class MessageQueue<T> {
 	Queue<Message<T>> messages = new PriorityQueue<Message<T>>(new Comparator<Message<T>>() {
 		@Override
 		public int compare(Message<T> o1, Message<T> o2) {
-			return Long.compare(o1.getTimestamp(), o2.getTimestamp());
+			int priorityCompare = new Integer(o1.getPriority()).compareTo(o2.getPriority());
+			if(priorityCompare == 0)
+				return Long.compare(o1.getTimestamp(), o2.getTimestamp());
+			else
+				return priorityCompare;
 		}
 	});
 
@@ -25,9 +29,9 @@ public class MessageQueue<T> {
 		}
 	}
 
-	public void enqueueMessageObject(T messageObject) {
+	public void enqueueMessageObject(int pritority, T messageObject) {
 		synchronized (messages) {
-			messages.add(new Message<T>(System.currentTimeMillis(), messageObject));
+			messages.add(new Message<T>(System.currentTimeMillis(), messageObject, pritority));
 		}
 	}
 

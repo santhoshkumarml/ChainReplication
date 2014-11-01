@@ -1,6 +1,7 @@
 package async.chainreplicaton.client.message;
 
 import async.chainreplication.communication.messages.ChainReplicationMessage;
+import async.chainreplication.communication.messages.Priority;
 import async.chainreplication.communication.messages.RequestMessage;
 
 public class ClientRequestMessage extends ChainReplicationMessage {
@@ -14,6 +15,7 @@ public class ClientRequestMessage extends ChainReplicationMessage {
 	RequestMessage requestMessage;
 	
 	public ClientRequestMessage(String chainName, RequestMessage requestMessage) {
+		super(Priority.HIGH_PRIORITY);
 		this.chainName = chainName;
 		this.requestMessage = requestMessage;
 	}

@@ -18,6 +18,7 @@ public class MasterServerChangeMessage extends MasterMessage{
 	Set<Chain> otherChains = new HashSet<Chain>();
 
 	public MasterServerChangeMessage(Server server) {
+		super(Priority.REALTIME_PRIORITY);
 		this.server = server;
 	}
 

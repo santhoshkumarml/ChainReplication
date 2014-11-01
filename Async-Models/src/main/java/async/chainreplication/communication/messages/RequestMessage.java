@@ -11,6 +11,7 @@ public class RequestMessage extends ChainReplicationMessage{
 	Request request;
 
 	public RequestMessage(Request request) {
+		super(Priority.HIGH_PRIORITY);
 		this.request = request;
 	}
 

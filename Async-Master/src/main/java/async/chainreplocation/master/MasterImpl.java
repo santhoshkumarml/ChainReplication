@@ -54,7 +54,8 @@ public class MasterImpl extends ChainReplicationImpl{
 	}
 
 	public void logMessage(String message) {
-		this.getLogMessages().enqueueMessageObject(new LogMessage(message));
+		LogMessage logMessage = new LogMessage(message);
+		this.getLogMessages().enqueueMessageObject(logMessage.getPritority().ordinal(), logMessage);
 	}
 
 	public void init() {

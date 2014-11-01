@@ -14,6 +14,7 @@ public class AckMessage extends ChainReplicationMessage{
 	}
 
 	public AckMessage(Request request) {
+		super(Priority.ABOVE_NORMAL_PRIORITY);
 		this.request = request;
 	}
 

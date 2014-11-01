@@ -112,6 +112,7 @@ public class ClientImpl extends ChainReplicationImpl{
 	}
 
 	public void logMessage(String message) {
-		this.getLogMessages().enqueueMessageObject(new LogMessage(message));
+		LogMessage logMessage = new LogMessage(message);
+		this.getLogMessages().enqueueMessageObject(logMessage.getPritority().ordinal(), logMessage);
 	}
 }

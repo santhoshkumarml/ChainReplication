@@ -11,6 +11,7 @@ public class ResponseOrSyncMessage extends ChainReplicationMessage{
 	Request request;
 	Reply reply;
 	public ResponseOrSyncMessage(Request request, Reply reply) {
+		super(Priority.HIGH_PRIORITY);
 		this.request = request;
 		this.reply = reply;
 	}

@@ -17,6 +17,7 @@ public class MasterClientChangeMessage extends MasterMessage{
 	Set<Chain> chainChanges = new HashSet<Chain>();
 
 	public MasterClientChangeMessage(Client client) {
+		super(Priority.REALTIME_PRIORITY);
 		this.client = client;
 	}
 	public Set<Chain> getChainChanges() {

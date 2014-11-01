@@ -10,6 +10,7 @@ import async.chainreplication.application.models.ApplicationRequest;
 import async.chainreplication.application.models.ApplicationRequestType;
 import async.chainreplication.master.models.Client;
 import async.common.util.Config;
+import async.common.util.RequestWithChain;
 import async.common.util.TestCases;
 
 public class AppConfigUtil {
@@ -36,12 +37,12 @@ public class AppConfigUtil {
 				String[] requestStringSplit = requestString.split(",");
 				ApplicationRequest request = createRequest(client, requestStringSplit);
 				TestCases testCases = config.getTestCases().get(client);
+				String chainName = requestStringSplit[0].trim();
 				if(testCases == null) {
 					testCases = new TestCases();
-					String chainName = requestStringSplit[0].trim();
 					testCases.setClient(client);
 				}
-				//testCases.getRequests().add(request);
+				testCases.getRequests().add(new RequestWithChain(request, chainName));
 				config.getTestCases().put(client, testCases);
 			}
 
@@ -93,7 +94,7 @@ public class AppConfigUtil {
 			break;
 		}
 
-       return applicationRequest;
+		return applicationRequest;
 	}
 
 }

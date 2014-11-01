@@ -12,6 +12,7 @@ public class HeartBeatMessage extends ChainReplicationMessage{
 	Server server;
 
 	public HeartBeatMessage(Server server) {
+		super(Priority.REALTIME_PRIORITY);
 		this.server = server;
 	}
 

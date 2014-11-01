@@ -16,6 +16,7 @@ public class MasterGenericServerChangeMessage extends MasterMessage {
 	Set<Server> diedServers = new HashSet<Server>();
 
 	public MasterGenericServerChangeMessage(List<Server> diedServers) {
+		super(Priority.REALTIME_PRIORITY);
 		this.diedServers.addAll(diedServers);
 	}
 

@@ -14,6 +14,7 @@ public class LogMessage extends ChainReplicationMessage {
 	String message;
 	
 	public LogMessage(String message) {
+		super(Priority.NORMAL_PRIORITY);
 		this.message = message;
 	}
 

@@ -34,7 +34,7 @@ public class MasterChainReplicationFacade {
 	
 	public void deliverMessage(ChainReplicationMessage message) {
 		if(message != null) {
-			messageQueue.enqueueMessageObject(message);
+			messageQueue.enqueueMessageObject(message.getPritority().ordinal(), message);
 		}
 	}
 

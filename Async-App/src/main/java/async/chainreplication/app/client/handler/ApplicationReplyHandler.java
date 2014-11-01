@@ -6,6 +6,7 @@ import async.chainreplication.client.ClientMessageHandler;
 import async.chainreplication.client.IApplicationReplyHandler;
 import async.chainreplication.client.server.communication.models.Reply;
 import async.chainreplication.client.server.communication.models.Request;
+import async.chainreplication.communication.messages.Priority;
 import async.generic.message.queue.MessageQueue;
 
 
@@ -23,7 +24,8 @@ public class ApplicationReplyHandler implements IApplicationReplyHandler {
 		Response response = new Response(
 				request.getRequestId(),
 				(ApplicationReply)reply);
-		responseMessages.enqueueMessageObject(response);
+		// All responses will have equal priority
+		responseMessages.enqueueMessageObject(Priority.HIGH_PRIORITY.ordinal(), response); 
 	}
 
 
