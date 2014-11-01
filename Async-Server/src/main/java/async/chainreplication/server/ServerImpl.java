@@ -2,6 +2,7 @@ package async.chainreplication.server;
 
 import java.util.Timer;
 
+import async.chainreplication.communication.messages.LogMessage;
 import async.chainreplication.master.models.Master;
 import async.chainreplication.master.models.Server;
 import async.chainreplication.server.exception.ServerChainReplicationException;
@@ -62,7 +63,7 @@ public class ServerImpl extends ChainReplicationImpl{
 	}
 
 	public void logMessage(String message) {
-		this.getLogMessages().enqueueMessageObject(message);
+		this.getLogMessages().enqueueMessageObject(new LogMessage(message));
 	}
 
 

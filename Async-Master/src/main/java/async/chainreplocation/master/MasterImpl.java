@@ -2,6 +2,7 @@ package async.chainreplocation.master;
 
 import java.util.Timer;
 
+import async.chainreplication.communication.messages.LogMessage;
 import async.chainreplication.master.exception.MasterChainReplicationException;
 import async.chainreplication.master.models.Master;
 import async.chainreplication.master.threads.HeartBeatCheckerTask;
@@ -53,7 +54,7 @@ public class MasterImpl extends ChainReplicationImpl{
 	}
 
 	public void logMessage(String message) {
-		this.getLogMessages().enqueueMessageObject(message);
+		this.getLogMessages().enqueueMessageObject(new LogMessage(message));
 	}
 
 	public void init() {

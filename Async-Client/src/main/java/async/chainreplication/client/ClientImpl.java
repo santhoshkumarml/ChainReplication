@@ -4,6 +4,7 @@ import async.chainreplication.client.exception.ClientChainReplicationException;
 import async.chainreplication.client.server.communication.models.Reply;
 import async.chainreplication.client.threads.MasterUpdateListenerThread;
 import async.chainreplication.client.threads.ResponseListener;
+import async.chainreplication.communication.messages.LogMessage;
 import async.chainreplication.communication.messages.RequestMessage;
 import async.chainreplication.master.models.Client;
 import async.chainreplicaton.client.message.ClientRequestMessage;
@@ -111,6 +112,6 @@ public class ClientImpl extends ChainReplicationImpl{
 	}
 
 	public void logMessage(String message) {
-		this.getLogMessages().enqueueMessageObject(message);
+		this.getLogMessages().enqueueMessageObject(new LogMessage(message));
 	}
 }

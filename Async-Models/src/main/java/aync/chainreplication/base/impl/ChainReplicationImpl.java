@@ -1,9 +1,10 @@
 package aync.chainreplication.base.impl;
 
+import async.chainreplication.communication.messages.LogMessage;
 import async.generic.message.queue.MessageQueue;
 
 public abstract class ChainReplicationImpl {
-	MessageQueue<String> logMessages = new MessageQueue<String>();
+	MessageQueue<LogMessage> logMessages = new MessageQueue<LogMessage>();
 	String uniqueId;
 	ChainReplicationLoggerThread chainReplicationLoggerThread;
 	
@@ -11,7 +12,7 @@ public abstract class ChainReplicationImpl {
 		this.uniqueId = uniqueId;
 	}
 
-	public MessageQueue<String> getLogMessages() {
+	public MessageQueue<LogMessage> getLogMessages() {
 		return logMessages;
 	}
 
