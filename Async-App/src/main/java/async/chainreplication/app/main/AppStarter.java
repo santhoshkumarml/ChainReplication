@@ -55,10 +55,10 @@ public class AppStarter {
 			}
 			serverKiller.killAllServers();
 			serverKiller.join();
-			
+
 			if(masterProcess.isAlive())
 				masterProcess.destroy();
-			
+
 			System.out.println("Stopping Main "+new Date());
 		} catch(Exception e) {
 			e.printStackTrace();
@@ -177,7 +177,9 @@ public class AppStarter {
 
 		@Override
 		public void run() {
-			while(!stopThread) {
+			while(!stopThread &&
+					!this.serverToTimeToDie.isEmpty() &&
+					!this.serverToProcess.isEmpty()) {
 				List<Server> serversToKill = new ArrayList<Server>();
 				if(!killAllServers) {
 					for(Entry<Server, Long> serverToTimeToDieEntry : this.serverToTimeToDie.entrySet()) {
