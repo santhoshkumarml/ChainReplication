@@ -20,8 +20,8 @@ import async.common.util.ConfigUtil;
 public class AppStarter {
 	public static void main(String[] args) {
 		String configFile = args[0];
-		Thread serverKillerThread = null;
-		System.out.println("Starting Main"+new Date());
+		ServerKiller serverKiller = null;
+		System.out.println("Starting Main "+new Date());
 		try{
 			Config config = JSONUtility.readConfigFromJSON(configFile);
 			ProcessBuilder masterProcessBuilder = createMaster(config);
@@ -37,9 +37,8 @@ public class AppStarter {
 				Integer timeToLive = config.getServerToTimeToLive().get(pbEntry.getKey());
 				serverToTimeToDie.put(pbEntry.getKey(), System.currentTimeMillis()+timeToLive);
 			}
-			ServerKiller killer = new ServerKiller(serverToTimeToDie, serverProcesses);
-			serverKillerThread = new Thread(killer);
-			serverKillerThread.start();
+			serverKiller = new ServerKiller(serverToTimeToDie, serverProcesses);
+			serverKiller.start();
 			for(ProcessBuilder pb : clientProcessBuilders) {
 				Process p = pb.start();
 				clientProcesses.add(p);
@@ -54,19 +53,18 @@ public class AppStarter {
 					}
 				}
 			}
-
-			for(Process serverProcess : serverProcesses.values()) {
-				if(serverProcess.isAlive())
-					serverProcess.destroy();
-			}
+			serverKiller.killAllServers();
+			serverKiller.join();
+			
 			if(masterProcess.isAlive())
 				masterProcess.destroy();
-			System.out.println("Stopping Main"+new Date());
+			
+			System.out.println("Stopping Main "+new Date());
 		} catch(Exception e) {
 			e.printStackTrace();
 		} finally {
-			if(serverKillerThread != null) {
-				serverKillerThread.stop();
+			if(serverKiller != null) {
+				serverKiller.stopThread();
 			}
 		}
 	}
@@ -157,37 +155,53 @@ public class AppStarter {
 	}
 
 
-	private static class ServerKiller implements Runnable {
+	private static class ServerKiller extends Thread {
 
 		Map<Server, Long> serverToTimeToDie;
 		Map<Server,Process> serverToProcess;
+		volatile boolean stopThread = false;
+		volatile boolean killAllServers = false;
+
 		public ServerKiller(Map<Server, Long> serverToTimeToDie, Map<Server,Process> serverToProcess) {
 			this.serverToTimeToDie = serverToTimeToDie;
 			this.serverToProcess = serverToProcess;
 		}
 
-		@Override
-		public void run() {
-			List<Server> serversToKill = new ArrayList<Server>();
-			for(Entry<Server, Long> serverToTimeToDieEntry : this.serverToTimeToDie.entrySet()) {
-				long timeToDie = serverToTimeToDieEntry.getValue();
-				if(timeToDie<=System.currentTimeMillis()) {
-					serversToKill.add(serverToTimeToDieEntry.getKey());   
-				}
-			}
-			synchronized (serverToProcess) {
-				for(Server serverToKill : serversToKill) {
-					Process serverProcess = serverToProcess.get(serverToKill);
-					if(serverProcess.isAlive()) {
-						serverProcess.destroy();
-					}
-					synchronized (serverToTimeToDie) {
-						this.serverToTimeToDie.remove(serverToKill);
-					}
-				}	
-			}
-
+		public void killAllServers() {
+			killAllServers = true;
 		}
 
+		public void stopThread() {
+			stopThread = true;
+		}
+
+		@Override
+		public void run() {
+			while(!stopThread) {
+				List<Server> serversToKill = new ArrayList<Server>();
+				if(!killAllServers) {
+					for(Entry<Server, Long> serverToTimeToDieEntry : this.serverToTimeToDie.entrySet()) {
+						long timeToDie = serverToTimeToDieEntry.getValue();
+						if(timeToDie<=System.currentTimeMillis()) {
+							serversToKill.add(serverToTimeToDieEntry.getKey());   
+						}
+					}
+				} else {
+					serversToKill.addAll(serverToTimeToDie.keySet());
+				}
+				synchronized (serverToProcess) {
+					for(Server serverToKill : serversToKill) {
+						Process serverProcess = serverToProcess.get(serverToKill);
+						if(serverProcess.isAlive()) {
+							serverProcess.destroy();
+						}
+						serverToProcess.remove(serverToKill);
+						synchronized (serverToTimeToDie) {
+							this.serverToTimeToDie.remove(serverToKill);
+						}
+					}	
+				}
+			}
+		}
 	}
 }
