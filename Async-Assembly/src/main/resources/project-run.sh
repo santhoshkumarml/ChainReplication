@@ -1,0 +1,1 @@
+java -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=13001 -cp "Async-Models.jar;Async-Util.jar;Async-Master.jar;Async-Client.jar;Async-Server.jar;Async-App.jar;json-simple-1.1.jar" asyn.chainreplicationa.app.main.AppStarter $1
