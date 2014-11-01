@@ -62,10 +62,6 @@ public class AppStarter {
 			System.out.println("Stopping Main "+new Date());
 		} catch(Exception e) {
 			e.printStackTrace();
-		} finally {
-			if(serverKiller != null) {
-				serverKiller.stopThread();
-			}
 		}
 	}
 
@@ -159,7 +155,6 @@ public class AppStarter {
 
 		Map<Server, Long> serverToTimeToDie;
 		Map<Server,Process> serverToProcess;
-		volatile boolean stopThread = false;
 		volatile boolean killAllServers = false;
 
 		public ServerKiller(Map<Server, Long> serverToTimeToDie, Map<Server,Process> serverToProcess) {
@@ -171,14 +166,10 @@ public class AppStarter {
 			killAllServers = true;
 		}
 
-		public void stopThread() {
-			stopThread = true;
-		}
 
 		@Override
 		public void run() {
-			while(!stopThread &&
-					!this.serverToTimeToDie.isEmpty() &&
+			while(!this.serverToTimeToDie.isEmpty() &&
 					!this.serverToProcess.isEmpty()) {
 				List<Server> serversToKill = new ArrayList<Server>();
 				if(!killAllServers) {
