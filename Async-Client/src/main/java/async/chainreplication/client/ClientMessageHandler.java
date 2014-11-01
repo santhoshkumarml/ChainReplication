@@ -3,10 +3,12 @@ package async.chainreplication.client;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import async.chainreplication.client.exception.ClientChainReplicationException;
 import async.chainreplication.client.server.communication.models.Reply;
 import async.chainreplication.client.server.communication.models.Request;
+import async.chainreplication.communication.messages.MasterClientChangeMessage;
 import async.chainreplication.communication.messages.ResponseOrSyncMessage;
 import async.chainreplication.master.models.Chain;
 import async.chainreplication.master.models.Client;
@@ -25,7 +27,7 @@ public class ClientMessageHandler {
 	IClientHelper clientMessageClientHelper;
 	IApplicationReplyHandler applicationReplyHandler;
 	ClientChainReplicationFacade clientChainReplicationFacade;
-	
+
 	volatile int sendSequenceNumber = 0;
 	volatile int receiveSequenceNumber = 0;
 
@@ -52,15 +54,15 @@ public class ClientMessageHandler {
 	public ClientChainReplicationFacade getClientChainReplicationFacade() {
 		return clientChainReplicationFacade;
 	}
-	
+
 	public void incrementSendSequenceNumber() {
 		sendSequenceNumber++;
 	}
-	
+
 	public void incrementReceiveSequenceNumber() {
 		receiveSequenceNumber++;
 	}
-	
+
 	public int getSendSequenceNumber() {
 		return sendSequenceNumber;
 	}
@@ -126,11 +128,21 @@ public class ClientMessageHandler {
 
 	}
 
+	public void handleMasterMessage(MasterClientChangeMessage message) {
+		Set<Chain> chains = message.getChainChanges();
+		if(!chains.isEmpty()) {
+			synchronized (this.chainNameToChainMap) {
+				for(Chain chain : chains) {
+					this.chainNameToChainMap.put(chain.getChainName(), chain);		
+				}	
+			}
+		}
+
+	}
+
 	public Reply readResponses(Request request) {
 		synchronized (applicationReplyHandler) {
 			return this.applicationReplyHandler.getResponseForRequestId(request);
 		}		
 	}
-
-
 }

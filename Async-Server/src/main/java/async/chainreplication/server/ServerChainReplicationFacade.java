@@ -4,6 +4,9 @@ import java.util.Map;
 
 import async.chainreplication.communication.messages.AckMessage;
 import async.chainreplication.communication.messages.ChainReplicationMessage;
+import async.chainreplication.communication.messages.MasterGenericServerChangeMessage;
+import async.chainreplication.communication.messages.MasterMessage;
+import async.chainreplication.communication.messages.MasterServerChangeMessage;
 import async.chainreplication.communication.messages.RequestMessage;
 import async.chainreplication.communication.messages.ResponseOrSyncMessage;
 import async.chainreplication.master.models.Chain;
@@ -74,6 +77,8 @@ public class ServerChainReplicationFacade {
 			this.serverMessageHandler.handleSyncMessage((ResponseOrSyncMessage) message);
 		} else if(message.getClass() ==  AckMessage.class) {
 			this.serverMessageHandler.handleAckMessage((AckMessage) message);
+		} else if(message.getClass() == MasterServerChangeMessage.class) {
+			this.serverMessageHandler.handleMasterMessage((MasterServerChangeMessage)message);
 		}
 	}
 

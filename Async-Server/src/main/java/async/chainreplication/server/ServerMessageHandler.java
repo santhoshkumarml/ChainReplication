@@ -3,11 +3,13 @@ package async.chainreplication.server;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import async.chainreplication.client.server.communication.models.Reply;
 import async.chainreplication.client.server.communication.models.Request;
 import async.chainreplication.communication.messages.AckMessage;
 import async.chainreplication.communication.messages.ChainReplicationMessage;
+import async.chainreplication.communication.messages.MasterServerChangeMessage;
 import async.chainreplication.communication.messages.RequestMessage;
 import async.chainreplication.communication.messages.ResponseOrSyncMessage;
 import async.chainreplication.master.models.Chain;
@@ -36,18 +38,18 @@ public class ServerMessageHandler {
 	IClientHelper tailResponseClientHelper;
 
 	ServerChainReplicationFacade serverChainReplicationFacade;
-	
+
 	volatile int sendSequenceNumber = 0;
 	volatile int receiveSequenceNumber = 0;
-	
+
 	public void incrementSendSequenceNumber() {
 		sendSequenceNumber++;
 	}
-	
+
 	public void incrementReceiveSequenceNumber() {
 		receiveSequenceNumber++;
 	}
-	
+
 	public int getSendSequenceNumber() {
 		return sendSequenceNumber;
 	}
@@ -226,4 +228,18 @@ public class ServerMessageHandler {
 		ACK(message.getRequest());
 	}
 
+	public void handleMasterMessage(MasterServerChangeMessage message) {
+		Server newServerObject = message.getServer();
+		synchronized (server) {
+			this.server = newServerObject;	
+		}
+		if(!message.getOtherChains().isEmpty()) {
+			Set<Chain> chains = message.getOtherChains();
+			synchronized (this.chainNameToChainMap) {
+				for(Chain chain : chains) {
+					this.chainNameToChainMap.put(chain.getChainName(), chain);		
+				}	
+			}
+		}
+	}
 }

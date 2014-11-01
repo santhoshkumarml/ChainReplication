@@ -5,7 +5,7 @@ import async.chainreplication.client.ClientImpl;
 
 public class MasterUpdateListenerThread extends Thread{
 	ClientImpl clientImpl;
-	boolean shouldStillRun = true;
+	volatile boolean shouldStillRun = true;
 
 	public MasterUpdateListenerThread(ClientImpl clientImpl) {
 		this.clientImpl = clientImpl;

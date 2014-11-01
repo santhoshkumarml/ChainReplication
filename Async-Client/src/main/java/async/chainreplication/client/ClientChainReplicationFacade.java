@@ -6,6 +6,7 @@ import async.chainreplication.client.exception.ClientChainReplicationException;
 import async.chainreplication.client.server.communication.models.Reply;
 import async.chainreplication.client.server.communication.models.Request;
 import async.chainreplication.communication.messages.ChainReplicationMessage;
+import async.chainreplication.communication.messages.MasterClientChangeMessage;
 import async.chainreplication.communication.messages.MasterMessage;
 import async.chainreplication.communication.messages.ResponseOrSyncMessage;
 import async.chainreplication.master.models.Chain;
@@ -60,8 +61,8 @@ public class ClientChainReplicationFacade {
 		} else if(message.getClass() ==  ResponseOrSyncMessage.class) {
 			this.clientMessageHandler.handleReponseMessage(
 					(ResponseOrSyncMessage)message);
-		} else if (message instanceof MasterMessage) {
-			//TODO: In Phase 3
+		} else if (message instanceof MasterClientChangeMessage) {
+			this.clientMessageHandler.handleMasterMessage((MasterClientChangeMessage)message);
 		}
 	}
 
