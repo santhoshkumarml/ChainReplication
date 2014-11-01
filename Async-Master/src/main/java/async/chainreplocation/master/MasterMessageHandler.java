@@ -16,7 +16,6 @@ import async.chainreplication.master.models.Server;
 import async.connection.util.ConnectClientException;
 import async.connection.util.IClientHelper;
 import async.connection.util.TCPClientHelper;
-import async.connection.util.UDPClientHelper;
 
 public class MasterMessageHandler {
 	MasterChainReplicationFacade masterChainReplicationFacade;
@@ -104,9 +103,9 @@ public class MasterMessageHandler {
 	private void sendClientMessage(Client client,
 			MasterClientChangeMessage message) throws MasterChainReplicationException {
 		try {
-			clientMessageHelper = new UDPClientHelper(
+			clientMessageHelper = new TCPClientHelper(
 					client.getClientProcessDetails().getHost(),
-					client.getClientProcessDetails().getUdpPort()) ;
+					client.getClientProcessDetails().getTcpPort()) ;
 			clientMessageHelper.sendMessage(message);
 		} catch(ConnectClientException e) {
 			throw new MasterChainReplicationException(e);

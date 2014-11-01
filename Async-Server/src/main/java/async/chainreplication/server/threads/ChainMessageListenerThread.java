@@ -31,14 +31,16 @@ public class ChainMessageListenerThread extends Thread{
 				message = (ChainReplicationMessage)this.chainMessagesListener.acceptAndReadObjectConnection();
 			} catch (ConnectServerException e) {
 				this.serverImpl.logMessage("Internal Error:"+e.getMessage());
+				this.stopThread();
 				e.printStackTrace();
+				break;
 			}
 			this.serverImpl.getServerChainReplicationFacade().deliverMessage(message);
 			this.serverImpl.getServerChainReplicationFacade().getServerMessageHandler().incrementReceiveSequenceNumber();
 			int receiveSequenceNumber = this.serverImpl.getServerChainReplicationFacade().getServerMessageHandler().getReceiveSequenceNumber();
 			this.serverImpl.logMessage("Incoming Message-"+receiveSequenceNumber+":"+message.toString());
 		}
-		this.chainMessagesListener.stopServer();
+
 	}
 
 	public void stopThread() {
