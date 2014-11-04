@@ -34,8 +34,14 @@ public class AppStarter {
 			for(Entry<Server, ProcessBuilder> pbEntry : serverProcessBuilders.entrySet()) {
 				Process p =pbEntry.getValue().start();
 				serverProcesses.put(pbEntry.getKey(), p);
-				Integer timeToLive = config.getServerToTimeToLive().get(pbEntry.getKey());
-				serverToTimeToDie.put(pbEntry.getKey(), System.currentTimeMillis()+timeToLive);
+				Long timeToLive = config.getServerToTimeToLive().get(pbEntry.getKey());
+				Long initialSleepTime = config.getServerToInitialSleepTime().get(pbEntry.getValue());
+				if(timeToLive != null) {
+					if(initialSleepTime == null) {
+						initialSleepTime = 0L;
+					}
+					serverToTimeToDie.put(pbEntry.getKey(), System.currentTimeMillis()+(timeToLive-initialSleepTime));
+				}
 			}
 			serverKiller = new ServerKiller(serverToTimeToDie, serverProcesses);
 			serverKiller.start();

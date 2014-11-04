@@ -230,8 +230,12 @@ public class ServerMessageHandler {
 
 	public void handleMasterMessage(MasterServerChangeMessage message) {
 		Server newServerObject = message.getServer();
+		if(!this.server.getAdjacencyList().getSucessor().equals(
+				newServerObject.getAdjacencyList().getSucessor())){
+		  //get Ready for sending SentHistory	
+		}
 		synchronized (server) {
-			this.server = newServerObject;	
+			this.server = newServerObject;
 		}
 		if(!message.getOtherChains().isEmpty()) {
 			Set<Chain> chains = message.getOtherChains();

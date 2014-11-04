@@ -20,7 +20,8 @@ public class Config implements Serializable{
 	Map<String,Client> clients = new HashMap<String, Client>();
 	Master master;
 	Map<Client, TestCases> testCases = new HashMap<Client, TestCases>();
-	Map<Server, Integer> serverToTimeToLive = new HashMap<Server, Integer>();
+	Map<Server, Long> serverToTimeToLive = new HashMap<Server, Long>();
+	Map<Server, Long> serverToInitialSleepTime = new HashMap<Server, Long>();
 	
 	public Master getMaster() {
 		return master;
@@ -51,8 +52,12 @@ public class Config implements Serializable{
 	}
 	
 
-	public Map<Server, Integer> getServerToTimeToLive() {
+	public Map<Server, Long> getServerToTimeToLive() {
 		return serverToTimeToLive;
+	}
+	
+	public Map<Server, Long> getServerToInitialSleepTime() {
+		return serverToInitialSleepTime;
 	}
 
 

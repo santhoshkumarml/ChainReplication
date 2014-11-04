@@ -191,9 +191,14 @@ public class JSONUtility {
 				server.getServerProcessDetails().setUdpPort(udpPort);
 				servers.put(serverId, server);
 
+				String initialSleepTime = (String) processDetails.get("InitialSleepTime");
+				if(initialSleepTime != null && !initialSleepTime.isEmpty()) {
+					long timeToLive = Long.parseLong(initialSleepTime);
+					config.getServerToTimeToLive().put(server, timeToLive);
+				}
 				String timeToLiveString = (String) processDetails.get("TimeToLive");
 				if(timeToLiveString != null && !timeToLiveString.isEmpty()) {
-					int timeToLive = Integer.parseInt(timeToLiveString);
+					long timeToLive = Long.parseLong(timeToLiveString);
 					config.getServerToTimeToLive().put(server, timeToLive);
 				}
 			}
