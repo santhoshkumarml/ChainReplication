@@ -45,8 +45,7 @@ public class JSONUtility {
 			readClients(config, jsonObject);
 			readRequestTestCases(config, jsonObject);
 			readProbablityAndGenerateTestCases(config, jsonObject);
-			//Dummy master for now
-			config.setMaster(new Master("localhost", 10999, "master"));
+			readMaster(config, jsonObject);
 		} catch (FileNotFoundException ex) {
 			ex.printStackTrace();
 		} catch (IOException ex) {
@@ -155,6 +154,17 @@ public class JSONUtility {
 			config.getClients().put(clientId, client);
 		}
 
+	}
+	
+	private static void readMaster(Config config, JSONObject jsonObject) {
+		JSONObject masterObject = (JSONObject)jsonObject.get("Master");
+		String masterName = (String)masterObject.get("MasterName");
+		String masterHost =  (String)masterObject.get("MasterHost");
+		int masterPort = Integer.parseInt((String)masterObject.get("MasterPort"));
+		long heartBeatTimeout = Long.parseLong((String)masterObject.get("HeartBeatTimeout"));
+		Master master = new Master(masterHost, masterPort, masterName);
+		master.setHeartbeatTimeout(heartBeatTimeout);
+		config.setMaster(master);
 	}
 
 	private static void readChains(Config config, JSONObject jsonObject) {

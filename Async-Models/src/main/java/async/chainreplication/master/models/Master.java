@@ -10,6 +10,7 @@ public class Master implements Serializable{
 	String masterHost;
 	int masterPort;
 	String masterName;
+	long heartbeatTimeout = 5000;
 	
 	public Master(String masterHost, int masterPort, String masterName) {
 		this.masterHost = masterHost;
@@ -25,6 +26,13 @@ public class Master implements Serializable{
 	
 	public String getMasterName() {
 		return masterName;
+	}
+	
+	public long getHeartbeatTimeout() {
+		return heartbeatTimeout;
+	}
+	public void setHeartbeatTimeout(long heartbeatTimeout) {
+		this.heartbeatTimeout = heartbeatTimeout;
 	}
 	@Override
 	public String toString() {

@@ -15,7 +15,9 @@ import aync.chainreplication.base.impl.ChainReplicationImpl;
 
 public class ServerImpl extends ChainReplicationImpl{	
 	long heartBeatTimeOut = 5000;
-	Timer heartBeatSenderTimer; 
+	boolean isStarted = false;
+	Timer heartBeatSenderTimer;
+	private static ServerImpl serverImpl;
 	ChainMessageListenerThread chainMessageListenerThread;
 	RequestQueryOrUpdateThread requestOrQueryUpdateThread;
 	ServerChainReplicationFacade serverChainReplicationFacade;
@@ -23,10 +25,16 @@ public class ServerImpl extends ChainReplicationImpl{
 
 	public static void main(String args[]) {
 		Config config = ConfigUtil.deserializeFromFile(args[0]);
+		String command = args[3];
 		String chainName = args[1];
 		String serverId = args[2];
-		ServerImpl serverImpl = new ServerImpl(config, chainName, serverId);
-		serverImpl.init();
+		//assert command.trim().equals("start")||command.trim().equals("stop");
+		//if(command.trim().equals("start")) {
+			serverImpl = new ServerImpl(config, chainName, serverId);
+			serverImpl.init();
+	//	} else {
+		//	serverImpl.stop();
+		//}
 	}
 
 	public ServerImpl(Config config,String chainName, String serverId) {
@@ -37,6 +45,7 @@ public class ServerImpl extends ChainReplicationImpl{
 					config.getChains(),
 					config.getMaster(),
 					this);
+			this.heartBeatTimeOut = config.getMaster().getHeartbeatTimeout();
 		} catch (ServerChainReplicationException e) {
 			this.logMessage(e.getMessage());
 		}
@@ -69,23 +78,26 @@ public class ServerImpl extends ChainReplicationImpl{
 
 
 	public void init() {
-		super.init();
-		this.logMessage("Server Starting"+this.getServer());
-		try {
-			heartBeatSenderTimer = new Timer();
-			HeartBeatSenderTask heartBeatSender = new HeartBeatSenderTask(this);
-			heartBeatSenderTimer.schedule(heartBeatSender, (heartBeatTimeOut-3000));
-			requestOrQueryUpdateThread = new RequestQueryOrUpdateThread(this);
-			requestOrQueryUpdateThread.start();
-			chainMessageListenerThread = new ChainMessageListenerThread(this);
-			chainMessageListenerThread.start();
-			this.serverChainReplicationFacade.startProcessingMessages();
-		} catch (ServerChainReplicationException e) {
-			this.logMessage(e.getMessage());
-			this.stop();
-			e.printStackTrace();
+		if(!isStarted) {
+			super.init();
+			this.logMessage("Server Starting"+this.getServer());
+			try {
+				heartBeatSenderTimer = new Timer();
+				HeartBeatSenderTask heartBeatSender = new HeartBeatSenderTask(this);
+				heartBeatSenderTimer.schedule(heartBeatSender, (heartBeatTimeOut-3000));
+				requestOrQueryUpdateThread = new RequestQueryOrUpdateThread(this);
+				requestOrQueryUpdateThread.start();
+				chainMessageListenerThread = new ChainMessageListenerThread(this);
+				chainMessageListenerThread.start();
+				this.serverChainReplicationFacade.startProcessingMessages();
+			} catch (ServerChainReplicationException e) {
+				this.logMessage(e.getMessage());
+				this.stop();
+				e.printStackTrace();
+			}
+			this.isStarted = true;
+			this.logMessage("Server started");
 		}
-		this.logMessage("Server started");
 	}
 
 	public void stop() {
@@ -94,10 +106,11 @@ public class ServerImpl extends ChainReplicationImpl{
 		requestOrQueryUpdateThread.stopThread();
 		chainMessageListenerThread.stopThread();
 		this.serverChainReplicationFacade.stopProcessing();
-		super.stop();
 		this.logMessage("Server Stopped");
+		super.stop();
+		System.exit(0);
 	}
-	
+
 	public void pauseAllThreads() {
 		this.logMessage("Pausing message handler threads for update");
 		try {
@@ -109,8 +122,8 @@ public class ServerImpl extends ChainReplicationImpl{
 			e.printStackTrace();
 		}
 	}
-	
-	
+
+
 	public void resumeAllthreads() {
 		this.logMessage("Resuming message handler threads after update");
 		heartBeatSenderTimer.notifyAll();

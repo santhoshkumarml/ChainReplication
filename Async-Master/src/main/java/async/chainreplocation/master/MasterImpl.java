@@ -37,6 +37,7 @@ public class MasterImpl extends ChainReplicationImpl{
 					config.getChainToServerMap(),
 					config.getClients(),
 					this);
+			this.heartBeatTimeout = this.master.getHeartbeatTimeout();
 		} catch (Exception e) {
 			this.logMessage(e.getMessage());
 		}
