@@ -12,7 +12,7 @@ public class ApplicationRequestKey extends RequestKey {
 	int accountNum;
 
 	public ApplicationRequestKey(String requestId, int accountNum) {
-		super(requestId);
+		super(requestId, 0);
 		this.accountNum = accountNum;
 	}
 

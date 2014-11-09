@@ -10,9 +10,12 @@ public abstract class RequestKey implements Serializable{
 	private static final long serialVersionUID = 3748661814040823614L;
 
 	protected String requestId;
+	
+	protected int sequenceNumber = 0;
 
-	public RequestKey(String requestId) {
+	public RequestKey(String requestId,int sequenceNumber) {
 		this.requestId = requestId;
+		this.sequenceNumber = sequenceNumber;
 	}
 
 	public String getRequestId() {
@@ -21,6 +24,15 @@ public abstract class RequestKey implements Serializable{
 
 	public void setRequestId(String requestId) {
 		this.requestId = requestId;
+	}
+	
+
+	public int getSequenceNumber() {
+		return sequenceNumber;
+	}
+
+	public void setSequenceNumber(int sequenceNumber) {
+		this.sequenceNumber = sequenceNumber;
 	}
 
 	@Override
@@ -34,6 +46,7 @@ public abstract class RequestKey implements Serializable{
 		int result = 1;
 		result = prime * result
 				+ ((requestId == null) ? 0 : requestId.hashCode());
+		result = prime * result + sequenceNumber;
 		return result;
 	}
 
@@ -50,6 +63,8 @@ public abstract class RequestKey implements Serializable{
 			if (other.requestId != null)
 				return false;
 		} else if (!requestId.equals(other.requestId))
+			return false;
+		if (sequenceNumber != other.sequenceNumber)
 			return false;
 		return true;
 	}

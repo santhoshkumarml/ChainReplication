@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import app.chainreplication.app.json.util.JSONUtility;
+import async.chainreplication.app.json.util.JSONUtility;
 import async.chainreplication.client.ClientImpl;
 import async.chainreplication.master.models.Client;
 import async.chainreplication.master.models.Server;

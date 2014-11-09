@@ -132,8 +132,6 @@ public class ServerMessageHandler {
 	}
 
 
-
-
 	//---------------------------------------------------------------------------------
 	//Handle Chain Operation
 
@@ -232,7 +230,7 @@ public class ServerMessageHandler {
 		Server newServerObject = message.getServer();
 		if(!this.server.getAdjacencyList().getSucessor().equals(
 				newServerObject.getAdjacencyList().getSucessor())){
-		  //get Ready for sending SentHistory	
+		  //get Ready for sending SentHistory asynchronously	
 		}
 		synchronized (server) {
 			this.server = newServerObject;
