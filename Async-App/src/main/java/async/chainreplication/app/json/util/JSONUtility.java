@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import javax.activity.InvalidActivityException;
+
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -190,8 +192,9 @@ public class JSONUtility {
 	 *
 	 * @param filePath the file path
 	 * @return the config
+	 * @throws InvalidActivityException 
 	 */
-	public static Config readConfigFromJSON(String filePath) {
+	public static Config readConfigFromJSON(String filePath) throws InvalidActivityException {
 		Config config = new Config();
 		FileReader reader = null;
 		try {
@@ -203,14 +206,8 @@ public class JSONUtility {
 			readRequestTestCases(config, jsonObject);
 			readProbablityAndGenerateTestCases(config, jsonObject);
 			readMaster(config, jsonObject);
-		} catch (FileNotFoundException ex) {
-			ex.printStackTrace();
-		} catch (IOException ex) {
-			ex.printStackTrace();
-		} catch (ParseException ex) {
-			ex.printStackTrace();
-		} catch (NullPointerException ex) {
-			ex.printStackTrace();
+		} catch (IOException | ParseException ex) {
+			throw new InvalidActivityException(ex.getMessage()) ;
 		} finally {
 			if (reader != null) {
 				try {
