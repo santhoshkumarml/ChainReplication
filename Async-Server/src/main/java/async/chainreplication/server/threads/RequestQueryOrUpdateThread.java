@@ -61,13 +61,13 @@ public class RequestQueryOrUpdateThread extends Thread {
 			}
 			serverImpl.getServerChainReplicationFacade()
 					.deliverMessage(message);
-			serverImpl.getServerChainReplicationFacade()
+			/*serverImpl.getServerChainReplicationFacade()
 					.getServerMessageHandler().incrementReceiveSequenceNumber();
 			int receiveSequenceNumber = serverImpl
 					.getServerChainReplicationFacade()
 					.getServerMessageHandler().getReceiveSequenceNumber();
 			serverImpl.logMessage("Incoming Message-" + receiveSequenceNumber
-					+ ":" + message.toString());
+					+ ":" + message.toString());*/
 		}
 		requestServerHelper.stopServer();
 	}

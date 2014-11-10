@@ -67,11 +67,11 @@ public class ResponseListener extends Thread {
 			}
 			clientImpl.getClientChainReplicationFacade()
 					.getClientMessageHandler().incrementReceiveSequenceNumber();
-			int receiveSequenceNumber = clientImpl
+			/*int receiveSequenceNumber = clientImpl
 					.getClientChainReplicationFacade()
 					.getClientMessageHandler().getReceiveSequenceNumber();
 			clientImpl.logMessage("Incoming Message-" + receiveSequenceNumber
-					+ ":" + responseMessage.toString());
+					+ ":" + responseMessage.toString());*/
 		}
 	}
 

@@ -181,10 +181,10 @@ public class ClientMessageHandler {
 		} catch (ConnectClientException e) {
 			throw new ClientChainReplicationException(e);
 		}
-		incrementSendSequenceNumber();
+		/*incrementSendSequenceNumber();
 		this.getClientChainReplicationFacade().logMessage(
 				"Outgoing Message-" + sendSequenceNumber + ":"
-						+ message.toString());
+						+ message.toString());*/
 	}
 
 	/**

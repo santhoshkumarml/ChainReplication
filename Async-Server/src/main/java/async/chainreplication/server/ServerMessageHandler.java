@@ -127,9 +127,9 @@ public class ServerMessageHandler {
 				} catch (ConnectClientException e) {
 					throw new ServerChainReplicationException(e);
 				}
-				incrementSendSequenceNumber();
+				/*incrementSendSequenceNumber();
 				serverChainReplicationFacade.logMessage("Outgoing Message-"
-						+ sendSequenceNumber + ":" + ackMessage.toString());
+						+ sendSequenceNumber + ":" + ackMessage.toString());*/
 			}
 		}
 		applicationRequestHandler.handleAck(request);
@@ -399,9 +399,9 @@ public class ServerMessageHandler {
 				} catch (ConnectClientException e) {
 					throw new ServerChainReplicationException(e);
 				}
-				incrementSendSequenceNumber();
+				/*incrementSendSequenceNumber();
 				serverChainReplicationFacade.logMessage("Outgoing Message-"
-						+ sendSequenceNumber + ":" + syncMessage.toString());
+						+ sendSequenceNumber + ":" + syncMessage.toString());*/
 			}
 			// send sync
 		} else {
