@@ -39,8 +39,9 @@ public class HeartBeatSenderTask extends TimerTask {
 				serverImpl.getServer());
 		try {
 			clientHelper.sendMessage(heartBeatMessage);
+			// TODO Remove Comment
+			this.serverImpl.logMessage(heartBeatMessage.toString());
 		} catch (ConnectClientException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

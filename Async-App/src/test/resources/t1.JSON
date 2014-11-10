@@ -2,7 +2,7 @@
 	"Master":{
 		"MasterName":"Master",
 		"MasterHost":"localhost",
-		"MasterPort":"10000",
+		"MasterPort":"30000",
 		"HeartBeatTimeout":"5000"
 	},
 	"Chains":[
@@ -30,7 +30,6 @@
 						"TcpPort":"10121",
 						"UdpPort":"10122",
 						"DebugPort":"10123",
-						"TimeToLive":"10000"
 					},
 					"Predecessor":"Server1",
 					"Successor":"Server3"

@@ -61,7 +61,7 @@ public class AppStarter {
 		 */
 		@Override
 		public void run() {
-			while (!serverToTimeToDie.isEmpty() && !serverToProcess.isEmpty()) {
+			while (!serverToProcess.isEmpty()) {
 				List<Server> serversToKill = new ArrayList<Server>();
 				if (!killAllServers) {
 					for (Entry<Server, Long> serverToTimeToDieEntry : serverToTimeToDie
@@ -233,7 +233,12 @@ public class AppStarter {
 			Map<Server, Process> serverProcesses = new HashMap<Server, Process>();
 			Map<Server, Long> serverToTimeToDie = new HashMap<Server, Long>();
 			List<Process> clientProcesses = new ArrayList<Process>();
+			
+			
 			Process masterProcess = masterProcessBuilder.start();
+			System.out.println("Master Started");
+			
+			
 			for (Entry<Server, ProcessBuilder> pbEntry : serverProcessBuilders
 					.entrySet()) {
 				Process p = pbEntry.getValue().start();
@@ -251,12 +256,16 @@ public class AppStarter {
 							+ (timeToLive - initialSleepTime));
 				}
 			}
+			System.out.println("All Servers started");
+			
 			serverKiller = new ServerKiller(serverToTimeToDie, serverProcesses);
 			serverKiller.start();
+			
 			for (ProcessBuilder pb : clientProcessBuilders) {
 				Process p = pb.start();
 				clientProcesses.add(p);
 			}
+			System.out.println("All Clients started");
 
 			while (clientProcesses.size() > 0) {
 				Iterator<Process> clientProcessIterator = clientProcesses
@@ -268,12 +277,18 @@ public class AppStarter {
 					}
 				}
 			}
+			System.out.println("All Clients Died");
+			
+			
 			serverKiller.killAllServers();
 			serverKiller.join();
+			System.out.println("All Servers Killed");
 
 			if (masterProcess.isAlive())
 				masterProcess.destroy();
-
+			
+			System.out.println("Master Killed");
+			
 			System.out.println("Stopping Main " + new Date());
 		} catch (Exception e) {
 			e.printStackTrace();

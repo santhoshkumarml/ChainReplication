@@ -175,6 +175,5 @@ public class ClientImpl extends ChainReplicationImpl {
 		this.logMessage("Client Stopping");
 		responseListener.stopThread();
 		super.stop();
-		System.exit(-1);
 	}
 }

@@ -125,7 +125,7 @@ public class ServerMessageHandler {
 				try {
 					peerSendClientHelper.sendMessage(ackMessage);
 				} catch (ConnectClientException e) {
-					throw new ServerChainReplicationException(e);
+					this.serverChainReplicationFacade.logMessage(e.getMessage());
 				}
 				/*incrementSendSequenceNumber();
 				serverChainReplicationFacade.logMessage("Outgoing Message-"
@@ -246,7 +246,7 @@ public class ServerMessageHandler {
 						try {
 							peerSendClientHelper.sendMessage(successorRequestMessage);
 						} catch (ConnectClientException e) {
-							throw new ServerChainReplicationException(e);
+							this.serverChainReplicationFacade.logMessage(e.getMessage());
 						}
 					}
 				}
@@ -397,7 +397,7 @@ public class ServerMessageHandler {
 				try {
 					peerSendClientHelper.sendMessage(syncMessage);
 				} catch (ConnectClientException e) {
-					throw new ServerChainReplicationException(e);
+					this.serverChainReplicationFacade.logMessage(e.getMessage());
 				}
 				/*incrementSendSequenceNumber();
 				serverChainReplicationFacade.logMessage("Outgoing Message-"
@@ -467,7 +467,7 @@ public class ServerMessageHandler {
 				try {
 					peerSendClientHelper.sendMessage(bulkSyncMessage);
 				} catch (ConnectClientException e) {
-					throw new ServerChainReplicationException(e);
+					this.serverChainReplicationFacade.logMessage(e.getMessage());
 				}
 				
 			}

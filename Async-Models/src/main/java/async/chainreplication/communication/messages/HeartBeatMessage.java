@@ -33,4 +33,9 @@ public class HeartBeatMessage extends ChainReplicationMessage {
 		return server;
 	}
 
+	@Override
+	public String toString() {
+		return "HeartBeatMessage [server=" + server + "]";
+	}
+
 }

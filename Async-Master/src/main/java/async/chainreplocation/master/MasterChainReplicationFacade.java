@@ -12,7 +12,6 @@ import async.chainreplication.master.models.Master;
 import async.chainreplication.master.models.Server;
 import async.generic.message.queue.MessageQueue;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class MasterChainReplicationFacade.
  */
@@ -54,6 +53,8 @@ public class MasterChainReplicationFacade {
 	 * @param message the message
 	 */
 	public void deliverMessage(ChainReplicationMessage message) {
+		//TODO remove this later
+		this.logMessages("Message Delivered:"+message.toString());
 		if (message != null) {
 			if (message.getClass() == HeartBeatMessage.class) {
 				synchronized (heartBeatMessageQueue) {
@@ -84,7 +85,6 @@ public class MasterChainReplicationFacade {
 	 */
 	public void handleMessage(ChainReplicationMessage message)
 			throws MasterChainReplicationException {
-		this.logMessages(message.toString());
 		if (message.getClass() == MasterGenericServerChangeMessage.class) {
 			masterMessageHandler
 					.handleGenericServerChangeMessage((MasterGenericServerChangeMessage) message);
