@@ -22,7 +22,7 @@ import async.common.util.ConfigUtil;
  * The Class AppStarter.
  */
 public class AppStarter {
-	
+
 	/**
 	 * The Class ServerKiller.
 	 */
@@ -30,10 +30,10 @@ public class AppStarter {
 
 		/** The server to time to die. */
 		Map<Server, Long> serverToTimeToDie;
-		
+
 		/** The server to process. */
 		Map<Server, Process> serverToProcess;
-		
+
 		/** The kill all servers. */
 		volatile boolean killAllServers = false;
 
@@ -118,9 +118,17 @@ public class AppStarter {
 	private static ProcessBuilder createMaster(Config config) {
 		Map<String, String> envs = System.getenv();
 		String classPathValue = System.getProperty("java.class.path");
-		ProcessBuilder pb = new ProcessBuilder("java",
-				MasterImpl.class.getName(), ConfigUtil.serializeToFile(config),
-				config.getMaster().getMasterName());
+		List<String> command = new ArrayList<String>();
+		command.add("java");
+		if(config.getMaster().getMasterDebugPort() != -1) {
+			command.add("-Xdebug");
+			command.add("-Xrunjdwp:transport=dt_socket,server=y,"
+					+ "suspend=n,address="+config.getMaster().getMasterDebugPort());
+		}
+		command.add(MasterImpl.class.getName());
+		command.add(ConfigUtil.serializeToFile(config));
+		command.add(config.getMaster().getMasterName());
+		ProcessBuilder pb = new ProcessBuilder(command);
 		pb.environment().putAll(envs);
 		pb.environment().put("CLASSPATH", classPathValue);
 		return pb;
@@ -137,12 +145,17 @@ public class AppStarter {
 			Client client) {
 		Map<String, String> envs = System.getenv();
 		String classPathValue = System.getProperty("java.class.path");
-		ProcessBuilder pb = new ProcessBuilder(
-				"java",
-				// "-Xdebug",
-				// "-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=13001",
-				ClientImpl.class.getName(), ConfigUtil.serializeToFile(config),
-				client.getClientId());
+		List<String> command = new ArrayList<String>();
+		command.add("java");
+		if(client.getClientProcessDetails().getDebugPort() != -1) {
+			command.add("-Xdebug");
+			command.add("-Xrunjdwp:transport=dt_socket,server=y,"
+					+ "suspend=n,address="+client.getClientProcessDetails().getDebugPort());
+		}
+		command.add(ClientImpl.class.getName());
+		command.add(ConfigUtil.serializeToFile(config));
+		command.add(client.getClientId());
+		ProcessBuilder pb = new ProcessBuilder(command);
 		pb.environment().putAll(envs);
 		pb.environment().put("CLASSPATH", classPathValue);
 		return pb;
@@ -159,25 +172,20 @@ public class AppStarter {
 			Server server) {
 		Map<String, String> envs = System.getenv();
 		String classPathValue = System.getProperty("java.class.path");
-		ProcessBuilder pb;
-		if (server.isTail()) {
-			pb = new ProcessBuilder(
-					"java",
-					// "-Xdebug",
-					// "-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=13000",
-					ServerImpl.class.getName(),
-					ConfigUtil.serializeToFile(config), server.getChainName(),
-					server.getServerId());
-		} else {
-			pb = new ProcessBuilder(
-					"java",
-					// "-Xdebug",
-					// "-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=13000",
-					ServerImpl.class.getName(),
-					ConfigUtil.serializeToFile(config), server.getChainName(),
-					server.getServerId());
 
+		List<String> command = new ArrayList<String>();
+		command.add("java");
+		if(server.getServerProcessDetails().getDebugPort() != -1) {
+			command.add("-Xdebug");
+			command.add("-Xrunjdwp:transport=dt_socket,server=y,"
+					+ "suspend=n,address="+server.getServerProcessDetails().getDebugPort());
 		}
+		command.add(ServerImpl.class.getName());
+		command.add(ConfigUtil.serializeToFile(config));
+		command.add(server.getChainName());
+		command.add(server.getServerId());
+
+		ProcessBuilder pb= new ProcessBuilder(command);
 		pb.environment().putAll(envs);
 		pb.environment().put("CLASSPATH", classPathValue);
 		return pb;
@@ -237,7 +245,7 @@ public class AppStarter {
 					}
 					serverToTimeToDie.put(pbEntry.getKey(),
 							System.currentTimeMillis()
-									+ (timeToLive - initialSleepTime));
+							+ (timeToLive - initialSleepTime));
 				}
 			}
 			serverKiller = new ServerKiller(serverToTimeToDie, serverProcesses);
