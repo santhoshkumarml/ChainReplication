@@ -72,7 +72,7 @@ public class AppStarter {
 						}
 					}
 				} else {
-					serversToKill.addAll(serverToTimeToDie.keySet());
+					serversToKill.addAll(serverToProcess.keySet());
 				}
 				synchronized (serverToProcess) {
 					for (Server serverToKill : serversToKill) {
