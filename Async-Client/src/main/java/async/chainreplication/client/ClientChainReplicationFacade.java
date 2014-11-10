@@ -7,7 +7,6 @@ import async.chainreplication.client.server.communication.models.Reply;
 import async.chainreplication.client.server.communication.models.Request;
 import async.chainreplication.communication.messages.ChainReplicationMessage;
 import async.chainreplication.communication.messages.MasterClientChangeMessage;
-import async.chainreplication.communication.messages.MasterMessage;
 import async.chainreplication.communication.messages.ResponseOrSyncMessage;
 import async.chainreplication.master.models.Chain;
 import async.chainreplication.master.models.Client;
@@ -15,55 +14,103 @@ import async.chainreplication.master.models.Master;
 import async.chainreplicaton.client.message.ClientRequestMessage;
 import async.generic.message.queue.MessageQueue;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class ClientChainReplicationFacade.
+ */
 public class ClientChainReplicationFacade {
-	MessageQueue<ChainReplicationMessage> messages = 
-			new MessageQueue<ChainReplicationMessage>();
+	
+	/** The messages. */
+	MessageQueue<ChainReplicationMessage> messages = new MessageQueue<ChainReplicationMessage>();
+	
+	/** The client message handler. */
 	ClientMessageHandler clientMessageHandler;
+	
+	/** The client impl. */
 	ClientImpl clientImpl;
 
-	public ClientChainReplicationFacade(
-			Client client,
-			Map<String, Chain> chainNameToChainMap,
-			Master master,
+	/**
+	 * Instantiates a new client chain replication facade.
+	 *
+	 * @param client the client
+	 * @param chainNameToChainMap the chain name to chain map
+	 * @param master the master
+	 * @param clientImpl the client impl
+	 * @throws ClientChainReplicationException the client chain replication exception
+	 */
+	public ClientChainReplicationFacade(Client client,
+			Map<String, Chain> chainNameToChainMap, Master master,
 			ClientImpl clientImpl) throws ClientChainReplicationException {
-		this.clientMessageHandler = 
-				new ClientMessageHandler(client, chainNameToChainMap, master, this);
+		clientMessageHandler = new ClientMessageHandler(client,
+				chainNameToChainMap, master, this);
 		this.clientImpl = clientImpl;
 	}
 
-	public ClientMessageHandler getClientMessageHandler() {
-		return clientMessageHandler;
-	}
-
-	
-    public void logMessage(String message) {
-    	this.clientImpl.logMessage(message);
-    }
-    
-	public void deliverMessage(ChainReplicationMessage message) throws ClientChainReplicationException {
-		if(message != null) {
-			messages.enqueueMessageObject(message.getPriority().ordinal(), message);
+	/**
+	 * Deliver message.
+	 *
+	 * @param message the message
+	 * @throws ClientChainReplicationException the client chain replication exception
+	 */
+	public void deliverMessage(ChainReplicationMessage message)
+			throws ClientChainReplicationException {
+		if (message != null) {
+			messages.enqueueMessageObject(message.getPriority().ordinal(),
+					message);
 		}
-		while(messages.hasMoreMessages()) {
-			ChainReplicationMessage oldMessage = (ChainReplicationMessage) messages.dequeueMessageAndReturnMessageObject();
+		while (messages.hasMoreMessages()) {
+			ChainReplicationMessage oldMessage = (ChainReplicationMessage) messages
+					.dequeueMessageAndReturnMessageObject();
 			handleMessage(oldMessage);
 		}
 	}
 
-	public Reply readResponsesForRequest(Request request) {
-		return this.clientMessageHandler.readResponses(request);
+	/**
+	 * Gets the client message handler.
+	 *
+	 * @return the client message handler
+	 */
+	public ClientMessageHandler getClientMessageHandler() {
+		return clientMessageHandler;
 	}
 
-	public void handleMessage(ChainReplicationMessage message) throws ClientChainReplicationException  {
-		if(message.getClass() ==  ClientRequestMessage.class) {
-			this.clientMessageHandler.handleClientRequestMessage(
-					(ClientRequestMessage)message);
-		} else if(message.getClass() ==  ResponseOrSyncMessage.class) {
-			this.clientMessageHandler.handleReponseMessage(
-					(ResponseOrSyncMessage)message);
+	/**
+	 * Handle message.
+	 *
+	 * @param message the message
+	 * @throws ClientChainReplicationException the client chain replication exception
+	 */
+	public void handleMessage(ChainReplicationMessage message)
+			throws ClientChainReplicationException {
+		if (message.getClass() == ClientRequestMessage.class) {
+			clientMessageHandler
+					.handleClientRequestMessage((ClientRequestMessage) message);
+		} else if (message.getClass() == ResponseOrSyncMessage.class) {
+			clientMessageHandler
+					.handleReponseMessage((ResponseOrSyncMessage) message);
 		} else if (message instanceof MasterClientChangeMessage) {
-			this.clientMessageHandler.handleMasterMessage((MasterClientChangeMessage)message);
+			clientMessageHandler
+					.handleMasterMessage((MasterClientChangeMessage) message);
 		}
+	}
+
+	/**
+	 * Log message.
+	 *
+	 * @param message the message
+	 */
+	public void logMessage(String message) {
+		clientImpl.logMessage(message);
+	}
+
+	/**
+	 * Read responses for request.
+	 *
+	 * @param request the request
+	 * @return the reply
+	 */
+	public Reply readResponsesForRequest(Request request) {
+		return clientMessageHandler.readResponses(request);
 	}
 
 }

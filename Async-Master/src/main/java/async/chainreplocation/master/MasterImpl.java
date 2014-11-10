@@ -11,58 +11,88 @@ import async.common.util.Config;
 import async.common.util.ConfigUtil;
 import aync.chainreplication.base.impl.ChainReplicationImpl;
 
-
-public class MasterImpl extends ChainReplicationImpl{
-	Master master;
-	HeartBeatListenerThread listernerThread;
-	Timer checkerThread;
-	MasterChainReplicationFacade masterChainReplicationFacade;
-	long heartBeatTimeout = 5000;
-
+// TODO: Auto-generated Javadoc
+/**
+ * The Class MasterImpl.
+ */
+public class MasterImpl extends ChainReplicationImpl {
+	
+	/**
+	 * The main method.
+	 *
+	 * @param args the arguments
+	 */
 	public static void main(String args[]) {
 		MasterImpl masterImpl = new MasterImpl(
-				ConfigUtil.deserializeFromFile(args[0]),
-				args[1]);
+				ConfigUtil.deserializeFromFile(args[0]), args[1]);
 		masterImpl.init();
 		masterImpl.stop();
 	}
 
+	/** The master. */
+	Master master;
+	
+	/** The listerner thread. */
+	HeartBeatListenerThread listernerThread;
+	
+	/** The checker thread. */
+	Timer checkerThread;
+	
+	/** The master chain replication facade. */
+	MasterChainReplicationFacade masterChainReplicationFacade;
+
+	/** The heart beat timeout. */
+	long heartBeatTimeout = 5000;
+
+	/**
+	 * Instantiates a new master impl.
+	 *
+	 * @param config the config
+	 * @param masterId the master id
+	 */
 	public MasterImpl(Config config, String masterId) {
 		super(masterId);
 		try {
-			this.master = config.getMaster();
-			this.masterChainReplicationFacade = new MasterChainReplicationFacade(
-					this.master,
-					config.getChains(),
-					config.getChainToServerMap(),
-					config.getClients(),
-					this);
-			this.heartBeatTimeout = this.master.getHeartbeatTimeout();
+			master = config.getMaster();
+			masterChainReplicationFacade = new MasterChainReplicationFacade(
+					master, config.getChains(), config.getChainToServerMap(),
+					config.getClients(), this);
+			heartBeatTimeout = master.getHeartbeatTimeout();
 		} catch (Exception e) {
 			this.logMessage(e.getMessage());
 		}
 	}
 
-
-
-	public Master getMaster() {
-		return master;
-	}
-
-
+	/**
+	 * Gets the heart beat timeout.
+	 *
+	 * @return the heart beat timeout
+	 */
 	public long getHeartBeatTimeout() {
 		return heartBeatTimeout;
 	}
 
+	/**
+	 * Gets the master.
+	 *
+	 * @return the master
+	 */
+	public Master getMaster() {
+		return master;
+	}
+
+	/**
+	 * Gets the master chain replication facade.
+	 *
+	 * @return the master chain replication facade
+	 */
 	public MasterChainReplicationFacade getMasterChainReplicationFacade() {
 		return masterChainReplicationFacade;
 	}
 
-	public void logMessage(String message) {
-		LogMessage logMessage = new LogMessage(message);
-		this.getLogMessages().enqueueMessageObject(logMessage.getPriority().ordinal(), logMessage);
-	}
-
+	/* (non-Javadoc)
+	 * @see aync.chainreplication.base.impl.ChainReplicationImpl#init()
+	 */
 	public void init() {
 		try {
 			super.init();
@@ -71,14 +101,28 @@ public class MasterImpl extends ChainReplicationImpl{
 			HeartBeatCheckerTask task = new HeartBeatCheckerTask(this);
 			checkerThread.schedule(task, heartBeatTimeout);
 			listernerThread.start();
-		} catch(MasterChainReplicationException e) {
-			this.logMessage("Internal Error:"+e.getMessage());
+		} catch (MasterChainReplicationException e) {
+			this.logMessage("Internal Error:" + e.getMessage());
 			this.stop();
 			e.printStackTrace();
 		}
 		this.logMessage("Master Started:");
 	}
 
+	/**
+	 * Log message.
+	 *
+	 * @param message the message
+	 */
+	public void logMessage(String message) {
+		LogMessage logMessage = new LogMessage(message);
+		this.getLogMessages().enqueueMessageObject(
+				logMessage.getPriority().ordinal(), logMessage);
+	}
+
+	/* (non-Javadoc)
+	 * @see aync.chainreplication.base.impl.ChainReplicationImpl#stop()
+	 */
 	public void stop() {
 		this.logMessage("Master Stopping");
 		checkerThread.cancel();

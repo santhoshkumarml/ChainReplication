@@ -13,62 +13,27 @@ import async.common.util.Config;
 import async.common.util.RequestWithChain;
 import async.common.util.TestCases;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class AppConfigUtil.
+ */
 public class AppConfigUtil {
 
-	public static Config readConfigFromFile(String configFile) {
-		Config config = new Config(); 
-		//Config.createDefaultValues();
-		readTestCases(config, configFile);
-		return config;
-	}
-
-	private static void readTestCases(Config config, String configFile) {
-		BufferedReader br = null;
-		try{
-			br = new BufferedReader(
-					new InputStreamReader(
-							new FileInputStream(new File(configFile))));
-			String input = "";
-			while((input = br.readLine()) != null) {
-				String[] inputSplit = input.split(":");
-				String clientId = inputSplit[0].trim();
-				Client client =config.getClients().get(clientId);
-				String requestString = inputSplit[1].trim();
-				String[] requestStringSplit = requestString.split(",");
-				ApplicationRequest request = createRequest(client, requestStringSplit);
-				TestCases testCases = config.getTestCases().get(client);
-				String chainName = requestStringSplit[0].trim();
-				if(testCases == null) {
-					testCases = new TestCases();
-					testCases.setClient(client);
-				}
-				testCases.getRequests().add(new RequestWithChain(request, chainName));
-				config.getTestCases().put(client, testCases);
-			}
-
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} finally {
-			if(br!=null) {
-				try {
-					br.close();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-
-		}
-
-	}
-
-	private static ApplicationRequest createRequest(Client client, String[] requestStringSplit) {
+	/**
+	 * Creates the request.
+	 *
+	 * @param client the client
+	 * @param requestStringSplit the request string split
+	 * @return the application request
+	 */
+	private static ApplicationRequest createRequest(Client client,
+			String[] requestStringSplit) {
 		String reqId = requestStringSplit[2].trim();
 		String accountNum = requestStringSplit[3].trim();
-		ApplicationRequestType applicationRequestType = 
-				ApplicationRequestType.valueOf(requestStringSplit[1].toUpperCase().trim());
-		ApplicationRequest applicationRequest  = new ApplicationRequest(client, reqId);
+		ApplicationRequestType applicationRequestType = ApplicationRequestType
+				.valueOf(requestStringSplit[1].toUpperCase().trim());
+		ApplicationRequest applicationRequest = new ApplicationRequest(client,
+				reqId);
 		applicationRequest.setApplicationRequestType(applicationRequestType);
 		applicationRequest.setAccountNum(Integer.valueOf(accountNum));
 		switch (applicationRequestType) {
@@ -95,6 +60,67 @@ public class AppConfigUtil {
 		}
 
 		return applicationRequest;
+	}
+
+	/**
+	 * Read config from file.
+	 *
+	 * @param configFile the config file
+	 * @return the config
+	 */
+	public static Config readConfigFromFile(String configFile) {
+		Config config = new Config();
+		// Config.createDefaultValues();
+		readTestCases(config, configFile);
+		return config;
+	}
+
+	/**
+	 * Read test cases.
+	 *
+	 * @param config the config
+	 * @param configFile the config file
+	 */
+	private static void readTestCases(Config config, String configFile) {
+		BufferedReader br = null;
+		try {
+			br = new BufferedReader(new InputStreamReader(new FileInputStream(
+					new File(configFile))));
+			String input = "";
+			while ((input = br.readLine()) != null) {
+				String[] inputSplit = input.split(":");
+				String clientId = inputSplit[0].trim();
+				Client client = config.getClients().get(clientId);
+				String requestString = inputSplit[1].trim();
+				String[] requestStringSplit = requestString.split(",");
+				ApplicationRequest request = createRequest(client,
+						requestStringSplit);
+				TestCases testCases = config.getTestCases().get(client);
+				String chainName = requestStringSplit[0].trim();
+				if (testCases == null) {
+					testCases = new TestCases();
+					testCases.setClient(client);
+				}
+				testCases.getRequests().add(
+						new RequestWithChain(request, chainName));
+				config.getTestCases().put(client, testCases);
+			}
+
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			if (br != null) {
+				try {
+					br.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+
+		}
+
 	}
 
 }

@@ -17,66 +17,186 @@ import async.chainreplocation.master.MasterImpl;
 import async.common.util.Config;
 import async.common.util.ConfigUtil;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class AppStarter.
+ */
 public class AppStarter {
-	public static void main(String[] args) {
-		String configFile = args[0];
-		ServerKiller serverKiller = null;
-		System.out.println("Starting Main "+new Date());
-		try{
-			Config config = JSONUtility.readConfigFromJSON(configFile);
-			ProcessBuilder masterProcessBuilder = createMaster(config);
-			Map<Server, ProcessBuilder> serverProcessBuilders = createServersForChains(config);
-			List<ProcessBuilder> clientProcessBuilders = createClients(config);
-			Map<Server, Process> serverProcesses = new HashMap<Server, Process>();
-			Map<Server, Long> serverToTimeToDie = new HashMap<Server, Long>();
-			List<Process> clientProcesses = new ArrayList<Process>();
-			Process masterProcess = masterProcessBuilder.start();
-			for(Entry<Server, ProcessBuilder> pbEntry : serverProcessBuilders.entrySet()) {
-				Process p =pbEntry.getValue().start();
-				serverProcesses.put(pbEntry.getKey(), p);
-				Long timeToLive = config.getServerToTimeToLive().get(pbEntry.getKey());
-				Long initialSleepTime = config.getServerToInitialSleepTime().get(pbEntry.getValue());
-				if(timeToLive != null) {
-					if(initialSleepTime == null) {
-						initialSleepTime = 0L;
+	
+	/**
+	 * The Class ServerKiller.
+	 */
+	private static class ServerKiller extends Thread {
+
+		/** The server to time to die. */
+		Map<Server, Long> serverToTimeToDie;
+		
+		/** The server to process. */
+		Map<Server, Process> serverToProcess;
+		
+		/** The kill all servers. */
+		volatile boolean killAllServers = false;
+
+		/**
+		 * Instantiates a new server killer.
+		 *
+		 * @param serverToTimeToDie the server to time to die
+		 * @param serverToProcess the server to process
+		 */
+		public ServerKiller(Map<Server, Long> serverToTimeToDie,
+				Map<Server, Process> serverToProcess) {
+			this.serverToTimeToDie = serverToTimeToDie;
+			this.serverToProcess = serverToProcess;
+		}
+
+		/**
+		 * Kill all servers.
+		 */
+		public void killAllServers() {
+			killAllServers = true;
+		}
+
+		/* (non-Javadoc)
+		 * @see java.lang.Thread#run()
+		 */
+		@Override
+		public void run() {
+			while (!serverToTimeToDie.isEmpty() && !serverToProcess.isEmpty()) {
+				List<Server> serversToKill = new ArrayList<Server>();
+				if (!killAllServers) {
+					for (Entry<Server, Long> serverToTimeToDieEntry : serverToTimeToDie
+							.entrySet()) {
+						long timeToDie = serverToTimeToDieEntry.getValue();
+						if (timeToDie <= System.currentTimeMillis()) {
+							serversToKill.add(serverToTimeToDieEntry.getKey());
+						}
 					}
-					serverToTimeToDie.put(pbEntry.getKey(), System.currentTimeMillis()+(timeToLive-initialSleepTime));
+				} else {
+					serversToKill.addAll(serverToTimeToDie.keySet());
+				}
+				synchronized (serverToProcess) {
+					for (Server serverToKill : serversToKill) {
+						Process serverProcess = serverToProcess
+								.get(serverToKill);
+						if (serverProcess.isAlive()) {
+							serverProcess.destroy();
+						}
+						serverToProcess.remove(serverToKill);
+						synchronized (serverToTimeToDie) {
+							serverToTimeToDie.remove(serverToKill);
+						}
+					}
 				}
 			}
-			serverKiller = new ServerKiller(serverToTimeToDie, serverProcesses);
-			serverKiller.start();
-			for(ProcessBuilder pb : clientProcessBuilders) {
-				Process p = pb.start();
-				clientProcesses.add(p);
-			}
-
-			while(clientProcesses.size() > 0) {
-				Iterator<Process> clientProcessIterator = clientProcesses.iterator();
-				while(clientProcessIterator.hasNext()) {
-					Process p = clientProcessIterator.next();
-					if(!p.isAlive()) {
-						clientProcessIterator.remove();
-					}
-				}
-			}
-			serverKiller.killAllServers();
-			serverKiller.join();
-
-			if(masterProcess.isAlive())
-				masterProcess.destroy();
-
-			System.out.println("Stopping Main "+new Date());
-		} catch(Exception e) {
-			e.printStackTrace();
 		}
 	}
 
+	/**
+	 * Creates the clients.
+	 *
+	 * @param config the config
+	 * @return the list
+	 */
+	private static List<ProcessBuilder> createClients(Config config) {
+		List<ProcessBuilder> clientProcesses = new ArrayList<ProcessBuilder>();
+		for (Map.Entry<String, Client> clientEntry : config.getClients()
+				.entrySet()) {
+			ProcessBuilder pb = createProcessForClient(config,
+					clientEntry.getValue());
+			clientProcesses.add(pb);
+		}
+		return clientProcesses;
+
+	}
+
+	/**
+	 * Creates the master.
+	 *
+	 * @param config the config
+	 * @return the process builder
+	 */
+	private static ProcessBuilder createMaster(Config config) {
+		Map<String, String> envs = System.getenv();
+		String classPathValue = System.getProperty("java.class.path");
+		ProcessBuilder pb = new ProcessBuilder("java",
+				MasterImpl.class.getName(), ConfigUtil.serializeToFile(config),
+				config.getMaster().getMasterName());
+		pb.environment().putAll(envs);
+		pb.environment().put("CLASSPATH", classPathValue);
+		return pb;
+	}
+
+	/**
+	 * Creates the process for client.
+	 *
+	 * @param config the config
+	 * @param client the client
+	 * @return the process builder
+	 */
+	private static ProcessBuilder createProcessForClient(Config config,
+			Client client) {
+		Map<String, String> envs = System.getenv();
+		String classPathValue = System.getProperty("java.class.path");
+		ProcessBuilder pb = new ProcessBuilder(
+				"java",
+				// "-Xdebug",
+				// "-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=13001",
+				ClientImpl.class.getName(), ConfigUtil.serializeToFile(config),
+				client.getClientId());
+		pb.environment().putAll(envs);
+		pb.environment().put("CLASSPATH", classPathValue);
+		return pb;
+	}
+
+	/**
+	 * Creates the process for server.
+	 *
+	 * @param config the config
+	 * @param server the server
+	 * @return the process builder
+	 */
+	private static ProcessBuilder createProcessForServer(Config config,
+			Server server) {
+		Map<String, String> envs = System.getenv();
+		String classPathValue = System.getProperty("java.class.path");
+		ProcessBuilder pb;
+		if (server.isTail()) {
+			pb = new ProcessBuilder(
+					"java",
+					// "-Xdebug",
+					// "-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=13000",
+					ServerImpl.class.getName(),
+					ConfigUtil.serializeToFile(config), server.getChainName(),
+					server.getServerId());
+		} else {
+			pb = new ProcessBuilder(
+					"java",
+					// "-Xdebug",
+					// "-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=13000",
+					ServerImpl.class.getName(),
+					ConfigUtil.serializeToFile(config), server.getChainName(),
+					server.getServerId());
+
+		}
+		pb.environment().putAll(envs);
+		pb.environment().put("CLASSPATH", classPathValue);
+		return pb;
+	}
+
+	/**
+	 * Creates the servers for chains.
+	 *
+	 * @param config the config
+	 * @return the map
+	 */
 	private static Map<Server, ProcessBuilder> createServersForChains(
 			Config config) {
 		Map<Server, ProcessBuilder> serverProcesses = new HashMap<Server, ProcessBuilder>();
-		for(String chainId : config.getChains().keySet()) {
-			for(String serverId : config.getChainToServerMap().get(chainId).keySet()) {
-				Server server =  config.getChainToServerMap().get(chainId).get(serverId);
+		for (String chainId : config.getChains().keySet()) {
+			for (String serverId : config.getChainToServerMap().get(chainId)
+					.keySet()) {
+				Server server = config.getChainToServerMap().get(chainId)
+						.get(serverId);
 				ProcessBuilder pb = createProcessForServer(config, server);
 				serverProcesses.put(server, pb);
 			}
@@ -85,122 +205,67 @@ public class AppStarter {
 
 	}
 
-	private static ProcessBuilder createProcessForServer(
-			Config config, Server server ) {
-		Map<String,String> envs = System.getenv();
-		String classPathValue = System.getProperty("java.class.path");
-		ProcessBuilder pb;
-		if(server.isTail()) {
-			pb = new ProcessBuilder(
-					"java",
-					//"-Xdebug",
-					//"-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=13000",
-					ServerImpl.class.getName(),
-					ConfigUtil.serializeToFile(config),
-					server.getChainName(),
-					server.getServerId());
-		} else {
-			pb = new ProcessBuilder(
-					"java",
-					//"-Xdebug",
-					//"-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=13000",
-					ServerImpl.class.getName(),
-					ConfigUtil.serializeToFile(config),
-					server.getChainName(),
-					server.getServerId());
-
-		}
-		pb.environment().putAll(envs);
-		pb.environment().put("CLASSPATH", classPathValue);
-		return pb;
-	}
-
-
-	private static List<ProcessBuilder> createClients(
-			Config config) {
-		List<ProcessBuilder> clientProcesses = new ArrayList<ProcessBuilder>();
-		for(Map.Entry<String, Client> clientEntry :  config.getClients().entrySet()) {
-			ProcessBuilder pb = createProcessForClient(config, clientEntry.getValue());
-			clientProcesses.add(pb);
-		}
-		return clientProcesses;
-
-	}
-
-	private static ProcessBuilder createProcessForClient(
-			Config config, Client client ) {
-		Map<String,String> envs = System.getenv();
-		String classPathValue = System.getProperty("java.class.path");
-		ProcessBuilder pb = new ProcessBuilder(
-				"java",
-				//"-Xdebug",
-				//"-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=13001",
-				ClientImpl.class.getName(),
-				ConfigUtil.serializeToFile(config),
-				client.getClientId());
-		pb.environment().putAll(envs);
-		pb.environment().put("CLASSPATH", classPathValue);
-		return pb;
-	}
-
-	private static ProcessBuilder createMaster(Config config) {
-		Map<String,String> envs = System.getenv();
-		String classPathValue = System.getProperty("java.class.path");
-		ProcessBuilder pb = new ProcessBuilder(
-				"java",
-				MasterImpl.class.getName(),
-				ConfigUtil.serializeToFile(config),
-				config.getMaster().getMasterName());
-		pb.environment().putAll(envs);
-		pb.environment().put("CLASSPATH", classPathValue);
-		return pb;
-	}
-
-
-	private static class ServerKiller extends Thread {
-
-		Map<Server, Long> serverToTimeToDie;
-		Map<Server,Process> serverToProcess;
-		volatile boolean killAllServers = false;
-
-		public ServerKiller(Map<Server, Long> serverToTimeToDie, Map<Server,Process> serverToProcess) {
-			this.serverToTimeToDie = serverToTimeToDie;
-			this.serverToProcess = serverToProcess;
-		}
-
-		public void killAllServers() {
-			killAllServers = true;
-		}
-
-
-		@Override
-		public void run() {
-			while(!this.serverToTimeToDie.isEmpty() &&
-					!this.serverToProcess.isEmpty()) {
-				List<Server> serversToKill = new ArrayList<Server>();
-				if(!killAllServers) {
-					for(Entry<Server, Long> serverToTimeToDieEntry : this.serverToTimeToDie.entrySet()) {
-						long timeToDie = serverToTimeToDieEntry.getValue();
-						if(timeToDie<=System.currentTimeMillis()) {
-							serversToKill.add(serverToTimeToDieEntry.getKey());   
-						}
+	/**
+	 * The main method.
+	 *
+	 * @param args the arguments
+	 */
+	public static void main(String[] args) {
+		String configFile = args[0];
+		ServerKiller serverKiller = null;
+		System.out.println("Starting Main " + new Date());
+		try {
+			Config config = JSONUtility.readConfigFromJSON(configFile);
+			ProcessBuilder masterProcessBuilder = createMaster(config);
+			Map<Server, ProcessBuilder> serverProcessBuilders = createServersForChains(config);
+			List<ProcessBuilder> clientProcessBuilders = createClients(config);
+			Map<Server, Process> serverProcesses = new HashMap<Server, Process>();
+			Map<Server, Long> serverToTimeToDie = new HashMap<Server, Long>();
+			List<Process> clientProcesses = new ArrayList<Process>();
+			Process masterProcess = masterProcessBuilder.start();
+			for (Entry<Server, ProcessBuilder> pbEntry : serverProcessBuilders
+					.entrySet()) {
+				Process p = pbEntry.getValue().start();
+				serverProcesses.put(pbEntry.getKey(), p);
+				Long timeToLive = config.getServerToTimeToLive().get(
+						pbEntry.getKey());
+				Long initialSleepTime = config.getServerToInitialSleepTime()
+						.get(pbEntry.getValue());
+				if (timeToLive != null) {
+					if (initialSleepTime == null) {
+						initialSleepTime = 0L;
 					}
-				} else {
-					serversToKill.addAll(serverToTimeToDie.keySet());
-				}
-				synchronized (serverToProcess) {
-					for(Server serverToKill : serversToKill) {
-						Process serverProcess = serverToProcess.get(serverToKill);
-						if(serverProcess.isAlive()) {
-							serverProcess.destroy();
-						}
-						serverToProcess.remove(serverToKill);
-						synchronized (serverToTimeToDie) {
-							this.serverToTimeToDie.remove(serverToKill);
-						}
-					}	
+					serverToTimeToDie.put(pbEntry.getKey(),
+							System.currentTimeMillis()
+									+ (timeToLive - initialSleepTime));
 				}
 			}
+			serverKiller = new ServerKiller(serverToTimeToDie, serverProcesses);
+			serverKiller.start();
+			for (ProcessBuilder pb : clientProcessBuilders) {
+				Process p = pb.start();
+				clientProcesses.add(p);
+			}
+
+			while (clientProcesses.size() > 0) {
+				Iterator<Process> clientProcessIterator = clientProcesses
+						.iterator();
+				while (clientProcessIterator.hasNext()) {
+					Process p = clientProcessIterator.next();
+					if (!p.isAlive()) {
+						clientProcessIterator.remove();
+					}
+				}
+			}
+			serverKiller.killAllServers();
+			serverKiller.join();
+
+			if (masterProcess.isAlive())
+				masterProcess.destroy();
+
+			System.out.println("Stopping Main " + new Date());
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 }

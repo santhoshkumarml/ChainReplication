@@ -23,225 +23,379 @@ import async.connection.util.IClientHelper;
 import async.connection.util.TCPClientHelper;
 import async.connection.util.UDPClientHelper;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class ServerMessageHandler.
+ */
 public class ServerMessageHandler {
+	
+	/** The current request. */
 	Request currentRequest;
+	
+	/** The current reply. */
 	Reply currentReply;
+	
+	/** The sent history. */
 	SentHistory sentHistory = new SentHistory();
+	
+	/** The history of requests. */
 	HistoryOfRequests historyOfRequests = new HistoryOfRequests();
+	
+	/** The server. */
 	Server server;
+	
+	/** The master. */
 	Master master;
-	Map<String,Chain> chainNameToChainMap = new HashMap<String, Chain>(); 
+	
+	/** The chain name to chain map. */
+	Map<String, Chain> chainNameToChainMap = new HashMap<String, Chain>();
 
+	/** The application request handler. */
 	IApplicationRequestHandler applicationRequestHandler;
 
+	/** The sync or ack send client helper. */
 	IClientHelper syncOrAckSendClientHelper;
+	
+	/** The tail response client helper. */
 	IClientHelper tailResponseClientHelper;
 
+	/** The server chain replication facade. */
 	ServerChainReplicationFacade serverChainReplicationFacade;
 
+	/** The send sequence number. */
 	volatile int sendSequenceNumber = 0;
+	
+	/** The receive sequence number. */
 	volatile int receiveSequenceNumber = 0;
 
-	public void incrementSendSequenceNumber() {
-		sendSequenceNumber++;
-	}
-
-	public void incrementReceiveSequenceNumber() {
-		receiveSequenceNumber++;
-	}
-
-	public int getSendSequenceNumber() {
-		return sendSequenceNumber;
-	}
-
-	public int getReceiveSequenceNumber() {
-		return receiveSequenceNumber;
-	}
-
-	public ServerMessageHandler(
-			Server server, 
-			Map<String,Chain> chainNameToChainMap,
-			Master master,
-			ServerChainReplicationFacade serverChainReplicationFacade) throws ServerChainReplicationException {
-		this.server  = server;
+	/**
+	 * Instantiates a new server message handler.
+	 *
+	 * @param server the server
+	 * @param chainNameToChainMap the chain name to chain map
+	 * @param master the master
+	 * @param serverChainReplicationFacade the server chain replication facade
+	 * @throws ServerChainReplicationException the server chain replication exception
+	 */
+	public ServerMessageHandler(Server server,
+			Map<String, Chain> chainNameToChainMap, Master master,
+			ServerChainReplicationFacade serverChainReplicationFacade)
+			throws ServerChainReplicationException {
+		this.server = server;
 		this.chainNameToChainMap.putAll(chainNameToChainMap);
-		this.master =  master;
+		this.master = master;
 		this.serverChainReplicationFacade = serverChainReplicationFacade;
 		try {
-			this.applicationRequestHandler = (IApplicationRequestHandler) Class.forName(
-					"async.chainreplication."
-							+ "app.server."
-							+ "handler.ApplicationRequestHandler").getConstructor(
-									ServerMessageHandler.class).newInstance(this);
+			applicationRequestHandler = (IApplicationRequestHandler) Class
+					.forName(
+							"async.chainreplication." + "app.server."
+									+ "handler.ApplicationRequestHandler")
+					.getConstructor(ServerMessageHandler.class)
+					.newInstance(this);
 		} catch (InstantiationException | IllegalAccessException
-				| ClassNotFoundException | IllegalArgumentException |
-				InvocationTargetException | NoSuchMethodException |
-				SecurityException e) {
+				| ClassNotFoundException | IllegalArgumentException
+				| InvocationTargetException | NoSuchMethodException
+				| SecurityException e) {
 			throw new ServerChainReplicationException(e);
 		}
 
 	}
 
-	public Request getCurrentRequest() {
-		return currentRequest;
-	}
-
-	public void setCurrentRequest(Request currentRequest) {
-		this.currentRequest = currentRequest;
-	}
-
-	public Reply getCurrentReply() {
-		return currentReply;
-	}
-
-	public void setCurrentReply(Reply currentReply) {
-		this.currentReply = currentReply;
-	}
-
-	public SentHistory getSentHistory() {
-		return sentHistory;
-	}
-
-	public void setSentHistory(SentHistory sentHistory) {
-		this.sentHistory = sentHistory;
-	}
-
-	public HistoryOfRequests getHistoryOfRequests() {
-		return historyOfRequests;
-	}
-
-	public void setHistoryOfRequests(HistoryOfRequests historyOfRequests) {
-		this.historyOfRequests = historyOfRequests;
-	}
-
-
-	public Server getServer() {
-		return server;
-	}
-
-	public void setServer(Server server) {
-		this.server = server;
-	}
-
-	public Master getMaster() {
-		return master;
-	}
-
-	public void setMaster(Master master) {
-		this.master = master;
-	}
-
-
-	//---------------------------------------------------------------------------------
-	//Handle Chain Operation
-
-	public void sync(Request request, Reply reply) throws ServerChainReplicationException {
-		this.setCurrentRequest(request);
-		this.setCurrentReply(reply);
-		this.applicationRequestHandler.handleSyncUpdate(request,reply);
-		Server sucessor = this.server.getAdjacencyList().getSucessor();
-		if(sucessor != null) {
-			//Non tail operation is to sync
-			syncOrAckSendClientHelper = new TCPClientHelper(
-					sucessor.getServerProcessDetails().getHost(),
-					sucessor.getServerProcessDetails().getTcpPort());
-			synchronized (syncOrAckSendClientHelper) {
-				ChainReplicationMessage syncMessage = new ResponseOrSyncMessage(request, reply);
-				try {
-					syncOrAckSendClientHelper.sendMessage(syncMessage);
-				} catch (ConnectClientException e) {
-					throw new ServerChainReplicationException(e);
-				}
-				incrementSendSequenceNumber();
-				this.serverChainReplicationFacade.logMessage("Outgoing Message-"+this.sendSequenceNumber+":"+syncMessage.toString());
-			}
-			//send sync
-		} else {
-			//Tail operation reply
-			//TODO Change here for Transfer Have to wait for ACK before reply
-			tailResponseClientHelper = new UDPClientHelper(
-					request.getClient().getClientProcessDetails().getHost()	,
-					request.getClient().getClientProcessDetails().getUdpPort());
-			synchronized (tailResponseClientHelper) {
-				ChainReplicationMessage responseMessage = new ResponseOrSyncMessage(request, reply);
-				try {
-					tailResponseClientHelper.sendMessage(responseMessage);
-				} catch (ConnectClientException e) {
-					throw new ServerChainReplicationException(e);
-				}
-				incrementSendSequenceNumber();
-				this.serverChainReplicationFacade.logMessage("Outgoing Message-"+this.sendSequenceNumber+":"+responseMessage.toString());	
-			}
-
-			//ACk so that other servers can remove the messages from Sent
-			ACK(request);
-		}
-	}
-
+	/**
+	 * Ack.
+	 *
+	 * @param request the request
+	 * @throws ServerChainReplicationException the server chain replication exception
+	 */
 	public void ACK(Request request) throws ServerChainReplicationException {
-		Server predecessor = this.server.getAdjacencyList().getPredecessor();
-		this.applicationRequestHandler.handleAck(request);
-		//Terminate propagation once we reach head
-		if(predecessor != null) {
-			syncOrAckSendClientHelper = new TCPClientHelper(
-					predecessor.getServerProcessDetails().getHost(),
-					predecessor.getServerProcessDetails().getTcpPort());
+		Server predecessor = server.getAdjacencyList().getPredecessor();
+		applicationRequestHandler.handleAck(request);
+		// Terminate propagation once we reach head
+		if (predecessor != null) {
+			syncOrAckSendClientHelper = new TCPClientHelper(predecessor
+					.getServerProcessDetails().getHost(), predecessor
+					.getServerProcessDetails().getTcpPort());
 			synchronized (syncOrAckSendClientHelper) {
 				ChainReplicationMessage ackMessage = new AckMessage(request);
-				//change it to ACK Message
+				// change it to ACK Message
 				try {
 					syncOrAckSendClientHelper.sendMessage(ackMessage);
 				} catch (ConnectClientException e) {
 					throw new ServerChainReplicationException(e);
 				}
 				incrementSendSequenceNumber();
-				this.serverChainReplicationFacade.logMessage("Outgoing Message-"+this.sendSequenceNumber+":"+ackMessage.toString());
+				serverChainReplicationFacade.logMessage("Outgoing Message-"
+						+ sendSequenceNumber + ":" + ackMessage.toString());
 			}
 		}
-		this.applicationRequestHandler.handleAck(request);
+		applicationRequestHandler.handleAck(request);
 	}
 
-	/*public void IN_TRANSIT_UPDATES(String lastRequestId) {
-	synchronized(sentHistory) {
-		for(String requestId : sentHistory.getRequestIds()) {
-			//get latest Value for the account and return it
-		}
-	}
-}*/
-
-
-	//-------------------------------------------------------------------------------------
-	//Message Handle Methods
-
-	public void handleRequestMessage(RequestMessage message) throws ServerChainReplicationException {
-		Reply reply = this.applicationRequestHandler.handleRequest(message.getRequest());
-		sync(message.getRequest(), reply);
+	/**
+	 * Gets the current reply.
+	 *
+	 * @return the current reply
+	 */
+	public Reply getCurrentReply() {
+		return currentReply;
 	}
 
-	public void handleSyncMessage(ResponseOrSyncMessage message) throws ServerChainReplicationException {
-		sync(message.getRequest(), message.getReply());
+	/**
+	 * Gets the current request.
+	 *
+	 * @return the current request
+	 */
+	public Request getCurrentRequest() {
+		return currentRequest;
 	}
 
-	public void handleAckMessage(AckMessage message) throws ServerChainReplicationException {
+	/**
+	 * Gets the history of requests.
+	 *
+	 * @return the history of requests
+	 */
+	public HistoryOfRequests getHistoryOfRequests() {
+		return historyOfRequests;
+	}
+
+	/**
+	 * Gets the master.
+	 *
+	 * @return the master
+	 */
+	public Master getMaster() {
+		return master;
+	}
+
+	/**
+	 * Gets the receive sequence number.
+	 *
+	 * @return the receive sequence number
+	 */
+	public int getReceiveSequenceNumber() {
+		return receiveSequenceNumber;
+	}
+
+	/**
+	 * Gets the send sequence number.
+	 *
+	 * @return the send sequence number
+	 */
+	public int getSendSequenceNumber() {
+		return sendSequenceNumber;
+	}
+
+	/**
+	 * Gets the sent history.
+	 *
+	 * @return the sent history
+	 */
+	public SentHistory getSentHistory() {
+		return sentHistory;
+	}
+
+	/**
+	 * Gets the server.
+	 *
+	 * @return the server
+	 */
+	public Server getServer() {
+		return server;
+	}
+
+	/**
+	 * Handle ack message.
+	 *
+	 * @param message the message
+	 * @throws ServerChainReplicationException the server chain replication exception
+	 */
+	public void handleAckMessage(AckMessage message)
+			throws ServerChainReplicationException {
 		ACK(message.getRequest());
 	}
 
+	/**
+	 * Handle master message.
+	 *
+	 * @param message the message
+	 */
 	public void handleMasterMessage(MasterServerChangeMessage message) {
 		Server newServerObject = message.getServer();
-		if(!this.server.getAdjacencyList().getSucessor().equals(
-				newServerObject.getAdjacencyList().getSucessor())){
-		  //get Ready for sending SentHistory asynchronously	
+		if (!server.getAdjacencyList().getSucessor()
+				.equals(newServerObject.getAdjacencyList().getSucessor())) {
+			// get Ready for sending SentHistory asynchronously
 		}
 		synchronized (server) {
-			this.server = newServerObject;
+			server = newServerObject;
 		}
-		if(!message.getOtherChains().isEmpty()) {
+		if (!message.getOtherChains().isEmpty()) {
 			Set<Chain> chains = message.getOtherChains();
-			synchronized (this.chainNameToChainMap) {
-				for(Chain chain : chains) {
-					this.chainNameToChainMap.put(chain.getChainName(), chain);		
-				}	
+			synchronized (chainNameToChainMap) {
+				for (Chain chain : chains) {
+					chainNameToChainMap.put(chain.getChainName(), chain);
+				}
 			}
+		}
+	}
+
+	/**
+	 * Handle request message.
+	 *
+	 * @param message the message
+	 * @throws ServerChainReplicationException the server chain replication exception
+	 */
+	public void handleRequestMessage(RequestMessage message)
+			throws ServerChainReplicationException {
+		Reply reply = applicationRequestHandler.handleRequest(message
+				.getRequest());
+		sync(message.getRequest(), reply);
+	}
+
+	/**
+	 * Handle sync message.
+	 *
+	 * @param message the message
+	 * @throws ServerChainReplicationException the server chain replication exception
+	 */
+	public void handleSyncMessage(ResponseOrSyncMessage message)
+			throws ServerChainReplicationException {
+		sync(message.getRequest(), message.getReply());
+	}
+
+	/**
+	 * Increment receive sequence number.
+	 */
+	public void incrementReceiveSequenceNumber() {
+		receiveSequenceNumber++;
+	}
+
+	/**
+	 * Increment send sequence number.
+	 */
+	public void incrementSendSequenceNumber() {
+		sendSequenceNumber++;
+	}
+
+	/**
+	 * Sets the current reply.
+	 *
+	 * @param currentReply the new current reply
+	 */
+	public void setCurrentReply(Reply currentReply) {
+		this.currentReply = currentReply;
+	}
+
+	// ---------------------------------------------------------------------------------
+	// Handle Chain Operation
+
+	/**
+	 * Sets the current request.
+	 *
+	 * @param currentRequest the new current request
+	 */
+	public void setCurrentRequest(Request currentRequest) {
+		this.currentRequest = currentRequest;
+	}
+
+	/**
+	 * Sets the history of requests.
+	 *
+	 * @param historyOfRequests the new history of requests
+	 */
+	public void setHistoryOfRequests(HistoryOfRequests historyOfRequests) {
+		this.historyOfRequests = historyOfRequests;
+	}
+
+	/*
+	 * public void IN_TRANSIT_UPDATES(String lastRequestId) {
+	 * synchronized(sentHistory) { for(String requestId :
+	 * sentHistory.getRequestIds()) { //get latest Value for the account and
+	 * return it } } }
+	 */
+
+	// -------------------------------------------------------------------------------------
+	// Message Handle Methods
+
+	/**
+	 * Sets the master.
+	 *
+	 * @param master the new master
+	 */
+	public void setMaster(Master master) {
+		this.master = master;
+	}
+
+	/**
+	 * Sets the sent history.
+	 *
+	 * @param sentHistory the new sent history
+	 */
+	public void setSentHistory(SentHistory sentHistory) {
+		this.sentHistory = sentHistory;
+	}
+
+	/**
+	 * Sets the server.
+	 *
+	 * @param server the new server
+	 */
+	public void setServer(Server server) {
+		this.server = server;
+	}
+
+	/**
+	 * Sync.
+	 *
+	 * @param request the request
+	 * @param reply the reply
+	 * @throws ServerChainReplicationException the server chain replication exception
+	 */
+	public void sync(Request request, Reply reply)
+			throws ServerChainReplicationException {
+		this.setCurrentRequest(request);
+		this.setCurrentReply(reply);
+		applicationRequestHandler.handleSyncUpdate(request, reply);
+		Server sucessor = server.getAdjacencyList().getSucessor();
+		if (sucessor != null) {
+			// Non tail operation is to sync
+			syncOrAckSendClientHelper = new TCPClientHelper(sucessor
+					.getServerProcessDetails().getHost(), sucessor
+					.getServerProcessDetails().getTcpPort());
+			synchronized (syncOrAckSendClientHelper) {
+				ChainReplicationMessage syncMessage = new ResponseOrSyncMessage(
+						request, reply);
+				try {
+					syncOrAckSendClientHelper.sendMessage(syncMessage);
+				} catch (ConnectClientException e) {
+					throw new ServerChainReplicationException(e);
+				}
+				incrementSendSequenceNumber();
+				serverChainReplicationFacade.logMessage("Outgoing Message-"
+						+ sendSequenceNumber + ":" + syncMessage.toString());
+			}
+			// send sync
+		} else {
+			// Tail operation reply
+			// TODO Change here for Transfer Have to wait for ACK before reply
+			tailResponseClientHelper = new UDPClientHelper(request.getClient()
+					.getClientProcessDetails().getHost(), request.getClient()
+					.getClientProcessDetails().getUdpPort());
+			synchronized (tailResponseClientHelper) {
+				ChainReplicationMessage responseMessage = new ResponseOrSyncMessage(
+						request, reply);
+				try {
+					tailResponseClientHelper.sendMessage(responseMessage);
+				} catch (ConnectClientException e) {
+					throw new ServerChainReplicationException(e);
+				}
+				incrementSendSequenceNumber();
+				serverChainReplicationFacade
+						.logMessage("Outgoing Message-" + sendSequenceNumber
+								+ ":" + responseMessage.toString());
+			}
+
+			// ACk so that other servers can remove the messages from Sent
+			ACK(request);
 		}
 	}
 }

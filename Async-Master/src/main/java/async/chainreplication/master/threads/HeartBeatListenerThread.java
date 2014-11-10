@@ -7,35 +7,60 @@ import async.connection.util.ConnectServerException;
 import async.connection.util.IServerStarterHelper;
 import async.connection.util.TCPServerStarterHelper;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class HeartBeatListenerThread.
+ */
 public class HeartBeatListenerThread extends Thread {
+	
+	/** The should still run. */
 	volatile boolean shouldStillRun = true;
+	
+	/** The heart beat server helper. */
 	IServerStarterHelper heartBeatServerHelper;
+	
+	/** The master impl. */
 	MasterImpl masterImpl;
 
-	public HeartBeatListenerThread(MasterImpl masterImpl) throws MasterChainReplicationException {
+	/**
+	 * Instantiates a new heart beat listener thread.
+	 *
+	 * @param masterImpl the master impl
+	 * @throws MasterChainReplicationException the master chain replication exception
+	 */
+	public HeartBeatListenerThread(MasterImpl masterImpl)
+			throws MasterChainReplicationException {
 		this.masterImpl = masterImpl;
-		this.heartBeatServerHelper = new TCPServerStarterHelper(
-				masterImpl.getMaster().getMasterPort());
+		heartBeatServerHelper = new TCPServerStarterHelper(masterImpl
+				.getMaster().getMasterPort());
 		try {
-			this.heartBeatServerHelper.initAndStartServer();
+			heartBeatServerHelper.initAndStartServer();
 		} catch (ConnectServerException e) {
 			throw new MasterChainReplicationException(e);
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Thread#run()
+	 */
 	public void run() {
-		while(shouldStillRun) {
+		while (shouldStillRun) {
 			try {
-				HeartBeatMessage heartBeatMessage = (HeartBeatMessage) this.heartBeatServerHelper.acceptAndReadObjectConnection();
-				this.masterImpl.getMasterChainReplicationFacade().deliverMessage(heartBeatMessage);
+				HeartBeatMessage heartBeatMessage = (HeartBeatMessage) heartBeatServerHelper
+						.acceptAndReadObjectConnection();
+				masterImpl.getMasterChainReplicationFacade().deliverMessage(
+						heartBeatMessage);
 			} catch (ConnectServerException e) {
-				this.heartBeatServerHelper.stopServer();
-				this.masterImpl.logMessage("Internal Error:"+e.getMessage());
+				heartBeatServerHelper.stopServer();
+				masterImpl.logMessage("Internal Error:" + e.getMessage());
 				e.printStackTrace();
 			}
 		}
 	}
 
+	/**
+	 * Stop thread.
+	 */
 	public void stopThread() {
 		shouldStillRun = false;
 	}

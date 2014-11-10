@@ -7,45 +7,72 @@ import async.connection.util.ConnectServerException;
 import async.connection.util.IServerStarterHelper;
 import async.connection.util.TCPServerStarterHelper;
 
-
-public class MasterUpdateListenerThread extends Thread{
+// TODO: Auto-generated Javadoc
+/**
+ * The Class MasterUpdateListenerThread.
+ */
+public class MasterUpdateListenerThread extends Thread {
+	
+	/** The client impl. */
 	ClientImpl clientImpl;
+	
+	/** The should still run. */
 	volatile boolean shouldStillRun = true;
+	
+	/** The master message listener. */
 	IServerStarterHelper masterMessageListener = null;
 
-	public MasterUpdateListenerThread(ClientImpl clientImpl) throws ClientChainReplicationException {
+	/**
+	 * Instantiates a new master update listener thread.
+	 *
+	 * @param clientImpl the client impl
+	 * @throws ClientChainReplicationException the client chain replication exception
+	 */
+	public MasterUpdateListenerThread(ClientImpl clientImpl)
+			throws ClientChainReplicationException {
 		this.clientImpl = clientImpl;
-		this.masterMessageListener = new TCPServerStarterHelper(
-				this.clientImpl.getClient().getClientProcessDetails().getTcpPort());
+		masterMessageListener = new TCPServerStarterHelper(this.clientImpl
+				.getClient().getClientProcessDetails().getTcpPort());
 		try {
-			this.masterMessageListener.initAndStartServer();
+			masterMessageListener.initAndStartServer();
 		} catch (ConnectServerException e) {
 			throw new ClientChainReplicationException(e);
 		}
 	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Thread#run()
+	 */
 	public void run() {
-		while(shouldStillRun) {
+		while (shouldStillRun) {
 			ChainReplicationMessage masterMessage = null;
 			try {
-				masterMessage = (ChainReplicationMessage)this.masterMessageListener.acceptAndReadObjectConnection();
-				this.clientImpl.getClientChainReplicationFacade().deliverMessage(
+				masterMessage = (ChainReplicationMessage) masterMessageListener
+						.acceptAndReadObjectConnection();
+				clientImpl.getClientChainReplicationFacade().deliverMessage(
 						masterMessage);
 			} catch (ConnectServerException | ClientChainReplicationException e) {
-				this.clientImpl.logMessage("Internal Error:"+e.getMessage());
+				clientImpl.logMessage("Internal Error:" + e.getMessage());
 				this.stopThread();
 				e.printStackTrace();
 				break;
 			}
-			this.clientImpl.getClientChainReplicationFacade().getClientMessageHandler().incrementReceiveSequenceNumber();
-			int receiveSequenceNumber = this.clientImpl.getClientChainReplicationFacade().getClientMessageHandler().getReceiveSequenceNumber();
-			this.clientImpl.logMessage("Incoming Message-"+receiveSequenceNumber+":"+masterMessage.toString());
+			clientImpl.getClientChainReplicationFacade()
+					.getClientMessageHandler().incrementReceiveSequenceNumber();
+			int receiveSequenceNumber = clientImpl
+					.getClientChainReplicationFacade()
+					.getClientMessageHandler().getReceiveSequenceNumber();
+			clientImpl.logMessage("Incoming Message-" + receiveSequenceNumber
+					+ ":" + masterMessage.toString());
 		}
 	}
-	
+
+	/**
+	 * Stop thread.
+	 */
 	public void stopThread() {
 		shouldStillRun = false;
-		this.masterMessageListener.stopServer();
+		masterMessageListener.stopServer();
 	}
 
-	
 }

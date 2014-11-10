@@ -3,50 +3,78 @@ package async.chainreplication.server.threads;
 import async.chainreplication.communication.messages.ChainReplicationMessage;
 import async.chainreplication.server.ServerImpl;
 import async.chainreplication.server.exception.ServerChainReplicationException;
-import async.connection.util.IServerStarterHelper;
 import async.connection.util.ConnectServerException;
+import async.connection.util.IServerStarterHelper;
 import async.connection.util.UDPServerStarterHelper;
 
-public class RequestQueryOrUpdateThread extends Thread{
+// TODO: Auto-generated Javadoc
+/**
+ * The Class RequestQueryOrUpdateThread.
+ */
+public class RequestQueryOrUpdateThread extends Thread {
 
+	/** The request server helper. */
 	IServerStarterHelper requestServerHelper;
+	
+	/** The server impl. */
 	ServerImpl serverImpl;
+	
+	/** The should still run. */
 	boolean shouldStillRun = true;
 
-
-	public RequestQueryOrUpdateThread(ServerImpl serverImpl) throws ServerChainReplicationException {
+	/**
+	 * Instantiates a new request query or update thread.
+	 *
+	 * @param serverImpl the server impl
+	 * @throws ServerChainReplicationException the server chain replication exception
+	 */
+	public RequestQueryOrUpdateThread(ServerImpl serverImpl)
+			throws ServerChainReplicationException {
 		this.serverImpl = serverImpl;
-		if(this.serverImpl.isHeadInTheChain()
-				||this.serverImpl.isTailInTheChain()) {
-			this.requestServerHelper = new UDPServerStarterHelper(
-					this.serverImpl.getServer().getServerProcessDetails(
-							).getUdpPort());
+		if (this.serverImpl.isHeadInTheChain()
+				|| this.serverImpl.isTailInTheChain()) {
+			requestServerHelper = new UDPServerStarterHelper(this.serverImpl
+					.getServer().getServerProcessDetails().getUdpPort());
 			try {
-				this.requestServerHelper.initAndStartServer();
+				requestServerHelper.initAndStartServer();
 			} catch (ConnectServerException e) {
 				throw new ServerChainReplicationException(e);
 			}
 		}
 	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Thread#run()
+	 */
 	public void run() {
-		while(shouldStillRun && (this.serverImpl.isHeadInTheChain()
-				||this.serverImpl.isTailInTheChain())) {
+		while (shouldStillRun
+				&& (serverImpl.isHeadInTheChain() || serverImpl
+						.isTailInTheChain())) {
 			ChainReplicationMessage message = null;
 			try {
-				message = (ChainReplicationMessage)this.requestServerHelper.acceptAndReadObjectConnection();
+				message = (ChainReplicationMessage) requestServerHelper
+						.acceptAndReadObjectConnection();
 			} catch (ConnectServerException e) {
 				e.printStackTrace();
-				this.serverImpl.logMessage("Internal Error:"+e.getMessage());
+				serverImpl.logMessage("Internal Error:" + e.getMessage());
 				break;
 			}
-			this.serverImpl.getServerChainReplicationFacade().deliverMessage(message);
-			this.serverImpl.getServerChainReplicationFacade().getServerMessageHandler().incrementReceiveSequenceNumber();
-			int receiveSequenceNumber = this.serverImpl.getServerChainReplicationFacade().getServerMessageHandler().getReceiveSequenceNumber();
-			this.serverImpl.logMessage("Incoming Message-"+receiveSequenceNumber+":"+message.toString());
+			serverImpl.getServerChainReplicationFacade()
+					.deliverMessage(message);
+			serverImpl.getServerChainReplicationFacade()
+					.getServerMessageHandler().incrementReceiveSequenceNumber();
+			int receiveSequenceNumber = serverImpl
+					.getServerChainReplicationFacade()
+					.getServerMessageHandler().getReceiveSequenceNumber();
+			serverImpl.logMessage("Incoming Message-" + receiveSequenceNumber
+					+ ":" + message.toString());
 		}
-		this.requestServerHelper.stopServer();
+		requestServerHelper.stopServer();
 	}
 
+	/**
+	 * Stop thread.
+	 */
 	public void stopThread() {
 		shouldStillRun = false;
 		requestServerHelper.stopServer();

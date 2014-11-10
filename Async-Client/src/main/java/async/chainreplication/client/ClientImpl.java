@@ -14,19 +14,20 @@ import async.common.util.RequestWithChain;
 import async.common.util.TestCases;
 import aync.chainreplication.base.impl.ChainReplicationImpl;
 
-
-public class ClientImpl extends ChainReplicationImpl{
-	long responseWaitTime = 10000;
-	MasterUpdateListenerThread masterUpdateListener;
-	ResponseListener responseListener;
-	ClientChainReplicationFacade clientChainReplicationFacade;
-	String clientId;
-
+// TODO: Auto-generated Javadoc
+/**
+ * The Class ClientImpl.
+ */
+public class ClientImpl extends ChainReplicationImpl {
+	
+	/**
+	 * The main method.
+	 *
+	 * @param args the arguments
+	 */
 	public static void main(String args[]) {
 		Config config = ConfigUtil.deserializeFromFile(args[0]);
-		ClientImpl clientImpl = new ClientImpl(
-				config,
-				args[1]);
+		ClientImpl clientImpl = new ClientImpl(config, args[1]);
 		clientImpl.init();
 		try {
 			clientImpl.performOperations(config);
@@ -36,6 +37,27 @@ public class ClientImpl extends ChainReplicationImpl{
 		clientImpl.stop();
 	}
 
+	/** The response wait time. */
+	long responseWaitTime = 10000;
+	
+	/** The master update listener. */
+	MasterUpdateListenerThread masterUpdateListener;
+	
+	/** The response listener. */
+	ResponseListener responseListener;
+	
+	/** The client chain replication facade. */
+	ClientChainReplicationFacade clientChainReplicationFacade;
+
+	/** The client id. */
+	String clientId;
+
+	/**
+	 * Instantiates a new client impl.
+	 *
+	 * @param config the config
+	 * @param clientId the client id
+	 */
 	public ClientImpl(Config config, String clientId) {
 		super(clientId);
 		this.clientId = clientId;
@@ -43,56 +65,41 @@ public class ClientImpl extends ChainReplicationImpl{
 			clientChainReplicationFacade = new ClientChainReplicationFacade(
 					config.getClients().get(clientId), config.getChains(),
 					config.getMaster(), this);
-			this.responseWaitTime = config.getClients().get(clientId).getResponseWaitTime();
+			responseWaitTime = config.getClients().get(clientId)
+					.getResponseWaitTime();
 		} catch (ClientChainReplicationException e) {
 			this.logMessage(e.getMessage());
 			e.printStackTrace();
 		}
-		this.logMessage("Client Started:"+config.getClients().get(clientId));
+		this.logMessage("Client Started:" + config.getClients().get(clientId));
 	}
 
+	/**
+	 * Gets the client.
+	 *
+	 * @return the client
+	 */
+	public Client getClient() {
+		return clientChainReplicationFacade.getClientMessageHandler()
+				.getClient();
+	}
+
+	/**
+	 * Gets the client chain replication facade.
+	 *
+	 * @return the client chain replication facade
+	 */
 	public ClientChainReplicationFacade getClientChainReplicationFacade() {
 		return clientChainReplicationFacade;
 	}
 
-	public Client getClient() {
-		return this.clientChainReplicationFacade.getClientMessageHandler().getClient();
-	}
-
-
-	private void performOperations(Config config) throws ClientChainReplicationException {
-		TestCases testcases = config.getTestCases().get(config.getClients().get(clientId));
-		for(RequestWithChain request : testcases.getRequests()) {
-			int retryCount = request.getRequest().getRetryCount();
-			int retry = 0;
-			while(retry <=retryCount) {
-				RequestMessage requestMessage = new RequestMessage(request.getRequest());
-				ClientRequestMessage clientRequestMessage = new ClientRequestMessage(request.getChainName(), requestMessage);
-				this.clientChainReplicationFacade.deliverMessage(clientRequestMessage);
-				try {
-					Thread.sleep(responseWaitTime);
-				} catch(InterruptedException e) {
-					throw new ClientChainReplicationException(e);
-				}
-				Reply reply = this.clientChainReplicationFacade.readResponsesForRequest(request.getRequest());
-				retry++;
-				if(reply != null)
-					this.logMessage("Reply from Server for request - "+request.toString()+":"+reply.toString());
-				else { 
-					this.logMessage("Did not get a reply for request - "+ request.toString());
-					if(retry<=retryCount) {
-						this.logMessage("Retrying request again (retry count left:"+(retryCount-retry)+") - "+ request.toString());	
-					}
-				}
-				
-			}
-		}
-	}
-
+	/* (non-Javadoc)
+	 * @see aync.chainreplication.base.impl.ChainReplicationImpl#init()
+	 */
 	public void init() {
 		super.init();
-		//masterUpdateListener = new MasterUpdateListenerThread(this);
-		//masterUpdateListener.start();
+		// masterUpdateListener = new MasterUpdateListenerThread(this);
+		// masterUpdateListener.start();
 		try {
 			responseListener = new ResponseListener(this);
 		} catch (ClientChainReplicationException e) {
@@ -104,15 +111,70 @@ public class ClientImpl extends ChainReplicationImpl{
 		this.logMessage("Client Started");
 	}
 
+	/**
+	 * Log message.
+	 *
+	 * @param message the message
+	 */
+	public void logMessage(String message) {
+		LogMessage logMessage = new LogMessage(message);
+		this.getLogMessages().enqueueMessageObject(
+				logMessage.getPriority().ordinal(), logMessage);
+	}
+
+	/**
+	 * Perform operations.
+	 *
+	 * @param config the config
+	 * @throws ClientChainReplicationException the client chain replication exception
+	 */
+	private void performOperations(Config config)
+			throws ClientChainReplicationException {
+		TestCases testcases = config.getTestCases().get(
+				config.getClients().get(clientId));
+		for (RequestWithChain request : testcases.getRequests()) {
+			int retryCount = request.getRequest().getRetryCount();
+			int retry = 0;
+			while (retry <= retryCount) {
+				RequestMessage requestMessage = new RequestMessage(
+						request.getRequest());
+				ClientRequestMessage clientRequestMessage = new ClientRequestMessage(
+						request.getChainName(), requestMessage);
+				clientChainReplicationFacade
+						.deliverMessage(clientRequestMessage);
+				try {
+					Thread.sleep(responseWaitTime);
+				} catch (InterruptedException e) {
+					throw new ClientChainReplicationException(e);
+				}
+				Reply reply = clientChainReplicationFacade
+						.readResponsesForRequest(request.getRequest());
+				retry++;
+				if (reply != null)
+					this.logMessage("Reply from Server for request - "
+							+ request.toString() + ":" + reply.toString());
+				else {
+					this.logMessage("Did not get a reply for request - "
+							+ request.toString());
+					if (retry <= retryCount) {
+						this.logMessage("Retrying request again (retry count left:"
+								+ (retryCount - retry)
+								+ ") - "
+								+ request.toString());
+					}
+				}
+
+			}
+		}
+	}
+
+	/* (non-Javadoc)
+	 * @see aync.chainreplication.base.impl.ChainReplicationImpl#stop()
+	 */
 	public void stop() {
 		this.logMessage("Client Stopping");
 		responseListener.stopThread();
 		super.stop();
 		System.exit(-1);
-	}
-
-	public void logMessage(String message) {
-		LogMessage logMessage = new LogMessage(message);
-		this.getLogMessages().enqueueMessageObject(logMessage.getPriority().ordinal(), logMessage);
 	}
 }

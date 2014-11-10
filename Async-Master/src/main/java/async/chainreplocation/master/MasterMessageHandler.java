@@ -17,71 +17,91 @@ import async.connection.util.ConnectClientException;
 import async.connection.util.IClientHelper;
 import async.connection.util.TCPClientHelper;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class MasterMessageHandler.
+ */
 public class MasterMessageHandler {
+	
+	/** The master chain replication facade. */
 	MasterChainReplicationFacade masterChainReplicationFacade;
+	
+	/** The master ds. */
 	MasterDataStructure masterDs;
-	IClientHelper serverMessageHelper,clientMessageHelper = null;
+	
+	/** The client message helper. */
+	IClientHelper serverMessageHelper, clientMessageHelper = null;
 
+	/**
+	 * Instantiates a new master message handler.
+	 *
+	 * @param master the master
+	 * @param chains the chains
+	 * @param chainToServerMap the chain to server map
+	 * @param clients the clients
+	 * @param masterChainReplicationFacade the master chain replication facade
+	 */
 	public MasterMessageHandler(Master master, Map<String, Chain> chains,
 			Map<String, Map<String, Server>> chainToServerMap,
 			Map<String, Client> clients,
 			MasterChainReplicationFacade masterChainReplicationFacade) {
-		this.masterDs = new MasterDataStructure(chains, master, chainToServerMap, clients);
+		masterDs = new MasterDataStructure(chains, master, chainToServerMap,
+				clients);
 		this.masterChainReplicationFacade = masterChainReplicationFacade;
 	}
 
-	public void handleGenericServerChangeMessage(MasterGenericServerChangeMessage message)
-			throws MasterChainReplicationException {
-		Set<Server> diedServers = message.getDiedServers();
-		ChainChanges chainChanges = this.masterDs.calculateChanges(diedServers);
-		formAndDispatchMessagesForServerAndClient(chainChanges);
-	}
-
-
-	private void formAndDispatchMessagesForServerAndClient(ChainChanges chainChanges) 
-			throws MasterChainReplicationException {
-		Map<Server, MasterServerChangeMessage> serverMessageChanges = 
-				new HashMap<Server, MasterServerChangeMessage>();
-		Map<Client, MasterClientChangeMessage> clientMessageChanges = 
-				new HashMap<Client, MasterClientChangeMessage>();
-		for(Map.Entry<String, Set<String>> changedServersEntry :
-			chainChanges.getChainToServersChanged().entrySet()) {
+	/**
+	 * Form and dispatch messages for server and client.
+	 *
+	 * @param chainChanges the chain changes
+	 * @throws MasterChainReplicationException the master chain replication exception
+	 */
+	private void formAndDispatchMessagesForServerAndClient(
+			ChainChanges chainChanges) throws MasterChainReplicationException {
+		Map<Server, MasterServerChangeMessage> serverMessageChanges = new HashMap<Server, MasterServerChangeMessage>();
+		Map<Client, MasterClientChangeMessage> clientMessageChanges = new HashMap<Client, MasterClientChangeMessage>();
+		for (Map.Entry<String, Set<String>> changedServersEntry : chainChanges
+				.getChainToServersChanged().entrySet()) {
 			String chainId = changedServersEntry.getKey();
 			Set<String> serverIdsChanged = changedServersEntry.getValue();
-			for(String serverIdChanged : serverIdsChanged) {
-				Server server = this.masterDs.getChainToServerMap().get(chainId).get(serverIdChanged);
-				MasterServerChangeMessage serverMessage = serverMessageChanges.get(server);
-				if(serverMessage == null) {
+			for (String serverIdChanged : serverIdsChanged) {
+				Server server = masterDs.getChainToServerMap().get(chainId)
+						.get(serverIdChanged);
+				MasterServerChangeMessage serverMessage = serverMessageChanges
+						.get(server);
+				if (serverMessage == null) {
 					serverMessage = new MasterServerChangeMessage(server);
 				}
 				serverMessageChanges.put(server, serverMessage);
 			}
 		}
 
-		for(String changedChain : chainChanges.getChainsChanged()) {
+		for (String changedChain : chainChanges.getChainsChanged()) {
 			String chainId = changedChain;
-			Chain chain = this.masterDs.getChains().get(chainId);
-			for(Chain allChain : this.masterDs.getChains().values()) {
-				if(!allChain.getChainName().equals(chainId)) {
+			Chain chain = masterDs.getChains().get(chainId);
+			for (Chain allChain : masterDs.getChains().values()) {
+				if (!allChain.getChainName().equals(chainId)) {
 					Server head = allChain.getHead();
 					Server tail = allChain.getTail();
-					MasterServerChangeMessage serverMessage = serverMessageChanges.get(head);
-					if(serverMessage == null) {
+					MasterServerChangeMessage serverMessage = serverMessageChanges
+							.get(head);
+					if (serverMessage == null) {
 						serverMessage = new MasterServerChangeMessage(head);
 					}
 					serverMessage.getOtherChains().add(chain);
 					serverMessageChanges.put(head, serverMessage);
 					serverMessage = serverMessageChanges.get(tail);
-					if(serverMessage == null) {
+					if (serverMessage == null) {
 						serverMessage = new MasterServerChangeMessage(tail);
 					}
 					serverMessage.getOtherChains().add(chain);
 					serverMessageChanges.put(tail, serverMessage);
 				}
 			}
-			for(Client client : this.masterDs.getClients().values()) {
-				MasterClientChangeMessage clientChangeMessage = clientMessageChanges.get(client);
-				if(clientChangeMessage == null) {
+			for (Client client : masterDs.getClients().values()) {
+				MasterClientChangeMessage clientChangeMessage = clientMessageChanges
+						.get(client);
+				if (clientChangeMessage == null) {
 					clientChangeMessage = new MasterClientChangeMessage(client);
 				}
 				clientChangeMessage.getChainChanges().add(chain);
@@ -89,38 +109,69 @@ public class MasterMessageHandler {
 			}
 		}
 
-		for(Server server : serverMessageChanges.keySet()) {
-			MasterServerChangeMessage message = serverMessageChanges.get(server);
-			sendServerMessage(server, message);	
+		for (Server server : serverMessageChanges.keySet()) {
+			MasterServerChangeMessage message = serverMessageChanges
+					.get(server);
+			sendServerMessage(server, message);
 		}
-		for(Client client : clientMessageChanges.keySet()) {
-			MasterClientChangeMessage message = clientMessageChanges.get(client);
+		for (Client client : clientMessageChanges.keySet()) {
+			MasterClientChangeMessage message = clientMessageChanges
+					.get(client);
 			sendClientMessage(client, message);
 		}
 
 	}
 
+	/**
+	 * Handle generic server change message.
+	 *
+	 * @param message the message
+	 * @throws MasterChainReplicationException the master chain replication exception
+	 */
+	public void handleGenericServerChangeMessage(
+			MasterGenericServerChangeMessage message)
+			throws MasterChainReplicationException {
+		Set<Server> diedServers = message.getDiedServers();
+		ChainChanges chainChanges = masterDs.calculateChanges(diedServers);
+		formAndDispatchMessagesForServerAndClient(chainChanges);
+	}
+
+	/**
+	 * Send client message.
+	 *
+	 * @param client the client
+	 * @param message the message
+	 * @throws MasterChainReplicationException the master chain replication exception
+	 */
 	private void sendClientMessage(Client client,
-			MasterClientChangeMessage message) throws MasterChainReplicationException {
+			MasterClientChangeMessage message)
+			throws MasterChainReplicationException {
 		try {
-			clientMessageHelper = new TCPClientHelper(
-					client.getClientProcessDetails().getHost(),
-					client.getClientProcessDetails().getTcpPort()) ;
+			clientMessageHelper = new TCPClientHelper(client
+					.getClientProcessDetails().getHost(), client
+					.getClientProcessDetails().getTcpPort());
 			clientMessageHelper.sendMessage(message);
-		} catch(ConnectClientException e) {
+		} catch (ConnectClientException e) {
 			throw new MasterChainReplicationException(e);
 		}
 	}
 
-
-	private void sendServerMessage(Server server, ChainReplicationMessage message)
+	/**
+	 * Send server message.
+	 *
+	 * @param server the server
+	 * @param message the message
+	 * @throws MasterChainReplicationException the master chain replication exception
+	 */
+	private void sendServerMessage(Server server,
+			ChainReplicationMessage message)
 			throws MasterChainReplicationException {
 		try {
-			serverMessageHelper = new TCPClientHelper(
-					server.getServerProcessDetails().getHost(),
-					server.getServerProcessDetails().getTcpPort()) ;
+			serverMessageHelper = new TCPClientHelper(server
+					.getServerProcessDetails().getHost(), server
+					.getServerProcessDetails().getTcpPort());
 			serverMessageHelper.sendMessage(message);
-		} catch(ConnectClientException e) {
+		} catch (ConnectClientException e) {
 			throw new MasterChainReplicationException(e);
 		}
 

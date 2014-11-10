@@ -1,5 +1,13 @@
 package async.chainreplication.client.server.communication.models;
+
+// TODO: Auto-generated Javadoc
+/**
+ * The Enum RequestType.
+ */
 public enum RequestType {
-	QUERY,
-	UPDATE;
+	
+	/** The query. */
+	QUERY, 
+ /** The update. */
+ UPDATE;
 }

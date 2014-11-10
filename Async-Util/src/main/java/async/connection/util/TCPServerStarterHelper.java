@@ -5,43 +5,45 @@ import java.io.ObjectInputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-public class TCPServerStarterHelper implements IServerStarterHelper{
+// TODO: Auto-generated Javadoc
+/**
+ * The Class TCPServerStarterHelper.
+ */
+public class TCPServerStarterHelper implements IServerStarterHelper {
+	
+	/** The server socket. */
 	ServerSocket serverSocket;
+	
+	/** The port. */
 	int port;
 
+	/**
+	 * Instantiates a new TCP server starter helper.
+	 *
+	 * @param port the port
+	 */
 	public TCPServerStarterHelper(int port) {
 		this.port = port;
 	}
 
-	@Override
-	public void initAndStartServer() throws ConnectServerException {
-		try {
-			serverSocket = new ServerSocket(port);
-		} catch (IOException e) {
-			throw new ConnectServerException(e);
-		}
-	}
-
-	@Override
-	public int getServerPort() {
-		return serverSocket.getLocalPort();
-	}
-
-
+	/* (non-Javadoc)
+	 * @see async.connection.util.IServerStarterHelper#acceptAndReadObjectConnection()
+	 */
 	@Override
 	public Object acceptAndReadObjectConnection() throws ConnectServerException {
 		Object message = null;
 		Socket serviceSocket = null;
 		try {
 			serviceSocket = serverSocket.accept();
-			ObjectInputStream ois = new ObjectInputStream(serviceSocket.getInputStream());
-			message =  ois.readObject();
+			ObjectInputStream ois = new ObjectInputStream(
+					serviceSocket.getInputStream());
+			message = ois.readObject();
 		} catch (IOException e) {
 			throw new ConnectServerException(e);
 		} catch (ClassNotFoundException e) {
 			throw new ConnectServerException(e);
 		} finally {
-			if(serviceSocket != null) {
+			if (serviceSocket != null) {
 				try {
 					serviceSocket.close();
 				} catch (IOException e) {
@@ -53,7 +55,30 @@ public class TCPServerStarterHelper implements IServerStarterHelper{
 		return message;
 	}
 
-	@Override	
+	/* (non-Javadoc)
+	 * @see async.connection.util.IServerStarterHelper#getServerPort()
+	 */
+	@Override
+	public int getServerPort() {
+		return serverSocket.getLocalPort();
+	}
+
+	/* (non-Javadoc)
+	 * @see async.connection.util.IServerStarterHelper#initAndStartServer()
+	 */
+	@Override
+	public void initAndStartServer() throws ConnectServerException {
+		try {
+			serverSocket = new ServerSocket(port);
+		} catch (IOException e) {
+			throw new ConnectServerException(e);
+		}
+	}
+
+	/* (non-Javadoc)
+	 * @see async.connection.util.IServerStarterHelper#stopServer()
+	 */
+	@Override
 	public void stopServer() {
 		try {
 			serverSocket.close();
