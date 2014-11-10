@@ -1,7 +1,6 @@
 package async.chainreplication.app.json.util;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -95,6 +94,7 @@ public class JSONUtility {
 	 */
 	private static void readChains(Config config, JSONObject jsonObject) {
 		JSONArray jsonArray = (JSONArray) jsonObject.get("Chains");
+		@SuppressWarnings("unchecked")
 		Iterator<JSONObject> chainIterator = jsonArray.iterator();
 		while (chainIterator.hasNext()) {
 			JSONObject chainObject = chainIterator.next();
@@ -167,6 +167,7 @@ public class JSONUtility {
 	 * @param config the config
 	 * @param jsonObject the json object
 	 */
+	@SuppressWarnings("unchecked")
 	private static void readClients(Config config, JSONObject jsonObject) {
 		JSONArray jsonArray = (JSONArray) jsonObject.get("Clients");
 		Iterator<JSONObject> clientIterator = jsonArray.iterator();
@@ -251,6 +252,7 @@ public class JSONUtility {
 				.get("ProbabilityRequests");
 		if (probablityRequests == null || probablityRequests.isEmpty())
 			return;
+		@SuppressWarnings("unchecked")
 		Iterator<JSONObject> probablityRequestIterator = probablityRequests
 				.iterator();
 		while (probablityRequestIterator.hasNext()) {
@@ -294,6 +296,7 @@ public class JSONUtility {
 	private static void readRequestTestCases(Config config,
 			JSONObject jsonObject) {
 		JSONArray jsonArray = (JSONArray) jsonObject.get("Requests");
+		@SuppressWarnings("unchecked")
 		Iterator<JSONObject> requestIterator = jsonArray.iterator();
 		while (requestIterator.hasNext()) {
 			JSONObject requestObject = requestIterator.next();
