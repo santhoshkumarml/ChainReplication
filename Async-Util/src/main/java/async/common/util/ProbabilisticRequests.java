@@ -4,7 +4,7 @@ package async.common.util;
 /**
  * The Class ProbablisticRequests.
  */
-public class ProbablisticRequests {
+public class ProbabilisticRequests {
 	
 	/** The seed. */
 	int seed;
@@ -18,7 +18,7 @@ public class ProbablisticRequests {
 	/**
 	 * Instantiates a new probablistic requests.
 	 */
-	public ProbablisticRequests() {
+	public ProbabilisticRequests() {
 
 	}
 
@@ -29,7 +29,7 @@ public class ProbablisticRequests {
 	 * @param clientId the client id
 	 * @param probability the probability
 	 */
-	public ProbablisticRequests(int seed, String clientId, float[] probability) {
+	public ProbabilisticRequests(int seed, String clientId, float[] probability) {
 		super();
 		this.seed = seed;
 		this.clientId = clientId;
