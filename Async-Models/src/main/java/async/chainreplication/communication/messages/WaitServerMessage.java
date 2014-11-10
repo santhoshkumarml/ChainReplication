@@ -22,6 +22,9 @@ public class WaitServerMessage extends ChainReplicationMessage{
 		this.waitingClass = waitingClass;
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
 	@Override
 	public String toString() {
 		return "WaitServerMessage [waitingClass=" + waitingClass.getCanonicalName() + "]";

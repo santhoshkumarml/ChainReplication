@@ -50,6 +50,9 @@ public class MasterServerChangeMessage extends MasterMessage {
 		return server;
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
 	@Override
 	public String toString() {
 		return "MasterServerChangeMessage [server=" + server + ", otherChains="

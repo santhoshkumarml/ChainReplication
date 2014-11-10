@@ -10,6 +10,7 @@ import async.chainreplication.communication.messages.LogMessage;
 import async.generic.message.queue.Message;
 import async.generic.message.queue.MessageQueue;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class ChainReplicationLoggerThread.
  */

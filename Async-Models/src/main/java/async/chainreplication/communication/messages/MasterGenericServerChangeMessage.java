@@ -37,6 +37,9 @@ public class MasterGenericServerChangeMessage extends MasterMessage {
 		return diedServers;
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
 	@Override
 	public String toString() {
 		return "MasterGenericServerChangeMessage [diedServers=" + diedServers
