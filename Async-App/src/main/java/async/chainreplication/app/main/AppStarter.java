@@ -80,6 +80,9 @@ public class AppStarter {
 								.get(serverToKill);
 						if (serverProcess.isAlive()) {
 							serverProcess.destroy();
+							System.out.println("Server "+serverToKill.getChainName()+
+									"-"+serverToKill.getServerId()+" is killed at"+ 
+									new Date(System.currentTimeMillis()));
 						}
 						serverToProcess.remove(serverToKill);
 						synchronized (serverToTimeToDie) {
