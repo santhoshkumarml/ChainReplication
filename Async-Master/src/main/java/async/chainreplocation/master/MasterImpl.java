@@ -26,7 +26,7 @@ public class MasterImpl extends ChainReplicationImpl {
 		MasterImpl masterImpl = new MasterImpl(
 				ConfigUtil.deserializeFromFile(args[0]), args[1]);
 		masterImpl.init();
-		masterImpl.stop();
+		//masterImpl.stop();
 	}
 
 	/** The master. */
