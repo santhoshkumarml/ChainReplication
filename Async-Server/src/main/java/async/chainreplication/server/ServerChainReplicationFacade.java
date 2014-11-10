@@ -51,6 +51,11 @@ public class ServerChainReplicationFacade {
 	}
 	
 	
+   /**
+    * Gets the message queue.
+    *
+    * @return the message queue
+    */
    public MessageQueue<ChainReplicationMessage> getMessageQueue() {
 		return messageQueue;
 	}

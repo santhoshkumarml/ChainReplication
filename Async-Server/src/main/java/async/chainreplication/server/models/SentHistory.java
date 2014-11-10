@@ -70,6 +70,12 @@ public class SentHistory {
 		}
 	}
 
+	/**
+	 * Gets the request keys from sent.
+	 *
+	 * @param sequenceNumber the sequence number
+	 * @return the request keys from sent
+	 */
 	public List<RequestKey> getRequestKeysFromSent(int sequenceNumber) {
 		List<RequestKey> matchingRequestKeys = new ArrayList<RequestKey>();
 		synchronized (requestKeys) {

@@ -429,12 +429,23 @@ public class ServerMessageHandler {
 		}
 	}
 
+	/**
+	 * Handle wait server message.
+	 *
+	 * @param message the message
+	 */
 	public void handleWaitServerMessage(WaitServerMessage message) {
 		while(this.serverChainReplicationFacade.
 				getMessageQueue().peekAtMessage().getMessageObject().
 				getClass() == message.getClass());
 	}
 
+	/**
+	 * Handle successor request message.
+	 *
+	 * @param message the message
+	 * @throws ServerChainReplicationException the server chain replication exception
+	 */
 	public void handleSuccessorRequestMessage(SuccessorRequestMessage message) throws ServerChainReplicationException {
 		Server sucessor = server.getAdjacencyList().getSucessor();
 		if (sucessor != null) {

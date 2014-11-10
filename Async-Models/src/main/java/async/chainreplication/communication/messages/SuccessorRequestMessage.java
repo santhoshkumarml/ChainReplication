@@ -25,6 +25,11 @@ public class SuccessorRequestMessage extends ChainReplicationMessage implements
 		this.lastSequenceNumberReceived = lastSequenceNumberReceived;
 	}
 
+	/**
+	 * Gets the last sequence number received.
+	 *
+	 * @return the last sequence number received
+	 */
 	public int getLastSequenceNumberReceived() {
 		return lastSequenceNumberReceived;
 	}
