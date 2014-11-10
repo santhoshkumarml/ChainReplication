@@ -4,11 +4,11 @@
 		"MasterHost":"localhost",
 		"MasterPort":"10000",
 		"HeartBeatTimeout":"5000"
-	}
+	},
 	"Chains":[
 		{
 			"ChainId":"Chain1",
-			"NumberOfServers":"1",
+			"NumberOfServers":"3",
 			"Servers":[
 				{
 					"ServerId":"Server1",
@@ -20,6 +20,30 @@
 						"DebugPort":"10113"
 					},
 					"Predecessor":"",
+					"Successor":"Server2"
+				},
+				{
+					"ServerId":"Server2",
+					"ChainId":"Chain1",
+					"ProcessDetails":{
+						"Host":"localhost",
+						"TcpPort":"10121",
+						"UdpPort":"10122",
+						"DebugPort":"10123"
+					},
+					"Predecessor":"Server1",
+					"Successor":"Server3"
+				},
+				{
+					"ServerId":"Server3",
+					"ChainId":"Chain1",
+					"ProcessDetails":{
+						"Host":"localhost",
+						"TcpPort":"10131",
+						"UdpPort":"10132",
+						"DebugPort":"10133"
+					},
+					"Predecessor":"Server2",
 					"Successor":""
 				}
 				
