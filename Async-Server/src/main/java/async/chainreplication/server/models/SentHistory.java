@@ -12,8 +12,6 @@ import async.chainreplication.client.server.communication.models.RequestKey;
  * The Class SentHistory.
  */
 public class SentHistory {
-	// TODO: Add support for comparator so as to remove all
-	// less sequence number messages when ACKED
 	// TODO: Enhance for Transfer
 	/** The sequence number. */
 	int sequenceNumber = 0;

@@ -1,4 +1,6 @@
 {
+	"Description": "Server1-Server2-Server3, Server2 will die after 10 seconds",
+	
 	"Master":{
 		"MasterName":"Master",
 		"MasterHost":"localhost",
