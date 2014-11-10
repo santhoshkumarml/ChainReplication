@@ -12,12 +12,15 @@ import async.chainreplication.client.server.communication.models.RequestKey;
  * The Class HistoryOfRequests.
  */
 public class HistoryOfRequests {
-	
+
 	/** The request to reply. */
 	Map<RequestKey, Reply> requestToReply = new HashMap<RequestKey, Reply>();
-	
+
 	/** The request key to request. */
 	Map<RequestKey, Request> requestKeyToRequest = new HashMap<RequestKey, Request>();
+
+	/** The greatest sequence number. */
+	int greatestSequenceNumber = 0;
 
 	/**
 	 * Adds the to history.
@@ -31,6 +34,9 @@ public class HistoryOfRequests {
 			if (!isHistoryPresent(requestKey)) {
 				requestToReply.put(requestKey, reply);
 				requestKeyToRequest.put(requestKey, request);
+				if(requestKey.getSequenceNumber() > greatestSequenceNumber) {
+					this.greatestSequenceNumber = requestKey.getSequenceNumber();
+				}
 			}
 		}
 	}
@@ -69,6 +75,16 @@ public class HistoryOfRequests {
 		synchronized (requestToReply) {
 			return requestToReply.containsKey(requestKey);
 		}
+	}
+
+
+	/**
+	 * Gets the greatest sequence number received.
+	 *
+	 * @return the greatest sequence number received
+	 */
+	public int getGreatestSequenceNumberReceived() {
+		return this.greatestSequenceNumber;
 	}
 
 }

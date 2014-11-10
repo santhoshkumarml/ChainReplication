@@ -7,6 +7,8 @@ import async.chainreplication.communication.messages.ChainReplicationMessage;
 import async.chainreplication.communication.messages.MasterServerChangeMessage;
 import async.chainreplication.communication.messages.RequestMessage;
 import async.chainreplication.communication.messages.ResponseOrSyncMessage;
+import async.chainreplication.communication.messages.SuccessorRequestMessage;
+import async.chainreplication.communication.messages.WaitServerMessage;
 import async.chainreplication.master.models.Chain;
 import async.chainreplication.master.models.Master;
 import async.chainreplication.master.models.Server;
@@ -46,6 +48,21 @@ public class ServerChainReplicationFacade {
 		serverMessageHandler = new ServerMessageHandler(server,
 				chainNameToChainMap, master, this);
 		this.serverImpl = serverImpl;
+	}
+	
+	
+   public MessageQueue<ChainReplicationMessage> getMessageQueue() {
+		return messageQueue;
+	}
+
+
+/**
+    * ServerImpl.
+    *
+    * @return {@link ServerImpl}
+    */
+	public ServerImpl getServerImpl() {
+		return serverImpl;
 	}
 
 	/**
@@ -105,6 +122,10 @@ public class ServerChainReplicationFacade {
 		} else if (message.getClass() == MasterServerChangeMessage.class) {
 			serverMessageHandler
 					.handleMasterMessage((MasterServerChangeMessage) message);
+		} else if (message.getClass() == WaitServerMessage.class) {
+			serverMessageHandler.handleWaitServerMessage((WaitServerMessage)message);
+		} else if (message.getClass() == SuccessorRequestMessage.class) {
+			serverMessageHandler.handleSuccessorRequestMessage((SuccessorRequestMessage)message);
 		}
 	}
 

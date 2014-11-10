@@ -1,7 +1,10 @@
 package async.chainreplication.server.models;
 
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 import async.chainreplication.client.server.communication.models.RequestKey;
@@ -16,9 +19,9 @@ public class SentHistory {
 	// TODO: Enhance for Transfer
 	/** The sequence number. */
 	int sequenceNumber = 0;
-	
+
 	/** The request keys. */
-	Map<Integer, RequestKey> requestKeys = new TreeMap<Integer, RequestKey>(
+	TreeMap<Integer, RequestKey> requestKeys = new TreeMap<Integer, RequestKey>(
 			new Comparator<Integer>() {
 				@Override
 				public int compare(Integer o1, Integer o2) {
@@ -65,5 +68,16 @@ public class SentHistory {
 				requestKeys.remove(i);
 			}
 		}
+	}
+
+	public List<RequestKey> getRequestKeysFromSent(int sequenceNumber) {
+		List<RequestKey> matchingRequestKeys = new ArrayList<RequestKey>();
+		synchronized (requestKeys) {
+			int lastKey = this.requestKeys.lastKey();
+			for(int i=sequenceNumber;i<=lastKey;i++) {
+				matchingRequestKeys.add(this.requestKeys.get(i));
+			}
+		}
+		return matchingRequestKeys;
 	}
 }

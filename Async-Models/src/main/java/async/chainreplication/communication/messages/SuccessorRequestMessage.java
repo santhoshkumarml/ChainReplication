@@ -18,13 +18,15 @@ public class SuccessorRequestMessage extends ChainReplicationMessage implements
 	/**
 	 * Instantiates a new successor request message.
 	 *
-	 * @param priority the priority
 	 * @param lastSequenceNumberReceived the last sequence number received
 	 */
-	public SuccessorRequestMessage(Priority priority,
-			int lastSequenceNumberReceived) {
-		super(priority);
+	public SuccessorRequestMessage(int lastSequenceNumberReceived) {
+		super(Priority.HIGHER_PRIORITY);
 		this.lastSequenceNumberReceived = lastSequenceNumberReceived;
+	}
+
+	public int getLastSequenceNumberReceived() {
+		return lastSequenceNumberReceived;
 	}
 
 }

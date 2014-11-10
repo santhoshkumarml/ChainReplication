@@ -193,7 +193,7 @@ public class JSONUtility {
 	 *
 	 * @param filePath the file path
 	 * @return the config
-	 * @throws InvalidActivityException 
+	 * @throws InvalidActivityException the invalid activity exception
 	 */
 	public static Config readConfigFromJSON(String filePath) throws InvalidActivityException {
 		Config config = new Config();
