@@ -32,6 +32,9 @@ public class HistoryOfRequests {
 	public void addToHistory(RequestKey requestKey, Request request, Reply reply) {
 		synchronized (requestToReply) {
 			if (!isHistoryPresent(requestKey)) {
+				if(requestKey.getSequenceNumber() == 0) {
+					requestKey.setSequenceNumber(++greatestSequenceNumber);
+				}
 				requestToReply.put(requestKey, reply);
 				requestKeyToRequest.put(requestKey, request);
 				if(requestKey.getSequenceNumber() > greatestSequenceNumber) {

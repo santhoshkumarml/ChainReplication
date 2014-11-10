@@ -79,7 +79,11 @@ public class MessageQueue<T> {
 	 * @return the message
 	 */
 	public Message<T> peekAtMessage() {
-		return new Message<T>(messages.peek());
+		Message<T> message = messages.peek();
+		if(message != null) {
+			return new Message<T>(message);
+		}
+		return null;
 	}
 
 	/* (non-Javadoc)

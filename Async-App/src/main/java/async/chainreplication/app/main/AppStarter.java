@@ -280,7 +280,7 @@ public class AppStarter {
 			System.out.println("All Clients Died");
 			
 			
-			serverKiller.killAllServers();
+			//serverKiller.killAllServers();
 			serverKiller.join();
 			System.out.println("All Servers Killed");
 

@@ -226,11 +226,12 @@ public class ServerMessageHandler {
 	 */
 	public void handleMasterMessage(MasterServerChangeMessage message) throws ServerChainReplicationException {
 		Server newServerObject = message.getServer();
-		if (!server.getAdjacencyList().getSucessor()
-				.equals(newServerObject.getAdjacencyList().getSucessor())) {
-			// get Ready for sending SentHistory asynchronously
-		}
 		synchronized (server) {
+			if(server.getAdjacencyList().getSucessor() !=
+					newServerObject.getAdjacencyList().getSucessor()) {
+				WaitServerMessage waitServerMessage = new WaitServerMessage(SuccessorRequestMessage.class);
+				this.serverChainReplicationFacade.deliverMessage(waitServerMessage);
+			}
 			if(server.getAdjacencyList().getPredecessor() !=
 					newServerObject.getAdjacencyList().getPredecessor()) {
 				int lastSequenceNumberReceived = this.getHistoryOfRequests().getGreatestSequenceNumberReceived();
@@ -250,11 +251,6 @@ public class ServerMessageHandler {
 						}
 					}
 				}
-			}
-			if(server.getAdjacencyList().getSucessor() !=
-					newServerObject.getAdjacencyList().getSucessor()) {
-				WaitServerMessage waitServerMessage = new WaitServerMessage(SuccessorRequestMessage.class);
-				this.serverChainReplicationFacade.deliverMessage(waitServerMessage);
 			}
 			server = newServerObject;
 		}

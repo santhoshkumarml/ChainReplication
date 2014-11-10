@@ -98,6 +98,7 @@ public class MasterDataStructure {
 					}
 					temp.getAdjacencyList().setPredecessor(predecessor);
 				}
+				predecessor = temp;
 			}
 			chain.setHead(servers.get(0));
 			chain.setTail(servers.get(servers.size() - 1));
