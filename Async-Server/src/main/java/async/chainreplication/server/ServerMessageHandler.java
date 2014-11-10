@@ -8,6 +8,7 @@ import java.util.Set;
 import async.chainreplication.client.server.communication.models.Reply;
 import async.chainreplication.client.server.communication.models.Request;
 import async.chainreplication.client.server.communication.models.RequestKey;
+import async.chainreplication.client.server.communication.models.RequestType;
 import async.chainreplication.communication.messages.AckMessage;
 import async.chainreplication.communication.messages.BulkSyncMessage;
 import async.chainreplication.communication.messages.ChainReplicationMessage;
@@ -132,7 +133,6 @@ public class ServerMessageHandler {
 						+ sendSequenceNumber + ":" + ackMessage.toString());*/
 			}
 		}
-		applicationRequestHandler.handleAck(request);
 	}
 
 	/**
@@ -418,14 +418,17 @@ public class ServerMessageHandler {
 				} catch (ConnectClientException e) {
 					throw new ServerChainReplicationException(e);
 				}
-				incrementSendSequenceNumber();
+				//TODO uncomment this later
+				/*incrementSendSequenceNumber();
 				serverChainReplicationFacade
 				.logMessage("Outgoing Message-" + sendSequenceNumber
-						+ ":" + responseMessage.toString());
+						+ ":" + responseMessage.toString());*/
 			}
 
-			// ACk so that other servers can remove the messages from Sent
-			ACK(request);
+			//ACk so that other servers can remove the messages from Sent
+			if(request.getRequestType() != RequestType.QUERY) {
+				ACK(request);	
+			}
 		}
 	}
 

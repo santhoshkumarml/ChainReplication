@@ -3,7 +3,7 @@
 		"MasterName":"Master",
 		"MasterHost":"localhost",
 		"MasterPort":"30000",
-		"HeartBeatTimeout":"5000"
+		"HeartBeatTimeout":"20000"
 	},
 	"Chains":[
 		{
