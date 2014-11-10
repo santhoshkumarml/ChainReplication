@@ -60,7 +60,7 @@ public class JSONUtility {
 						.values()[j];
 				int accountNum = random.nextInt(Integer.MAX_VALUE);
 				int amount = random.nextInt(100000);// amount restricted to 1
-													// lakh
+				// lakh
 				request.setAccountNum(accountNum);
 				if (requestType != ApplicationRequestType.GET_BALANCE)
 					request.setAmount(amount);
@@ -114,8 +114,10 @@ public class JSONUtility {
 						.get("TcpPort"));
 				int udpPort = Integer.parseInt((String) processDetails
 						.get("UdpPort"));
-				int debugPort = Integer.parseInt((String) processDetails
-						.get("DebugPort"));
+				int debugPort = -1;
+				if(processDetails.get("DebugPort") != null) {
+					debugPort = Integer.parseInt((String) processDetails.get("DebugPort"));
+				}
 				Server server = new Server(serverId, chainName, host);
 				server.getServerProcessDetails().setHost(host);
 				server.getServerProcessDetails().setTcpPort(tcpPort);
@@ -184,8 +186,10 @@ public class JSONUtility {
 					.get("TcpPort"));
 			int udpPort = Integer.parseInt((String) processDetails
 					.get("UdpPort"));
-			int debugPort = Integer.parseInt((String) processDetails
-					.get("DebugPort"));
+			int debugPort = -1;
+			if(processDetails.get("DebugPort") != null) {
+				debugPort = Integer.parseInt((String) processDetails.get("DebugPort"));
+			}
 			int responseWaitTime = Integer.parseInt((String) clientObject
 					.get("ResponseWaitTime"));
 			Client client = new Client(clientId, host, responseWaitTime);
@@ -242,8 +246,11 @@ public class JSONUtility {
 		String masterHost = (String) masterObject.get("MasterHost");
 		int masterPort = Integer.parseInt((String) masterObject
 				.get("MasterPort"));
-		int masterDebugPort = Integer.parseInt((String) masterObject
-				.get("MasterDebugPort"));
+		int masterDebugPort = -1;
+		if(masterObject.get("MasterDebugPort")!=null) {
+			masterDebugPort = Integer.parseInt((String) masterObject
+					.get("MasterDebugPort"));
+		}
 		long heartBeatTimeout = Long.parseLong((String) masterObject
 				.get("HeartBeatTimeout"));
 		Master master = new Master(masterHost, masterPort, masterName, masterDebugPort);
@@ -265,7 +272,7 @@ public class JSONUtility {
 			return;
 		@SuppressWarnings("unchecked")
 		Iterator<JSONObject> probablityRequestIterator = probablityRequests
-				.iterator();
+		.iterator();
 		while (probablityRequestIterator.hasNext()) {
 			JSONObject probabilityRequestObject = probablityRequestIterator
 					.next();

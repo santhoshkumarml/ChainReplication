@@ -4,14 +4,12 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Date;
-import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 
 import async.chainreplication.communication.messages.LogMessage;
 import async.generic.message.queue.Message;
 import async.generic.message.queue.MessageQueue;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class ChainReplicationLoggerThread.
  */
@@ -25,10 +23,6 @@ public class ChainReplicationLoggerThread extends Thread {
 	
 	/** The should still run. */
 	volatile boolean shouldStillRun = true;
-	
-	/** The fh. */
-	FileHandler fh = null;
-	
 	/** The pw. */
 	PrintWriter pw = null;
 
@@ -46,7 +40,6 @@ public class ChainReplicationLoggerThread extends Thread {
 			pw = new PrintWriter(new File("ChainReplication-"
 					+ this.chainReplicationImpl.getUniqueId() + ".log"));
 		} catch (SecurityException | IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

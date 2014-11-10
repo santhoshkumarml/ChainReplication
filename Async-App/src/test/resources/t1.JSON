@@ -29,7 +29,8 @@
 						"Host":"localhost",
 						"TcpPort":"10121",
 						"UdpPort":"10122",
-						"DebugPort":"10123"
+						"DebugPort":"10123",
+						"TimeToLive":"10000"
 					},
 					"Predecessor":"Server1",
 					"Successor":"Server3"
