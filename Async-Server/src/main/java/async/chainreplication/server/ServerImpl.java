@@ -116,7 +116,7 @@ public class ServerImpl extends ChainReplicationImpl {
 				heartBeatSenderTimer = new Timer();
 				HeartBeatSenderTask heartBeatSender = new HeartBeatSenderTask(
 						this);
-				heartBeatSenderTimer.schedule(heartBeatSender,
+				heartBeatSenderTimer.scheduleAtFixedRate(heartBeatSender, 0,
 						(heartBeatTimeOut - 3000));
 				requestOrQueryUpdateThread = new RequestQueryOrUpdateThread(
 						this);

@@ -99,7 +99,7 @@ public class MasterImpl extends ChainReplicationImpl {
 			listernerThread = new HeartBeatListenerThread(this);
 			checkerThread = new Timer();
 			HeartBeatCheckerTask task = new HeartBeatCheckerTask(this);
-			checkerThread.schedule(task, heartBeatTimeout);
+			checkerThread.scheduleAtFixedRate(task, 0, heartBeatTimeout);
 			listernerThread.start();
 		} catch (MasterChainReplicationException e) {
 			this.logMessage("Internal Error:" + e.getMessage());
