@@ -1,5 +1,7 @@
 package async.chainreplocation.master;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import async.chainreplication.communication.messages.ChainReplicationMessage;
@@ -10,6 +12,7 @@ import async.chainreplication.master.models.Chain;
 import async.chainreplication.master.models.Client;
 import async.chainreplication.master.models.Master;
 import async.chainreplication.master.models.Server;
+import async.generic.message.queue.Message;
 import async.generic.message.queue.MessageQueue;
 
 /**
@@ -73,8 +76,14 @@ public class MasterChainReplicationFacade {
 	 *
 	 * @return the heart beat message queue
 	 */
-	public MessageQueue<ChainReplicationMessage> getHeartBeatMessageQueue() {
-		return heartBeatMessageQueue;
+	public List<Message<ChainReplicationMessage>> dequeueAllHeartBeatMessages() {
+		List<Message<ChainReplicationMessage>> messages = new ArrayList<Message<ChainReplicationMessage>>();
+		synchronized (heartBeatMessageQueue) {
+			while(heartBeatMessageQueue.hasMoreMessages()) {
+				messages.add(heartBeatMessageQueue.dequeueMessage());
+			}
+		}
+		return messages;
 	}
 
 	/**
