@@ -243,7 +243,6 @@ public class ServerMessageHandler {
 							.getServerProcessDetails().getHost(), predecessor
 							.getServerProcessDetails().getTcpPort());
 					synchronized (peerSendClientHelper) {
-						// change it to ACK Message
 						try {
 							peerSendClientHelper.sendMessage(successorRequestMessage);
 						} catch (ConnectClientException e) {
@@ -436,7 +435,7 @@ public class ServerMessageHandler {
 	public void handleWaitServerMessage(WaitServerMessage message) {
 		while(this.serverChainReplicationFacade.
 				getMessageQueue().peekAtMessage().getMessageObject().
-				getClass() == message.getClass());
+				getClass() != message.getClass());
 	}
 
 	/**
@@ -448,7 +447,6 @@ public class ServerMessageHandler {
 	public void handleSuccessorRequestMessage(SuccessorRequestMessage message) throws ServerChainReplicationException {
 		Server sucessor = server.getAdjacencyList().getSucessor();
 		if (sucessor != null) {
-			// Non tail operation is to sync
 			peerSendClientHelper = new TCPClientHelper(sucessor
 					.getServerProcessDetails().getHost(), sucessor
 					.getServerProcessDetails().getTcpPort());
