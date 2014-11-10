@@ -114,10 +114,13 @@ public class JSONUtility {
 						.get("TcpPort"));
 				int udpPort = Integer.parseInt((String) processDetails
 						.get("UdpPort"));
+				int debugPort = Integer.parseInt((String) processDetails
+						.get("DebugPort"));
 				Server server = new Server(serverId, chainName, host);
 				server.getServerProcessDetails().setHost(host);
 				server.getServerProcessDetails().setTcpPort(tcpPort);
 				server.getServerProcessDetails().setUdpPort(udpPort);
+				server.getServerProcessDetails().setDebugPort(debugPort);
 				servers.put(serverId, server);
 
 				String initialSleepTime = (String) processDetails
@@ -177,12 +180,18 @@ public class JSONUtility {
 			JSONObject processDetails = (JSONObject) clientObject
 					.get("ProcessDetails");
 			String host = (String) processDetails.get("Host");
+			int tcpPort = Integer.parseInt((String) processDetails
+					.get("TcpPort"));
 			int udpPort = Integer.parseInt((String) processDetails
 					.get("UdpPort"));
+			int debugPort = Integer.parseInt((String) processDetails
+					.get("DebugPort"));
 			int responseWaitTime = Integer.parseInt((String) clientObject
 					.get("ResponseWaitTime"));
 			Client client = new Client(clientId, host, responseWaitTime);
+			client.getClientProcessDetails().setTcpPort(tcpPort);
 			client.getClientProcessDetails().setUdpPort(udpPort);
+			client.getClientProcessDetails().setDebugPort(debugPort);
 			config.getClients().put(clientId, client);
 		}
 
@@ -233,9 +242,11 @@ public class JSONUtility {
 		String masterHost = (String) masterObject.get("MasterHost");
 		int masterPort = Integer.parseInt((String) masterObject
 				.get("MasterPort"));
+		int masterDebugPort = Integer.parseInt((String) masterObject
+				.get("MasterDebugPort"));
 		long heartBeatTimeout = Long.parseLong((String) masterObject
 				.get("HeartBeatTimeout"));
-		Master master = new Master(masterHost, masterPort, masterName);
+		Master master = new Master(masterHost, masterPort, masterName, masterDebugPort);
 		master.setHeartbeatTimeout(heartBeatTimeout);
 		config.setMaster(master);
 	}

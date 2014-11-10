@@ -2,8 +2,8 @@
 	"Master":{
 		"MasterName":"Master",
 		"MasterHost":"localhost",
-		"MasterPort":10000,
-		"HeartBeatTimeout":5000
+		"MasterPort":"10000",
+		"HeartBeatTimeout":"5000"
 	}
 	"Chains":[
 		{
@@ -16,7 +16,8 @@
 					"ProcessDetails":{
 						"Host":"localhost",
 						"TcpPort":"10111",
-						"UdpPort":"10112"
+						"UdpPort":"10112",
+						"DebugPort":"10113"
 					},
 					"Predecessor":"",
 					"Successor":""
@@ -32,7 +33,9 @@
 			"ClientId":"ClientId1",
 			"ProcessDetails":{
 				"Host":"localhost",
-				"UdpPort":"11001"
+				"UdpPort":"11001",
+				"TcpPort":"11002",
+				"DebugPort":"11003"
 			},
 			"ResponseWaitTime":"15000"
 		}

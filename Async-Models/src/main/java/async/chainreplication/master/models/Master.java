@@ -17,6 +17,9 @@ public class Master implements Serializable {
 	/** The master port. */
 	int masterPort;
 	
+	/** The master Debug port. */
+	int masterDebugPort;
+	
 	/** The master name. */
 	String masterName;
 	
@@ -29,11 +32,13 @@ public class Master implements Serializable {
 	 * @param masterHost the master host
 	 * @param masterPort the master port
 	 * @param masterName the master name
+	 * @param masterDebugPort the master debug port
 	 */
-	public Master(String masterHost, int masterPort, String masterName) {
+	public Master(String masterHost, int masterPort, String masterName, int masterDebugPort) {
 		this.masterHost = masterHost;
 		this.masterPort = masterPort;
 		this.masterName = masterName;
+		this.masterDebugPort = masterDebugPort;
 	}
 
 	/**
@@ -70,6 +75,17 @@ public class Master implements Serializable {
 	 */
 	public int getMasterPort() {
 		return masterPort;
+	}
+	
+	
+
+	/**
+	 * Gets the master debug port.
+	 *
+	 * @return the master debug port
+	 */
+	public int getMasterDebugPort() {
+		return masterDebugPort;
 	}
 
 	/**

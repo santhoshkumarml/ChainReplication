@@ -20,6 +20,9 @@ public class ProcessDetails implements Serializable {
 	
 	/** The udp port. */
 	int udpPort = -1;
+	
+	/** The debug port. */
+	int debugPort = -1;
 
 	/**
 	 * Gets the host.
@@ -47,6 +50,17 @@ public class ProcessDetails implements Serializable {
 	public int getUdpPort() {
 		return udpPort;
 	}
+	
+	
+
+	/**
+	 * Gets the debug port.
+	 *
+	 * @return the debug port
+	 */
+	public int getDebugPort() {
+		return debugPort;
+	}
 
 	/**
 	 * Sets the host.
@@ -73,6 +87,17 @@ public class ProcessDetails implements Serializable {
 	 */
 	public void setUdpPort(int udpPort) {
 		this.udpPort = udpPort;
+	}
+	
+	
+
+	/**
+	 * Sets the debug port.
+	 *
+	 * @param debugPort the new debug port
+	 */
+	public void setDebugPort(int debugPort) {
+		this.debugPort = debugPort;
 	}
 
 	/* (non-Javadoc)
