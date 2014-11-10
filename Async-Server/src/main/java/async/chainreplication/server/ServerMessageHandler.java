@@ -227,11 +227,11 @@ public class ServerMessageHandler {
 	public void handleMasterMessage(MasterServerChangeMessage message) throws ServerChainReplicationException {
 		Server newServerObject = message.getServer();
 		synchronized (server) {
-			if(server.getAdjacencyList().getSucessor() !=
+			/*if(server.getAdjacencyList().getSucessor() !=
 					newServerObject.getAdjacencyList().getSucessor()) {
 				WaitServerMessage waitServerMessage = new WaitServerMessage(SuccessorRequestMessage.class);
 				this.serverChainReplicationFacade.deliverMessage(waitServerMessage);
-			}
+			}*/
 			if(server.getAdjacencyList().getPredecessor() !=
 					newServerObject.getAdjacencyList().getPredecessor()) {
 				int lastSequenceNumberReceived = this.getHistoryOfRequests().getGreatestSequenceNumberReceived();

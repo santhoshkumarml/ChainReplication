@@ -70,7 +70,7 @@ public class SentHistory {
 		List<RequestKey> matchingRequestKeys = new ArrayList<RequestKey>();
 		synchronized (requestKeys) {
 			int lastKey = this.requestKeys.lastKey();
-			for(int i=sequenceNumber;i<=lastKey;i++) {
+			for(int i=sequenceNumber+1;i<=lastKey;i++) {
 				matchingRequestKeys.add(this.requestKeys.get(i));
 			}
 		}

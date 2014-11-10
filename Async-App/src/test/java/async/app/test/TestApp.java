@@ -4,8 +4,6 @@ import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.activity.InvalidActivityException;
-
 import org.testng.annotations.Test;
 
 import async.chainreplication.app.json.util.JSONUtility;

@@ -1,5 +1,8 @@
 package async.chainreplication.communication.messages;
 
+import java.util.HashSet;
+import java.util.Set;
+
 // TODO: Auto-generated Javadoc
 /**
  * The Class WaitServerMessage.
@@ -7,29 +10,47 @@ package async.chainreplication.communication.messages;
 public class WaitServerMessage extends ChainReplicationMessage{
 
 	/** The waiting class. */
-	Class<?> waitingClass;
-	
+	Set<Class<?>> waitingClasses = new HashSet<Class<?>>();
+
+	Set<Priority> priorities = new HashSet<Priority>();
+
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = -1371867708397244804L;
-	
+
 	/**
 	 * Instantiates a new wait server message.
 	 *
 	 * @param waitingClass the waiting class
 	 */
-	public WaitServerMessage(Class<?> waitingClass) {
+	public WaitServerMessage(Set<Class<?>> waitingClasses, Set<Priority> priorities) {
 		super(Priority.REALTIME_PRIORITY);
-		this.waitingClass = waitingClass;
+		if(waitingClasses != null) {
+			this.waitingClasses.addAll(waitingClasses);
+		}
+		if(priorities != null) {
+			this.priorities.addAll(priorities);
+		}
+		assert ((this.waitingClasses!=null&&!this.waitingClasses.isEmpty()) ||
+				(this.priorities!=null&&!this.priorities.isEmpty()));
 	}
 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
-	@Override
-	public String toString() {
-		return "WaitServerMessage [waitingClass=" + waitingClass.getCanonicalName() + "]";
+
+	public boolean check(ChainReplicationMessage chainReplicationMessageInstance) {
+		boolean isWaitingClassConditionSatisified = false;
+		if(this.waitingClasses != null) {
+			isWaitingClassConditionSatisified = this.waitingClasses.contains(
+					chainReplicationMessageInstance.getClass());
+		}
+		if(!isWaitingClassConditionSatisified) {
+			if(this.priority!=null) {
+				isWaitingClassConditionSatisified = this.priorities.contains(
+						chainReplicationMessageInstance.getPriority()); 
+			}
+		}
+		return isWaitingClassConditionSatisified;
 	}
-	
-	
 
 }
