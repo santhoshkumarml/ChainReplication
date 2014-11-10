@@ -4,8 +4,15 @@ import java.util.Comparator;
 import java.util.PriorityQueue;
 import java.util.Queue;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class MessageQueue.
+ *
+ * @param <T> the generic type
+ */
 public class MessageQueue<T> {
 
+	/** The messages. */
 	Queue<Message<T>> messages = new PriorityQueue<Message<T>>(
 			new Comparator<Message<T>>() {
 				@Override
@@ -20,18 +27,34 @@ public class MessageQueue<T> {
 				}
 			});
 
+	/**
+	 * Dequeue message.
+	 *
+	 * @return the message
+	 */
 	public Message<T> dequeueMessage() {
 		synchronized (messages) {
 			return messages.remove();
 		}
 	}
 
+	/**
+	 * Dequeue message and return message object.
+	 *
+	 * @return the object
+	 */
 	public Object dequeueMessageAndReturnMessageObject() {
 		synchronized (messages) {
 			return messages.remove().getMessageObject();
 		}
 	}
 
+	/**
+	 * Enqueue message object.
+	 *
+	 * @param pritority the pritority
+	 * @param messageObject the message object
+	 */
 	public void enqueueMessageObject(int pritority, T messageObject) {
 		synchronized (messages) {
 			messages.add(new Message<T>(System.currentTimeMillis(),
@@ -39,16 +62,29 @@ public class MessageQueue<T> {
 		}
 	}
 
+	/**
+	 * Checks for more messages.
+	 *
+	 * @return true, if successful
+	 */
 	public boolean hasMoreMessages() {
 		synchronized (messages) {
 			return messages.size() > 0;
 		}
 	}
 
+	/**
+	 * Peek at message.
+	 *
+	 * @return the message
+	 */
 	public Message<T> peekAtMessage() {
 		return new Message<T>(messages.peek());
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
 	@Override
 	public String toString() {
 		return "MessageQueue [messages=" + messages + "]";

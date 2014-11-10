@@ -13,16 +13,33 @@ import async.chainreplication.master.models.Server;
 import async.chainreplication.server.exception.ServerChainReplicationException;
 import async.generic.message.queue.MessageQueue;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class ServerChainReplicationFacade.
+ */
 public class ServerChainReplicationFacade {
 
+	/** The server message handler. */
 	ServerMessageHandler serverMessageHandler;
 
+	/** The is server stopping. */
 	boolean isServerStopping = false;
 
+	/** The message queue. */
 	MessageQueue<ChainReplicationMessage> messageQueue = new MessageQueue<ChainReplicationMessage>();
 
+	/** The server impl. */
 	ServerImpl serverImpl;
 
+	/**
+	 * Instantiates a new server chain replication facade.
+	 *
+	 * @param server the server
+	 * @param chainNameToChainMap the chain name to chain map
+	 * @param master the master
+	 * @param serverImpl the server impl
+	 * @throws ServerChainReplicationException the server chain replication exception
+	 */
 	public ServerChainReplicationFacade(Server server,
 			Map<String, Chain> chainNameToChainMap, Master master,
 			ServerImpl serverImpl) throws ServerChainReplicationException {
@@ -31,6 +48,11 @@ public class ServerChainReplicationFacade {
 		this.serverImpl = serverImpl;
 	}
 
+	/**
+	 * Deliver message.
+	 *
+	 * @param message the message
+	 */
 	public void deliverMessage(ChainReplicationMessage message) {
 		if (message != null) {
 			messageQueue.enqueueMessageObject(message.getPriority().ordinal(),
@@ -38,18 +60,39 @@ public class ServerChainReplicationFacade {
 		}
 	}
 
+	/**
+	 * Gets the master.
+	 *
+	 * @return the master
+	 */
 	public Master getMaster() {
 		return serverMessageHandler.getMaster();
 	}
 
+	/**
+	 * Gets the server.
+	 *
+	 * @return the server
+	 */
 	public Server getServer() {
 		return serverMessageHandler.getServer();
 	}
 
+	/**
+	 * Gets the server message handler.
+	 *
+	 * @return the server message handler
+	 */
 	public ServerMessageHandler getServerMessageHandler() {
 		return serverMessageHandler;
 	}
 
+	/**
+	 * Handle message.
+	 *
+	 * @param message the message
+	 * @throws ServerChainReplicationException the server chain replication exception
+	 */
 	public void handleMessage(ChainReplicationMessage message)
 			throws ServerChainReplicationException {
 		if (message.getClass() == RequestMessage.class) {
@@ -65,18 +108,38 @@ public class ServerChainReplicationFacade {
 		}
 	}
 
+	/**
+	 * Checks if is head in the chain.
+	 *
+	 * @return true, if is head in the chain
+	 */
 	public boolean isHeadInTheChain() {
 		return serverMessageHandler.getServer().isHead();
 	}
 
+	/**
+	 * Checks if is tail in the chain.
+	 *
+	 * @return true, if is tail in the chain
+	 */
 	public boolean isTailInTheChain() {
 		return serverMessageHandler.getServer().isTail();
 	}
 
+	/**
+	 * Log message.
+	 *
+	 * @param message the message
+	 */
 	public void logMessage(String message) {
 		serverImpl.logMessage(message);
 	}
 
+	/**
+	 * Start processing messages.
+	 *
+	 * @throws ServerChainReplicationException the server chain replication exception
+	 */
 	public void startProcessingMessages()
 			throws ServerChainReplicationException {
 		while (!isServerStopping) {
@@ -88,6 +151,9 @@ public class ServerChainReplicationFacade {
 		}
 	}
 
+	/**
+	 * Stop processing.
+	 */
 	public void stopProcessing() {
 		isServerStopping = true;
 	}
