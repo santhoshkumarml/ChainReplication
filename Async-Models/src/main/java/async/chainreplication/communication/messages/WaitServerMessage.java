@@ -22,4 +22,11 @@ public class WaitServerMessage extends ChainReplicationMessage{
 		this.waitingClass = waitingClass;
 	}
 
+	@Override
+	public String toString() {
+		return "WaitServerMessage [waitingClass=" + waitingClass.getCanonicalName() + "]";
+	}
+	
+	
+
 }

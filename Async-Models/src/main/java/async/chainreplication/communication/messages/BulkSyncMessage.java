@@ -33,4 +33,11 @@ public class BulkSyncMessage extends ChainReplicationMessage implements
 		return syncMessages;
 	}
 
+	@Override
+	public String toString() {
+		return "BulkSyncMessage [syncMessages=" + syncMessages + "]";
+	}
+	
+	
+
 }

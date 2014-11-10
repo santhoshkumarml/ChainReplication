@@ -82,6 +82,7 @@ public class ClientChainReplicationFacade {
 	 */
 	public void handleMessage(ChainReplicationMessage message)
 			throws ClientChainReplicationException {
+		this.logMessage(message.toString());
 		if (message.getClass() == ClientRequestMessage.class) {
 			clientMessageHandler
 					.handleClientRequestMessage((ClientRequestMessage) message);

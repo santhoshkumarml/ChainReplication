@@ -34,4 +34,10 @@ public class SuccessorRequestMessage extends ChainReplicationMessage implements
 		return lastSequenceNumberReceived;
 	}
 
+	@Override
+	public String toString() {
+		return "SuccessorRequestMessage [lastSequenceNumberReceived="
+				+ lastSequenceNumberReceived + "]";
+	}
+
 }

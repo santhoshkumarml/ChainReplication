@@ -40,4 +40,10 @@ public class MasterClientChangeMessage extends MasterMessage {
 		return chainChanges;
 	}
 
+	@Override
+	public String toString() {
+		return "MasterClientChangeMessage [client=" + client
+				+ ", chainChanges=" + chainChanges + "]";
+	}
+
 }
