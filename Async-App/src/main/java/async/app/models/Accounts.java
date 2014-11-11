@@ -38,4 +38,24 @@ public class Accounts {
 			return accountNumToAccountSnapShot.get(accountNum);
 		}
 	}
+	
+	
+	
+	private Map<Integer, AccountSnapshot> getAccountNumToAccountSnapShot() {
+		return accountNumToAccountSnapShot;
+	}
+	
+
+	public Accounts copy(Accounts accounts) {
+		Accounts newAccounts = new Accounts();
+		for (Map.Entry<Integer, AccountSnapshot> accountEntry : 
+			accounts.getAccountNumToAccountSnapShot().entrySet()) {
+			newAccounts.getAccountNumToAccountSnapShot().put(
+					accountEntry.getKey(),
+					new AccountSnapshot(
+							accountEntry.getKey(),
+							accountEntry.getValue().getBalance()));
+		}
+		return newAccounts;
+	}
 }
