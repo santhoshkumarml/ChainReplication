@@ -41,6 +41,12 @@ public class Accounts {
 		}
 	}
 
+	/**
+	 * Update account snapshot.
+	 *
+	 * @param accountNum the account num
+	 * @param balance the balance
+	 */
 	public void updateAccountSnapshot(Integer accountNum, float balance) {
 		synchronized (accountNumToAccountSnapShot) {
 			accountNumToAccountSnapShot.get(accountNum).setBalance(balance);
@@ -50,7 +56,6 @@ public class Accounts {
 	/**
 	 * Copy.
 	 *
-	 * @param accounts the accounts
 	 * @return the accounts
 	 */
 	public Set<AccountSnapshot> getAccountSnapShots() {

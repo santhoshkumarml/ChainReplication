@@ -251,11 +251,17 @@ public class ApplicationRequestHandler implements IApplicationRequestHandler {
 				requestKey);
 	}
 
+	/* (non-Javadoc)
+	 * @see async.chainreplication.server.IApplicationRequestHandler#getTransactionalObjects()
+	 */
 	@Override
 	public Set<?> getTransactionalObjects() {
 		return this.accounts.getAccountSnapShots();
 	}
 
+	/* (non-Javadoc)
+	 * @see async.chainreplication.server.IApplicationRequestHandler#updateTransactionalObject(java.lang.Object)
+	 */
 	@Override
 	public void updateTransactionalObject(Object transactionalObject) {
 		AccountSnapshot snapshot = (AccountSnapshot)transactionalObject;

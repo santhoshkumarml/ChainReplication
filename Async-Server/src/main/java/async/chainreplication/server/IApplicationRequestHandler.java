@@ -42,7 +42,17 @@ public interface IApplicationRequestHandler {
 	 */
 	void updateHistories(Request request, Reply reply);
 	
+	/**
+	 * Gets the transactional objects.
+	 *
+	 * @return the transactional objects
+	 */
 	Set<?> getTransactionalObjects();
 	
+	/**
+	 * Update transactional object.
+	 *
+	 * @param transactionalObject the transactional object
+	 */
 	void updateTransactionalObject(Object transactionalObject);
 }
