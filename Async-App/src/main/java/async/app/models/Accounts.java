@@ -1,7 +1,9 @@
 package async.app.models;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -38,24 +40,29 @@ public class Accounts {
 			return accountNumToAccountSnapShot.get(accountNum);
 		}
 	}
-	
-	
-	
-	private Map<Integer, AccountSnapshot> getAccountNumToAccountSnapShot() {
-		return accountNumToAccountSnapShot;
-	}
-	
 
-	public Accounts copy(Accounts accounts) {
-		Accounts newAccounts = new Accounts();
-		for (Map.Entry<Integer, AccountSnapshot> accountEntry : 
-			accounts.getAccountNumToAccountSnapShot().entrySet()) {
-			newAccounts.getAccountNumToAccountSnapShot().put(
-					accountEntry.getKey(),
-					new AccountSnapshot(
-							accountEntry.getKey(),
-							accountEntry.getValue().getBalance()));
+	public void updateAccountSnapshot(Integer accountNum, float balance) {
+		synchronized (accountNumToAccountSnapShot) {
+			accountNumToAccountSnapShot.get(accountNum).setBalance(balance);
 		}
-		return newAccounts;
+	}
+
+	/**
+	 * Copy.
+	 *
+	 * @param accounts the accounts
+	 * @return the accounts
+	 */
+	public Set<AccountSnapshot> getAccountSnapShots() {
+		Set<AccountSnapshot> accountSnapshots = new HashSet<AccountSnapshot>();
+		synchronized (this) {
+			for (Map.Entry<Integer, AccountSnapshot> accountEntry :
+				this.accountNumToAccountSnapShot.entrySet()){
+				accountSnapshots.add(new AccountSnapshot(
+						accountEntry.getKey(),
+						accountEntry.getValue().getBalance()));
+			}	
+		}
+		return accountSnapshots;
 	}
 }

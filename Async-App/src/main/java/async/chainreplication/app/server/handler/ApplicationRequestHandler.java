@@ -1,5 +1,7 @@
 package async.chainreplication.app.server.handler;
 
+import java.util.Set;
+
 import async.app.models.AccountSnapshot;
 import async.app.models.Accounts;
 import async.chainreplication.application.models.ApplicationReply;
@@ -247,6 +249,17 @@ public class ApplicationRequestHandler implements IApplicationRequestHandler {
 				requestKey, request, reply);
 		chainReplicationMessageHandler.getSentHistory().addToSentHistory(
 				requestKey);
+	}
+
+	@Override
+	public Set<?> getTransactionalObjects() {
+		return this.accounts.getAccountSnapShots();
+	}
+
+	@Override
+	public void updateTransactionalObject(Object transactionalObject) {
+		AccountSnapshot snapshot = (AccountSnapshot)transactionalObject;
+		this.accounts.updateAccountSnapshot(snapshot.getAccountNum(), snapshot.getBalance());
 	}
 
 }

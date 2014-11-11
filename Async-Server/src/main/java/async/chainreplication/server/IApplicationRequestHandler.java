@@ -1,5 +1,7 @@
 package async.chainreplication.server;
 
+import java.util.Set;
+
 import async.chainreplication.client.server.communication.models.Reply;
 import async.chainreplication.client.server.communication.models.Request;
 
@@ -39,5 +41,8 @@ public interface IApplicationRequestHandler {
 	 * @param reply the reply
 	 */
 	void updateHistories(Request request, Reply reply);
-
+	
+	Set<?> getTransactionalObjects();
+	
+	void updateTransactionalObject(Object transactionalObject);
 }

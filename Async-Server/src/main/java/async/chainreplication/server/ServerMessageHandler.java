@@ -484,4 +484,11 @@ public class ServerMessageHandler {
 			ChainReplicationMessage chainReplicationMessage) throws ConnectClientException {
 		client.sendMessage(chainReplicationMessage);
 	}
+	
+	
+	/*private static class NewNodeUpdater extends Thread {
+		public NewNodeUpdater() {
+		
+		}
+	}*/
 }
