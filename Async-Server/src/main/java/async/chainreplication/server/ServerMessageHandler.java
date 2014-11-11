@@ -487,12 +487,29 @@ public class ServerMessageHandler {
 	}
 
 
+	/**
+	 * The Class NewNodeUpdater.
+	 */
 	private static class NewNodeUpdater extends Thread {
+		
+		/** The transactional application objects. */
 		Set<?> transactionalApplicationObjects;
+		
+		/** The new node client helper. */
 		IClientHelper newNodeClientHelper;
+		
+		/** The server. */
 		Server server;
+		
+		/** The is sending messages. */
 		volatile boolean isSendingMessages = false;
 		
+		/**
+		 * Instantiates a new new node updater.
+		 *
+		 * @param transactionalApplicationObjects the transactional application objects
+		 * @param server the server
+		 */
 		public NewNodeUpdater(
 				Set<?> transactionalApplicationObjects,
 				Server server) {
@@ -501,6 +518,13 @@ public class ServerMessageHandler {
 			newNodeClientHelper =  new TCPClientHelper(
 					server.getServerProcessDetails().getHost(),
 					server.getServerProcessDetails().getTcpPort());
+		}
+		
+		/* (non-Javadoc)
+		 * @see java.lang.Thread#run()
+		 */
+		public void run() {
+			
 		}
 		
 	}
