@@ -2,6 +2,7 @@ package async.chainreplication.server;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -484,11 +485,23 @@ public class ServerMessageHandler {
 			ChainReplicationMessage chainReplicationMessage) throws ConnectClientException {
 		client.sendMessage(chainReplicationMessage);
 	}
-	
-	
-	/*private static class NewNodeUpdater extends Thread {
-		public NewNodeUpdater() {
+
+
+	private static class NewNodeUpdater extends Thread {
+		Set<?> transactionalApplicationObjects;
+		IClientHelper newNodeClientHelper;
+		Server server;
+		volatile boolean isSendingMessages = false;
 		
+		public NewNodeUpdater(
+				Set<?> transactionalApplicationObjects,
+				Server server) {
+			this.transactionalApplicationObjects = transactionalApplicationObjects;
+			this.server = server;
+			newNodeClientHelper =  new TCPClientHelper(
+					server.getServerProcessDetails().getHost(),
+					server.getServerProcessDetails().getTcpPort());
 		}
-	}*/
+		
+	}
 }

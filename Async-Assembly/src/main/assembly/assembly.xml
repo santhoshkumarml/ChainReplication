@@ -17,7 +17,8 @@
 				<include>Async.Async-Project:Async-Client</include>
 				<include>Async.Async-Project:Async-App</include>
 			</includes>
-	    <!--<outputFileNameMapping>${artifactId}</outputFileNameMapping>-->
+	    <outputFileNameMapping>${artifactId}</outputFileNameMapping>
+		<unpack>false</unpack>
 		</dependencySet>
 	</dependencySets>
 	<fileSets>
