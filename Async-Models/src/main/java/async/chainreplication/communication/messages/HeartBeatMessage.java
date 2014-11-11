@@ -33,6 +33,9 @@ public class HeartBeatMessage extends ChainReplicationMessage {
 		return server;
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
 	@Override
 	public String toString() {
 		return "HeartBeatMessage [server=" + server + "]";

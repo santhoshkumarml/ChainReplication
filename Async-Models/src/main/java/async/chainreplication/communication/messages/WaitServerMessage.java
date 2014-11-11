@@ -12,6 +12,7 @@ public class WaitServerMessage extends ChainReplicationMessage{
 	/** The waiting class. */
 	Set<Class<?>> waitingClasses = new HashSet<Class<?>>();
 
+	/** The priorities. */
 	Set<Priority> priorities = new HashSet<Priority>();
 
 	/** The Constant serialVersionUID. */
@@ -20,7 +21,8 @@ public class WaitServerMessage extends ChainReplicationMessage{
 	/**
 	 * Instantiates a new wait server message.
 	 *
-	 * @param waitingClass the waiting class
+	 * @param waitingClasses the waiting classes
+	 * @param priorities the priorities
 	 */
 	public WaitServerMessage(Set<Class<?>> waitingClasses, Set<Priority> priorities) {
 		super(Priority.REALTIME_PRIORITY);
@@ -38,6 +40,12 @@ public class WaitServerMessage extends ChainReplicationMessage{
 	 * @see java.lang.Object#toString()
 	 */
 
+	/**
+	 * Check.
+	 *
+	 * @param chainReplicationMessageInstance the chain replication message instance
+	 * @return true, if successful
+	 */
 	public boolean check(ChainReplicationMessage chainReplicationMessageInstance) {
 		boolean isWaitingClassConditionSatisified = false;
 		if(this.waitingClasses != null) {

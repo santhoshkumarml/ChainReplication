@@ -18,10 +18,10 @@ import async.chainreplication.server.ServerMessageHandler;
  * The Class ApplicationRequestHandler.
  */
 public class ApplicationRequestHandler implements IApplicationRequestHandler {
-	
+
 	/** The accounts. */
 	Accounts accounts;
-	
+
 	/** The chain replication message handler. */
 	ServerMessageHandler chainReplicationMessageHandler;
 
@@ -165,18 +165,20 @@ public class ApplicationRequestHandler implements IApplicationRequestHandler {
 	 */
 	@Override
 	public void handleSyncUpdate(Request request, Reply reply) {
-		synchronized (accounts) {
-			ApplicationReply applicationReply = (ApplicationReply) reply;
-			this.updateHistories(request, reply);
-			AccountSnapshot accountSnapshot = accounts
-					.getAccountSnapshot(applicationReply.getAccountNum());
-			if (accountSnapshot != null) {
-				accountSnapshot.setBalance(applicationReply.getBalance());
-			} else {
-				if (request.getRequestType() != RequestType.QUERY) {
+		if(request.getRequestType() != RequestType.QUERY) {
+			synchronized (accounts) {
+				ApplicationReply applicationReply = (ApplicationReply) reply;
+				this.updateHistories(request, reply);
+				AccountSnapshot accountSnapshot = accounts
+						.getAccountSnapshot(applicationReply.getAccountNum());
+				if (accountSnapshot != null) {
+					accountSnapshot.setBalance(applicationReply.getBalance());
+				} else {
+					//if (request.getRequestType() != RequestType.QUERY) {
 					accountSnapshot = accounts.addAccount(applicationReply
 							.getAccountNum());
 					accountSnapshot.setBalance(applicationReply.getBalance());
+					//}
 				}
 			}
 		}

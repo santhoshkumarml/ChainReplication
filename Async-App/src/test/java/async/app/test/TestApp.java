@@ -33,6 +33,11 @@ public class TestApp {
 	}
 	
 	//@Test
+	/**
+	 * Test master data structure.
+	 *
+	 * @throws Exception the exception
+	 */
 	public void testMasterDataStructure() throws Exception {
 		String args[] = new String[1];
 		args[0] = new File("." + File.separatorChar + "src"
