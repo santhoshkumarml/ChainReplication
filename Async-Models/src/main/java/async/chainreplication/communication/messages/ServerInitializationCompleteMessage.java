@@ -4,7 +4,7 @@ package async.chainreplication.communication.messages;
 /**
  * The Class ServerInitialiationCompleteMessage.
  */
-public class ServerInitialiationCompleteMessage extends ChainReplicationMessage {
+public class ServerInitializationCompleteMessage extends ChainReplicationMessage {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 5673114903444266579L;
@@ -12,7 +12,7 @@ public class ServerInitialiationCompleteMessage extends ChainReplicationMessage 
 	/**
 	 * Instantiates a new server initialiation complete message.
 	 */
-	public ServerInitialiationCompleteMessage() {
+	public ServerInitializationCompleteMessage() {
 		super(Priority.REALTIME_PRIORITY);
 	}
 
