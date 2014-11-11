@@ -123,8 +123,11 @@ public class ServerMessageHandler {
 			synchronized (peerSendClientHelper) {
 				ChainReplicationMessage ackMessage = new AckMessage(request);
 				// change it to ACK Message
+				peerSendClientHelper = new TCPClientHelper(predecessor
+						.getServerProcessDetails().getHost(), predecessor
+						.getServerProcessDetails().getTcpPort());
 				try {
-					peerSendClientHelper.sendMessage(ackMessage);
+					sendMessage(peerSendClientHelper, ackMessage);
 				} catch (ConnectClientException e) {
 					this.serverChainReplicationFacade.logMessage(e.getMessage());
 				}
@@ -244,7 +247,7 @@ public class ServerMessageHandler {
 							.getServerProcessDetails().getTcpPort());
 					synchronized (peerSendClientHelper) {
 						try {
-							peerSendClientHelper.sendMessage(successorRequestMessage);
+							sendMessage(peerSendClientHelper, successorRequestMessage);
 						} catch (ConnectClientException e) {
 							this.serverChainReplicationFacade.logMessage(e.getMessage());
 						}
@@ -390,7 +393,7 @@ public class ServerMessageHandler {
 				ChainReplicationMessage syncMessage = new ResponseOrSyncMessage(
 						request, reply);
 				try {
-					peerSendClientHelper.sendMessage(syncMessage);
+					sendMessage(peerSendClientHelper, syncMessage);
 				} catch (ConnectClientException e) {
 					this.serverChainReplicationFacade.logMessage(e.getMessage());
 				}
@@ -409,7 +412,7 @@ public class ServerMessageHandler {
 				ChainReplicationMessage responseMessage = new ResponseOrSyncMessage(
 						request, reply);
 				try {
-					tailResponseClientHelper.sendMessage(responseMessage);
+					sendMessage(tailResponseClientHelper, responseMessage);
 				} catch (ConnectClientException e) {
 					throw new ServerChainReplicationException(e);
 				}
@@ -462,13 +465,23 @@ public class ServerMessageHandler {
 					bulkSyncMessage.getSyncMessages().add(syncMessage);
 				}
 				try {
-					peerSendClientHelper.sendMessage(bulkSyncMessage);
+					sendMessage(peerSendClientHelper, bulkSyncMessage);
 				} catch (ConnectClientException e) {
 					this.serverChainReplicationFacade.logMessage(e.getMessage());
 				}
-				
 			}
-
 		}
+	}
+
+	/**
+	 * Send message.
+	 *
+	 * @param client the client
+	 * @param chainReplicationMessage the chain replication message
+	 * @throws ConnectClientException the connect client exception
+	 */
+	public void sendMessage(IClientHelper client,
+			ChainReplicationMessage chainReplicationMessage) throws ConnectClientException {
+		client.sendMessage(chainReplicationMessage);
 	}
 }

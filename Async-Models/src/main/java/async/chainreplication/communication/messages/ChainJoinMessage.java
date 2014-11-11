@@ -24,4 +24,13 @@ public class ChainJoinMessage extends ChainReplicationMessage {
 		this.server = server;
 	}
 
+	/**
+	 * Gets the server.
+	 *
+	 * @return the server
+	 */
+	public Server getServer() {
+		return server;
+	}
+
 }

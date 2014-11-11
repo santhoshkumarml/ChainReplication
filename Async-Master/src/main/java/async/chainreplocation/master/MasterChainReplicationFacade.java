@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import async.chainreplication.communication.messages.ChainJoinMessage;
 import async.chainreplication.communication.messages.ChainReplicationMessage;
 import async.chainreplication.communication.messages.HeartBeatMessage;
 import async.chainreplication.communication.messages.MasterGenericServerChangeMessage;
@@ -98,6 +99,8 @@ public class MasterChainReplicationFacade {
 		if (message.getClass() == MasterGenericServerChangeMessage.class) {
 			masterMessageHandler
 					.handleGenericServerChangeMessage((MasterGenericServerChangeMessage) message);
+		} else if(message.getClass() == ChainJoinMessage.class) {
+			masterMessageHandler.handleChainJoinMessage((ChainJoinMessage) message);
 		}
 	}
 

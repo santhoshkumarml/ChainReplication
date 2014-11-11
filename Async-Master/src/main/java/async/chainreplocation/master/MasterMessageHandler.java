@@ -2,8 +2,11 @@ package async.chainreplocation.master;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Queue;
 import java.util.Set;
+import java.util.concurrent.LinkedBlockingQueue;
 
+import async.chainreplication.communication.messages.ChainJoinMessage;
 import async.chainreplication.communication.messages.ChainReplicationMessage;
 import async.chainreplication.communication.messages.MasterClientChangeMessage;
 import async.chainreplication.communication.messages.MasterGenericServerChangeMessage;
@@ -22,13 +25,13 @@ import async.connection.util.TCPClientHelper;
  * The Class MasterMessageHandler.
  */
 public class MasterMessageHandler {
-	
+
 	/** The master chain replication facade. */
 	MasterChainReplicationFacade masterChainReplicationFacade;
-	
+
 	/** The master ds. */
 	MasterDataStructure masterDs;
-	
+
 	/** The client message helper. */
 	IClientHelper serverMessageHelper, clientMessageHelper = null;
 
@@ -130,10 +133,47 @@ public class MasterMessageHandler {
 	 */
 	public void handleGenericServerChangeMessage(
 			MasterGenericServerChangeMessage message)
-			throws MasterChainReplicationException {
+					throws MasterChainReplicationException {
 		Set<Server> diedServers = message.getDiedServers();
 		ChainChanges chainChanges = masterDs.calculateChanges(diedServers);
 		formAndDispatchMessagesForServerAndClient(chainChanges);
+	}
+
+	/**
+	 * Handle chain join message.
+	 *
+	 * @param message the message
+	 * @throws MasterChainReplicationException the master chain replication exception
+	 */
+	public void handleChainJoinMessage(ChainJoinMessage message) throws MasterChainReplicationException {
+		synchronized (masterDs) {
+			Map<String,Server> serverNameToServerMap = masterDs.getChainToServerMap().get(message.getServer().getChainName());
+			
+			Server server = message.getServer();
+			server.getAdjacencyList().setPredecessor(null);
+			server.getAdjacencyList().setSucessor(null);
+			Chain chain = masterDs.getChains().get(server.getChainName());
+			
+			if(serverNameToServerMap!=null && !serverNameToServerMap.isEmpty()) {
+				serverNameToServerMap = new HashMap<String, Server>();
+				
+				chain.setHead(server);
+				chain.setTail(server);
+				
+				serverNameToServerMap.put(server.getServerId(), server);
+				masterDs.getChainToServerMap().put(server.getChainName(), serverNameToServerMap);
+				masterDs.getChains().put(chain.getChainName(), chain);
+			}else {
+				Queue<Server> newServerQueue = masterDs.getChainToNewServersMap().get(message.getServer().getChainName());
+				if(newServerQueue == null) {
+					newServerQueue = new LinkedBlockingQueue<Server>();
+				}
+				newServerQueue.add(message.getServer());
+				//send message to chain tail to propagate 
+				//history and application accounts
+				sendServerMessage(chain.getTail(), message);
+			}
+		}
 	}
 
 	/**
@@ -145,7 +185,7 @@ public class MasterMessageHandler {
 	 */
 	private void sendClientMessage(Client client,
 			MasterClientChangeMessage message)
-			throws MasterChainReplicationException {
+					throws MasterChainReplicationException {
 		try {
 			clientMessageHelper = new TCPClientHelper(client
 					.getClientProcessDetails().getHost(), client
@@ -165,7 +205,7 @@ public class MasterMessageHandler {
 	 */
 	private void sendServerMessage(Server server,
 			ChainReplicationMessage message)
-			throws MasterChainReplicationException {
+					throws MasterChainReplicationException {
 		try {
 			serverMessageHelper = new TCPClientHelper(server
 					.getServerProcessDetails().getHost(), server
