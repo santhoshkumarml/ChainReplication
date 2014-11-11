@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 import java.util.Set;
 
 import async.chainreplication.master.models.Chain;
@@ -29,6 +30,9 @@ public class MasterDataStructure {
 	
 	/** The clients. */
 	Map<String, Client> clients = new HashMap<String, Client>();
+	
+	/** The chain to new servers map. */
+	Map<String, Queue<Server>> chainToNewServersMap = new HashMap<String, Queue<Server>>();
 
 	/**
 	 * Instantiates a new master data structure.
@@ -158,5 +162,14 @@ public class MasterDataStructure {
 	 */
 	public void setMaster(Master master) {
 		this.master = master;
+	}
+
+	/**
+	 * Gets the chain to new servers map.
+	 *
+	 * @return the chain to new servers map
+	 */
+	public Map<String, Queue<Server>> getChainToNewServersMap() {
+		return chainToNewServersMap;
 	}
 }

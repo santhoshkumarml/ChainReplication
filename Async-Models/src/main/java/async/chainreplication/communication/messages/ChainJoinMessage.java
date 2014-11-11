@@ -2,11 +2,13 @@ package async.chainreplication.communication.messages;
 
 import async.chainreplication.master.models.Server;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class ChainJoinMessage.
  */
 public class ChainJoinMessage extends ChainReplicationMessage {
 	
+	/** The server. */
 	Server server;
 
 	/** The Constant serialVersionUID. */
@@ -14,6 +16,8 @@ public class ChainJoinMessage extends ChainReplicationMessage {
 
 	/**
 	 * Instantiates a new chain join message.
+	 *
+	 * @param server the server
 	 */
 	public ChainJoinMessage(Server server) {
 		super(Priority.REALTIME_PRIORITY);
