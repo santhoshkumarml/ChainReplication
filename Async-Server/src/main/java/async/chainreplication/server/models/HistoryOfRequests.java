@@ -2,6 +2,7 @@ package async.chainreplication.server.models;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import async.chainreplication.client.server.communication.models.Reply;
 import async.chainreplication.client.server.communication.models.Request;
@@ -88,6 +89,10 @@ public class HistoryOfRequests {
 	 */
 	public int getGreatestSequenceNumberReceived() {
 		return this.greatestSequenceNumber;
+	}
+	
+	public Set<RequestKey> listRequestKeys() {
+		return this.requestKeyToRequest.keySet();
 	}
 
 }

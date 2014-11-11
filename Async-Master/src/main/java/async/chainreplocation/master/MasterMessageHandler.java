@@ -1,10 +1,10 @@
 package async.chainreplocation.master;
 
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
-import java.util.Queue;
 import java.util.Set;
-import java.util.concurrent.LinkedBlockingQueue;
 
 import async.chainreplication.communication.messages.ChainJoinMessage;
 import async.chainreplication.communication.messages.ChainReplicationMessage;
@@ -164,9 +164,9 @@ public class MasterMessageHandler {
 				masterDs.getChainToServerMap().put(server.getChainName(), serverNameToServerMap);
 				masterDs.getChains().put(chain.getChainName(), chain);
 			}else {
-				Queue<Server> newServerQueue = masterDs.getChainToNewServersMap().get(message.getServer().getChainName());
+				List<Server> newServerQueue = masterDs.getChainToNewServersMap().get(message.getServer().getChainName());
 				if(newServerQueue == null) {
-					newServerQueue = new LinkedBlockingQueue<Server>();
+					newServerQueue = new LinkedList<Server>();
 				}
 				newServerQueue.add(message.getServer());
 				//send message to chain tail to propagate 
@@ -175,6 +175,8 @@ public class MasterMessageHandler {
 			}
 		}
 	}
+	
+	
 
 	/**
 	 * Send client message.

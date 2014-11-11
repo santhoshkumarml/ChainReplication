@@ -3,9 +3,9 @@ package async.chainreplocation.master;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
 import java.util.Set;
 
 import async.chainreplication.master.models.Chain;
@@ -21,18 +21,18 @@ public class MasterDataStructure {
 
 	/** The chains. */
 	Map<String, Chain> chains = new HashMap<String, Chain>();
-	
+
 	/** The master. */
 	Master master;
-	
+
 	/** The chain to server map. */
 	Map<String, Map<String, Server>> chainToServerMap = new HashMap<String, Map<String, Server>>();
-	
+
 	/** The clients. */
 	Map<String, Client> clients = new HashMap<String, Client>();
-	
+
 	/** The chain to new servers map. */
-	Map<String, Queue<Server>> chainToNewServersMap = new HashMap<String, Queue<Server>>();
+	Map<String, List<Server>> chainToNewServersMap = new HashMap<String, List<Server>>();
 
 	/**
 	 * Instantiates a new master data structure.
@@ -63,13 +63,16 @@ public class MasterDataStructure {
 
 		Map<String, Set<Server>> chainToDiedServers = new HashMap<String, Set<Server>>();
 		for (Server diedServer : diedServers) {
-			Set<Server> diedServerSet = chainToDiedServers.get(diedServer
-					.getChainName());
-			if (diedServerSet == null) {
-				diedServerSet = new HashSet<Server>();
+			boolean wasPresentinNewNodes = checkAndRemoveFromNewServersChain(diedServer);
+			if(!wasPresentinNewNodes) {
+				Set<Server> diedServerSet = chainToDiedServers.get(diedServer
+						.getChainName());
+				if (diedServerSet == null) {
+					diedServerSet = new HashSet<Server>();
+				}
+				diedServerSet.add(diedServer);
+				chainToDiedServers.put(diedServer.getChainName(), diedServerSet);
 			}
-			diedServerSet.add(diedServer);
-			chainToDiedServers.put(diedServer.getChainName(), diedServerSet);
 		}
 
 		for (String chainId : chainToDiedServers.keySet()) {
@@ -117,6 +120,20 @@ public class MasterDataStructure {
 		chainChanges.getChainsChanged().addAll(chainsChanged);
 		chainChanges.getChainToServersChanged().putAll(chainToServersChanged);
 		return chainChanges;
+	}
+
+	private boolean checkAndRemoveFromNewServersChain(Server diedServer) {
+		String chainId = diedServer.getChainName();
+		List<Server> newServers = this.chainToNewServersMap.get(chainId);
+		Iterator<Server> newServersIterator = newServers.iterator();
+		while (newServersIterator.hasNext()) {
+			Server server = (Server) newServersIterator.next();
+			if(server.equals(diedServer)) {
+				newServersIterator.remove();
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**
@@ -169,7 +186,7 @@ public class MasterDataStructure {
 	 *
 	 * @return the chain to new servers map
 	 */
-	public Map<String, Queue<Server>> getChainToNewServersMap() {
+	public Map<String, List<Server>> getChainToNewServersMap() {
 		return chainToNewServersMap;
 	}
 }

@@ -11,9 +11,12 @@ import async.chainreplication.client.server.communication.models.Request;
 import async.chainreplication.client.server.communication.models.RequestKey;
 import async.chainreplication.client.server.communication.models.RequestType;
 import async.chainreplication.communication.messages.AckMessage;
+import async.chainreplication.communication.messages.ApplicationMessage;
 import async.chainreplication.communication.messages.BulkSyncMessage;
+import async.chainreplication.communication.messages.ChainJoinMessage;
 import async.chainreplication.communication.messages.ChainReplicationMessage;
 import async.chainreplication.communication.messages.MasterServerChangeMessage;
+import async.chainreplication.communication.messages.NewNodeInitializedMessage;
 import async.chainreplication.communication.messages.RequestMessage;
 import async.chainreplication.communication.messages.ResponseOrSyncMessage;
 import async.chainreplication.communication.messages.SuccessorRequestMessage;
@@ -130,7 +133,7 @@ public class ServerMessageHandler {
 				try {
 					sendMessage(peerSendClientHelper, ackMessage);
 				} catch (ConnectClientException e) {
-					this.serverChainReplicationFacade.logMessage(e.getMessage());
+					this.logMessage(e.getMessage());
 				}
 				/*incrementSendSequenceNumber();
 				serverChainReplicationFacade.logMessage("Outgoing Message-"
@@ -250,7 +253,7 @@ public class ServerMessageHandler {
 						try {
 							sendMessage(peerSendClientHelper, successorRequestMessage);
 						} catch (ConnectClientException e) {
-							this.serverChainReplicationFacade.logMessage(e.getMessage());
+							this.logMessage(e.getMessage());
 						}
 					}
 				}
@@ -396,7 +399,7 @@ public class ServerMessageHandler {
 				try {
 					sendMessage(peerSendClientHelper, syncMessage);
 				} catch (ConnectClientException e) {
-					this.serverChainReplicationFacade.logMessage(e.getMessage());
+					this.logMessage(e.getMessage());
 				}
 				/*incrementSendSequenceNumber();
 				serverChainReplicationFacade.logMessage("Outgoing Message-"
@@ -468,10 +471,32 @@ public class ServerMessageHandler {
 				try {
 					sendMessage(peerSendClientHelper, bulkSyncMessage);
 				} catch (ConnectClientException e) {
-					this.serverChainReplicationFacade.logMessage(e.getMessage());
+					this.logMessage(e.getMessage());
 				}
 			}
 		}
+	}
+	
+	public void handleChainJoinMessage(ChainJoinMessage message) throws ServerChainReplicationException {
+		Server server = message.getServer();
+		NewNodeUpdater updater = 
+				new NewNodeUpdater(this.applicationRequestHandler.getTransactionalObjects(), server, this);
+		updater.start();
+	}
+	
+	
+	public void handleApplicationMessage(ApplicationMessage message) throws ConnectClientException {
+		if(!message.isLastMessage()) {
+			this.applicationRequestHandler.updateTransactionalObject(message);
+		} else {
+			NewNodeInitializedMessage newNodeInitializedMessage = new NewNodeInitializedMessage(this.server);
+			IClientHelper masterContacter = new TCPClientHelper(master.getMasterHost(), master.getMasterPort());
+			sendMessage(masterContacter, newNodeInitializedMessage);
+		}
+	}
+
+	private void logMessage(String message) {
+		this.serverChainReplicationFacade.logMessage(message);
 	}
 
 	/**
@@ -491,19 +516,15 @@ public class ServerMessageHandler {
 	 * The Class NewNodeUpdater.
 	 */
 	private static class NewNodeUpdater extends Thread {
-		
+
 		/** The transactional application objects. */
 		Set<?> transactionalApplicationObjects;
-		
+
 		/** The new node client helper. */
 		IClientHelper newNodeClientHelper;
-		
-		/** The server. */
-		Server server;
-		
-		/** The is sending messages. */
-		volatile boolean isSendingMessages = false;
-		
+
+		ServerMessageHandler messageHandler;
+
 		/**
 		 * Instantiates a new new node updater.
 		 *
@@ -512,20 +533,57 @@ public class ServerMessageHandler {
 		 */
 		public NewNodeUpdater(
 				Set<?> transactionalApplicationObjects,
-				Server server) {
+				Server server, ServerMessageHandler serverMessageHandler) {
 			this.transactionalApplicationObjects = transactionalApplicationObjects;
-			this.server = server;
 			newNodeClientHelper =  new TCPClientHelper(
 					server.getServerProcessDetails().getHost(),
 					server.getServerProcessDetails().getTcpPort());
+			this.messageHandler = serverMessageHandler;
 		}
-		
+
 		/* (non-Javadoc)
 		 * @see java.lang.Thread#run()
 		 */
 		public void run() {
-			
+			synchronized (newNodeClientHelper) {
+				try {
+					for(Object transactionalObject : transactionalApplicationObjects) {
+						ApplicationMessage message = new ApplicationMessage(transactionalObject, false);
+						messageHandler.sendMessage(newNodeClientHelper, message);
+
+					}
+
+					HistoryOfRequests historyOfRequests = 
+							this.messageHandler.getHistoryOfRequests();
+					SentHistory sentHistory = this.messageHandler.getSentHistory();
+					Set<RequestKey> requestKeys = new HashSet<RequestKey>();
+					int greatestSequenceNumber = 0;
+					synchronized (historyOfRequests) {
+						requestKeys = historyOfRequests.listRequestKeys();
+						greatestSequenceNumber = historyOfRequests.getGreatestSequenceNumberReceived();
+					}
+
+					for(RequestKey requestKey : requestKeys) {
+						Request request = historyOfRequests.getExisistingRequest(requestKey);
+						Reply reply = historyOfRequests.getExisistingReply(requestKey);
+						ResponseOrSyncMessage syncMessage = new ResponseOrSyncMessage(request, reply);
+						this.messageHandler.sendMessage(newNodeClientHelper, syncMessage);
+					}
+					synchronized (sentHistory) {
+						BulkSyncMessage bulkSyncMessage = new BulkSyncMessage();
+						for(RequestKey requestKey : sentHistory.getRequestKeysFromSent(greatestSequenceNumber)) {
+							ResponseOrSyncMessage syncMessage = 
+									new ResponseOrSyncMessage(
+											historyOfRequests.getExisistingRequest(requestKey),
+											historyOfRequests.getExisistingReply(requestKey));
+							bulkSyncMessage.getSyncMessages().add(syncMessage);
+							this.messageHandler.sendMessage(newNodeClientHelper, syncMessage);
+						}
+					}
+				} catch (ConnectClientException e) {
+					this.messageHandler.logMessage(e.getMessage());
+				}
+			}
 		}
-		
 	}
 }

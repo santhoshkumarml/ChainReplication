@@ -32,7 +32,7 @@ public class ApplicationMessage extends ChainReplicationMessage {
 	 *
 	 * @return the transactional object
 	 */
-	private Object getTransactionalObject() {
+	public Object getTransactionalObject() {
 		return transactionalObject;
 	}
 
@@ -41,7 +41,7 @@ public class ApplicationMessage extends ChainReplicationMessage {
 	 *
 	 * @return true, if is last message
 	 */
-	private boolean isLastMessage() {
+	public boolean isLastMessage() {
 		return isLastMessage;
 	}
 
