@@ -125,12 +125,15 @@ public class JSONUtility {
 				server.getServerProcessDetails().setDebugPort(debugPort);
 				servers.put(serverId, server);
 
-				String initialSleepTime = (String) processDetails
+				String initialSleepTimeString = (String) processDetails
 						.get("InitialSleepTime");
-				if (initialSleepTime != null && !initialSleepTime.isEmpty()) {
-					long timeToLive = Long.parseLong(initialSleepTime);
-					config.getServerToTimeToLive().put(server, timeToLive);
+				long initialSleepTime = 0;
+				if (initialSleepTimeString != null && !initialSleepTimeString.isEmpty()) {
+					initialSleepTime = Long.parseLong(initialSleepTimeString);
+					
 				}
+				config.getServerToInitialSleepTime().put(server, initialSleepTime);
+				
 				String timeToLiveString = (String) processDetails
 						.get("TimeToLive");
 				if (timeToLiveString != null && !timeToLiveString.isEmpty()) {

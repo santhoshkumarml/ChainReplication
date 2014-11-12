@@ -525,19 +525,38 @@ public class ServerMessageHandler {
 	 * Handle chain join reply message.
 	 *
 	 * @param message the message
+	 * @throws ServerChainReplicationException 
 	 * @throws ConnectClientException the connect client exception
 	 */
-	public void handleChainJoinReplyMessage(MasterChainJoinReplyMessage message) throws ConnectClientException {
+	public void handleChainJoinReplyMessage(MasterChainJoinReplyMessage message) throws ServerChainReplicationException {
 		if(message.getExisistingTail() == null) {
 			NewNodeInitializedMessage newNodeInitializedMessage = new NewNodeInitializedMessage(this.server);
 			IClientHelper masterContacter = new TCPClientHelper(master.getMasterHost(), master.getMasterPort());
-			sendMessage(masterContacter, newNodeInitializedMessage);
+			try {
+				sendMessage(masterContacter, newNodeInitializedMessage);
+			} catch (ConnectClientException e) {
+				throw new ServerChainReplicationException(e);
+			}
 		} else {
 			ChainJoinMessage joinMessageToServer = new ChainJoinMessage(this.server);
 			IClientHelper exisistingTailContacter = new TCPClientHelper(
 					message.getExisistingTail().getServerProcessDetails().getHost(),
 					message.getExisistingTail().getServerProcessDetails().getTcpPort());
-			sendMessage(exisistingTailContacter, joinMessageToServer);
+			try {
+				sendMessage(exisistingTailContacter, joinMessageToServer);
+			} catch (ConnectClientException e) {
+				throw new ServerChainReplicationException(e);
+			}
+		}
+	}
+
+	public void handleStartServer() throws ServerChainReplicationException {
+		ChainJoinMessage joinMessage = new ChainJoinMessage(this.server);
+		IClientHelper masterContacter = new TCPClientHelper(master.getMasterHost(), master.getMasterPort());
+		try {
+			sendMessage(masterContacter, joinMessage);
+		} catch (ConnectClientException e) {
+			throw new ServerChainReplicationException(e);
 		}
 	}
 

@@ -169,6 +169,7 @@ public class ServerChainReplicationFacade {
 	 */
 	public void startProcessingMessages()
 			throws ServerChainReplicationException {
+		this.serverMessageHandler.handleStartServer();
 		while (!isServerStopping) {
 			if (messageQueue.hasMoreMessages()) {
 				ChainReplicationMessage message = (ChainReplicationMessage) messageQueue
