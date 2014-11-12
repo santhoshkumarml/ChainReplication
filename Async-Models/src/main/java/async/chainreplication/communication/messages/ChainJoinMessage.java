@@ -33,4 +33,11 @@ public class ChainJoinMessage extends ChainReplicationMessage {
 		return server;
 	}
 
+	@Override
+	public String toString() {
+		return "ChainJoinMessage [server=" + server.toString() + "]";
+	}
+	
+	
+
 }

@@ -45,4 +45,16 @@ public class ApplicationMessage extends ChainReplicationMessage {
 		return isLastMessage;
 	}
 
+	@Override
+	public String toString() {
+		String transactionalObjectString = null;
+		if(transactionalObject!=null) {
+			transactionalObjectString = transactionalObject.toString();
+		}
+		return "ApplicationMessage [transactionalObject=" + transactionalObjectString
+				+ ", isLastMessage=" + isLastMessage + "]";
+	}
+	
+	
+
 }

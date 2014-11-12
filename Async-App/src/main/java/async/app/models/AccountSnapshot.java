@@ -65,4 +65,10 @@ public class AccountSnapshot implements Serializable {
 		this.balance = balance;
 	}
 
+	@Override
+	public String toString() {
+		return "AccountSnapshot [accountNum=" + accountNum + ", balance="
+				+ balance + "]";
+	}
+
 }
