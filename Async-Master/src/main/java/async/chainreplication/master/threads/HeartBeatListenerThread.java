@@ -1,5 +1,6 @@
 package async.chainreplication.master.threads;
 
+import async.chainreplication.communication.messages.ChainReplicationMessage;
 import async.chainreplication.communication.messages.HeartBeatMessage;
 import async.chainreplication.master.exception.MasterChainReplicationException;
 import async.chainreplocation.master.MasterImpl;
@@ -17,7 +18,7 @@ public class HeartBeatListenerThread extends Thread {
 	volatile boolean shouldStillRun = true;
 	
 	/** The heart beat server helper. */
-	IServerStarterHelper heartBeatServerHelper;
+	IServerStarterHelper serverMessagesHelper;
 	
 	/** The master impl. */
 	MasterImpl masterImpl;
@@ -31,10 +32,10 @@ public class HeartBeatListenerThread extends Thread {
 	public HeartBeatListenerThread(MasterImpl masterImpl)
 			throws MasterChainReplicationException {
 		this.masterImpl = masterImpl;
-		heartBeatServerHelper = new TCPServerStarterHelper(masterImpl
+		serverMessagesHelper = new TCPServerStarterHelper(masterImpl
 				.getMaster().getMasterPort());
 		try {
-			heartBeatServerHelper.initAndStartServer();
+			serverMessagesHelper.initAndStartServer();
 		} catch (ConnectServerException e) {
 			throw new MasterChainReplicationException(e);
 		}
@@ -46,12 +47,13 @@ public class HeartBeatListenerThread extends Thread {
 	public void run() {
 		while (shouldStillRun) {
 			try {
-				HeartBeatMessage heartBeatMessage = (HeartBeatMessage) heartBeatServerHelper
+				ChainReplicationMessage message = (ChainReplicationMessage) serverMessagesHelper
 						.acceptAndReadObjectConnection();
-				masterImpl.getMasterChainReplicationFacade().deliverMessage(
-						heartBeatMessage);
+				//TODO remove this later
+				masterImpl.logMessage(message.toString());
+				masterImpl.getMasterChainReplicationFacade().deliverMessage(message);
 			} catch (ConnectServerException e) {
-				heartBeatServerHelper.stopServer();
+				serverMessagesHelper.stopServer();
 				masterImpl.logMessage("Internal Error:" + e.getMessage());
 				e.printStackTrace();
 			}
