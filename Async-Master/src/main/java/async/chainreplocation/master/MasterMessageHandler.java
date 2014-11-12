@@ -19,6 +19,7 @@ import async.chainreplication.master.exception.MasterChainReplicationException;
 import async.chainreplication.master.models.Chain;
 import async.chainreplication.master.models.Client;
 import async.chainreplication.master.models.Master;
+import async.chainreplication.master.models.Pair;
 import async.chainreplication.master.models.Server;
 import async.connection.util.ConnectClientException;
 import async.connection.util.IClientHelper;

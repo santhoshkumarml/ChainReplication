@@ -1,4 +1,4 @@
-package async.chainreplocation.master;
+package async.chainreplication.master.models;
 
 class Pair<F,S> {
 	F first;
