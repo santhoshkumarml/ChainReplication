@@ -3,7 +3,9 @@ package async.chainreplication.server;
 import java.util.Map;
 
 import async.chainreplication.communication.messages.AckMessage;
+import async.chainreplication.communication.messages.ChainJoinMessage;
 import async.chainreplication.communication.messages.ChainReplicationMessage;
+import async.chainreplication.communication.messages.MasterChainJoinReplyMessage;
 import async.chainreplication.communication.messages.MasterServerChangeMessage;
 import async.chainreplication.communication.messages.RequestMessage;
 import async.chainreplication.communication.messages.ResponseOrSyncMessage;
@@ -132,6 +134,10 @@ public class ServerChainReplicationFacade {
 			serverMessageHandler.handleWaitServerMessage((WaitServerMessage)message);
 		} else if (message.getClass() == SuccessorRequestMessage.class) {
 			serverMessageHandler.handleSuccessorRequestMessage((SuccessorRequestMessage)message);
+		} else if(message.getClass() == MasterChainJoinReplyMessage.class) {
+			serverMessageHandler.handleChainJoinReplyMessage((MasterChainJoinReplyMessage) message);
+		} else if(message.getClass() == ChainJoinMessage.class) {
+			serverMessageHandler.handleChainJoinMessage((ChainJoinMessage) message);
 		}
 	}
 
