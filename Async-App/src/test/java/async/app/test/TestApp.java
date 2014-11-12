@@ -39,7 +39,7 @@ public class TestApp {
 	 * @throws Exception the exception
 	 */
 	public void testMasterDataStructure() throws Exception {
-		String args[] = new String[1];
+		/*String args[] = new String[1];
 		args[0] = new File("." + File.separatorChar + "src"
 				+ File.separatorChar + "test" + File.separatorChar
 				+ "resources" + File.separatorChar + "t1.json")
@@ -53,6 +53,6 @@ public class TestApp {
 		Server server2 = config.getServerToTimeToLive().keySet().iterator().next();
 		diedServers.add(server2);
 		ChainChanges chainChanges = masterDs.calculateChanges(diedServers);
-		System.out.println(chainChanges);
+		System.out.println(chainChanges);*/
 	}
 }

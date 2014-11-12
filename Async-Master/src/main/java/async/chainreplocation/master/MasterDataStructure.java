@@ -42,12 +42,10 @@ public class MasterDataStructure {
 	 * @param chainToServerMap the chain to server map
 	 * @param clients the clients
 	 */
-	public MasterDataStructure(Map<String, Chain> chains, Master master,
-			Map<String, Map<String, Server>> chainToServerMap,
-			Map<String, Client> clients) {
+	public MasterDataStructure(Map<String, Chain> chains,
+			Master master, Map<String, Client> clients) {
 		this.chains = chains;
 		this.master = master;
-		this.chainToServerMap = chainToServerMap;
 		this.clients = clients;
 	}
 

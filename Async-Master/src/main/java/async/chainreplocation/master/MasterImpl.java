@@ -55,8 +55,7 @@ public class MasterImpl extends ChainReplicationImpl {
 		try {
 			master = config.getMaster();
 			masterChainReplicationFacade = new MasterChainReplicationFacade(
-					master, config.getChains(), config.getChainToServerMap(),
-					config.getClients(), this);
+					master, config.getChains(), config.getClients(), this);
 			heartBeatTimeout = master.getHeartbeatTimeout();
 		} catch (Exception e) {
 			this.logMessage(e.getMessage());

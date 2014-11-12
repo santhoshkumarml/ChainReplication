@@ -13,7 +13,6 @@ import async.chainreplication.master.exception.MasterChainReplicationException;
 import async.chainreplication.master.models.Chain;
 import async.chainreplication.master.models.Client;
 import async.chainreplication.master.models.Master;
-import async.chainreplication.master.models.Server;
 import async.generic.message.queue.Message;
 import async.generic.message.queue.MessageQueue;
 
@@ -46,11 +45,9 @@ public class MasterChainReplicationFacade {
 	 */
 	public MasterChainReplicationFacade(Master master,
 			Map<String, Chain> chains,
-			Map<String, Map<String, Server>> chainToServerMap,
 			Map<String, Client> clients, MasterImpl masterImpl) {
 		this.masterImpl = masterImpl;
-		masterMessageHandler = new MasterMessageHandler(master, chains,
-				chainToServerMap, clients, this);
+		masterMessageHandler = new MasterMessageHandler(master, chains, clients, this);
 	}
 
 	/**

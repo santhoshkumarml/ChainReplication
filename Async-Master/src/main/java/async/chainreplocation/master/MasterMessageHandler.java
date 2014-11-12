@@ -49,11 +49,9 @@ public class MasterMessageHandler {
 	 * @param masterChainReplicationFacade the master chain replication facade
 	 */
 	public MasterMessageHandler(Master master, Map<String, Chain> chains,
-			Map<String, Map<String, Server>> chainToServerMap,
 			Map<String, Client> clients,
 			MasterChainReplicationFacade masterChainReplicationFacade) {
-		masterDs = new MasterDataStructure(chains, master, chainToServerMap,
-				clients);
+		masterDs = new MasterDataStructure(chains, master,clients);
 		this.masterChainReplicationFacade = masterChainReplicationFacade;
 	}
 
@@ -238,7 +236,6 @@ public class MasterMessageHandler {
 		servers.put(exisistingTail.getServerId(), exisistingTail);
 		servers.put(newServer.getServerId(), newServer);
 		masterDs.getChainToServerMap().put(chainName, servers);
-
 		formAndDispatchMessagesForServerAndClient(changes);
 	}
 
