@@ -20,7 +20,8 @@ public class ClientChainReplicationException extends Exception {
 	/**
 	 * Instantiates a new client chain replication exception.
 	 *
-	 * @param e the e
+	 * @param e
+	 *            the e
 	 */
 	public ClientChainReplicationException(Exception e) {
 		super(e);
@@ -30,7 +31,8 @@ public class ClientChainReplicationException extends Exception {
 	/**
 	 * Instantiates a new client chain replication exception.
 	 *
-	 * @param message the message
+	 * @param message
+	 *            the message
 	 */
 	public ClientChainReplicationException(String message) {
 		super(message);

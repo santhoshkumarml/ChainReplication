@@ -9,10 +9,9 @@ import async.connection.util.UDPServerStarterHelper;
 
 // TODO: Auto-generated Javadoc
 /**
- * The listener interface for receiving response events.
- * The class that is interested in processing a response
- * event implements this interface, and the object created
- * with that class is registered with a component using the
+ * The listener interface for receiving response events. The class that is
+ * interested in processing a response event implements this interface, and the
+ * object created with that class is registered with a component using the
  * component's <code>addResponseListener<code> method. When
  * the response event occurs, that object's appropriate
  * method is invoked.
@@ -20,21 +19,23 @@ import async.connection.util.UDPServerStarterHelper;
  * @see ResponseEvent
  */
 public class ResponseListener extends Thread {
-	
+
 	/** The response server helper. */
 	IServerStarterHelper responseServerHelper;
-	
+
 	/** The client impl. */
 	ClientImpl clientImpl;
-	
+
 	/** The should still run. */
 	volatile boolean shouldStillRun = true;
 
 	/**
 	 * Instantiates a new response listener.
 	 *
-	 * @param clientImpl the client impl
-	 * @throws ClientChainReplicationException the client chain replication exception
+	 * @param clientImpl
+	 *            the client impl
+	 * @throws ClientChainReplicationException
+	 *             the client chain replication exception
 	 */
 	public ResponseListener(ClientImpl clientImpl)
 			throws ClientChainReplicationException {
@@ -43,13 +44,15 @@ public class ResponseListener extends Thread {
 				.getClient().getClientProcessDetails().getUdpPort());
 		try {
 			responseServerHelper.initAndStartServer();
-		} catch (ConnectServerException e) {
+		} catch (final ConnectServerException e) {
 			throw new ClientChainReplicationException(e);
 		}
 		this.clientImpl = clientImpl;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Thread#run()
 	 */
 	public void run() {
@@ -66,12 +69,14 @@ public class ResponseListener extends Thread {
 				break;
 			}
 			clientImpl.getClientChainReplicationFacade()
-					.getClientMessageHandler().incrementReceiveSequenceNumber();
-			/*int receiveSequenceNumber = clientImpl
-					.getClientChainReplicationFacade()
-					.getClientMessageHandler().getReceiveSequenceNumber();
-			clientImpl.logMessage("Incoming Message-" + receiveSequenceNumber
-					+ ":" + responseMessage.toString());*/
+			.getClientMessageHandler().incrementReceiveSequenceNumber();
+			/*
+			 * int receiveSequenceNumber = clientImpl
+			 * .getClientChainReplicationFacade()
+			 * .getClientMessageHandler().getReceiveSequenceNumber();
+			 * clientImpl.logMessage("Incoming Message-" + receiveSequenceNumber
+			 * + ":" + responseMessage.toString());
+			 */
 		}
 	}
 

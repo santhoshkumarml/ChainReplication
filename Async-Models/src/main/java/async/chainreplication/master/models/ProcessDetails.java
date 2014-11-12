@@ -8,21 +8,30 @@ import java.io.Serializable;
  * The Class ProcessDetails.
  */
 public class ProcessDetails implements Serializable {
-	
+
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = -449386447593161029L;
-	
+
 	/** The host. */
 	String host = "localhost";
-	
+
 	/** The tcp port. */
 	int tcpPort = -1;
-	
+
 	/** The udp port. */
 	int udpPort = -1;
-	
+
 	/** The debug port. */
 	int debugPort = -1;
+
+	/**
+	 * Gets the debug port.
+	 *
+	 * @return the debug port
+	 */
+	public int getDebugPort() {
+		return debugPort;
+	}
 
 	/**
 	 * Gets the host.
@@ -50,22 +59,22 @@ public class ProcessDetails implements Serializable {
 	public int getUdpPort() {
 		return udpPort;
 	}
-	
-	
 
 	/**
-	 * Gets the debug port.
+	 * Sets the debug port.
 	 *
-	 * @return the debug port
+	 * @param debugPort
+	 *            the new debug port
 	 */
-	public int getDebugPort() {
-		return debugPort;
+	public void setDebugPort(int debugPort) {
+		this.debugPort = debugPort;
 	}
 
 	/**
 	 * Sets the host.
 	 *
-	 * @param host the new host
+	 * @param host
+	 *            the new host
 	 */
 	public void setHost(String host) {
 		this.host = host;
@@ -74,7 +83,8 @@ public class ProcessDetails implements Serializable {
 	/**
 	 * Sets the tcp port.
 	 *
-	 * @param tcpPort the new tcp port
+	 * @param tcpPort
+	 *            the new tcp port
 	 */
 	public void setTcpPort(int tcpPort) {
 		this.tcpPort = tcpPort;
@@ -83,24 +93,16 @@ public class ProcessDetails implements Serializable {
 	/**
 	 * Sets the udp port.
 	 *
-	 * @param udpPort the new udp port
+	 * @param udpPort
+	 *            the new udp port
 	 */
 	public void setUdpPort(int udpPort) {
 		this.udpPort = udpPort;
 	}
-	
-	
 
-	/**
-	 * Sets the debug port.
-	 *
-	 * @param debugPort the new debug port
-	 */
-	public void setDebugPort(int debugPort) {
-		this.debugPort = debugPort;
-	}
-
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	@Override

@@ -38,11 +38,16 @@ public class ServerChainReplicationFacade {
 	/**
 	 * Instantiates a new server chain replication facade.
 	 *
-	 * @param server the server
-	 * @param chainNameToChainMap the chain name to chain map
-	 * @param master the master
-	 * @param serverImpl the server impl
-	 * @throws ServerChainReplicationException the server chain replication exception
+	 * @param server
+	 *            the server
+	 * @param chainNameToChainMap
+	 *            the chain name to chain map
+	 * @param master
+	 *            the master
+	 * @param serverImpl
+	 *            the server impl
+	 * @throws ServerChainReplicationException
+	 *             the server chain replication exception
 	 */
 	public ServerChainReplicationFacade(Server server,
 			Map<String, Chain> chainNameToChainMap, Master master,
@@ -51,31 +56,12 @@ public class ServerChainReplicationFacade {
 				chainNameToChainMap, master, this);
 		this.serverImpl = serverImpl;
 	}
-	
-	
-   /**
-    * Gets the message queue.
-    *
-    * @return the message queue
-    */
-   public MessageQueue<ChainReplicationMessage> getMessageQueue() {
-		return messageQueue;
-	}
-
-
-/**
-    * ServerImpl.
-    *
-    * @return {@link ServerImpl}
-    */
-	public ServerImpl getServerImpl() {
-		return serverImpl;
-	}
 
 	/**
 	 * Deliver message.
 	 *
-	 * @param message the message
+	 * @param message
+	 *            the message
 	 */
 	public void deliverMessage(ChainReplicationMessage message) {
 		if (message != null) {
@@ -94,12 +80,30 @@ public class ServerChainReplicationFacade {
 	}
 
 	/**
+	 * Gets the message queue.
+	 *
+	 * @return the message queue
+	 */
+	public MessageQueue<ChainReplicationMessage> getMessageQueue() {
+		return messageQueue;
+	}
+
+	/**
 	 * Gets the server.
 	 *
 	 * @return the server
 	 */
 	public Server getServer() {
 		return serverMessageHandler.getServer();
+	}
+
+	/**
+	 * ServerImpl.
+	 *
+	 * @return {@link ServerImpl}
+	 */
+	public ServerImpl getServerImpl() {
+		return serverImpl;
 	}
 
 	/**
@@ -114,30 +118,36 @@ public class ServerChainReplicationFacade {
 	/**
 	 * Handle message.
 	 *
-	 * @param message the message
-	 * @throws ServerChainReplicationException the server chain replication exception
+	 * @param message
+	 *            the message
+	 * @throws ServerChainReplicationException
+	 *             the server chain replication exception
 	 */
 	public void handleMessage(ChainReplicationMessage message)
 			throws ServerChainReplicationException {
-		this.logMessage("Handling message: "+message.toString());
+		this.logMessage("Handling message: " + message.toString());
 		if (message.getClass() == RequestMessage.class) {
 			serverMessageHandler.handleRequestMessage((RequestMessage) message);
 		} else if (message.getClass() == ResponseOrSyncMessage.class) {
 			serverMessageHandler
-					.handleSyncMessage((ResponseOrSyncMessage) message);
+			.handleSyncMessage((ResponseOrSyncMessage) message);
 		} else if (message.getClass() == AckMessage.class) {
 			serverMessageHandler.handleAckMessage((AckMessage) message);
 		} else if (message.getClass() == MasterServerChangeMessage.class) {
 			serverMessageHandler
-					.handleMasterMessage((MasterServerChangeMessage) message);
+			.handleMasterMessage((MasterServerChangeMessage) message);
 		} else if (message.getClass() == WaitServerMessage.class) {
-			serverMessageHandler.handleWaitServerMessage((WaitServerMessage)message);
+			serverMessageHandler
+					.handleWaitServerMessage((WaitServerMessage) message);
 		} else if (message.getClass() == SuccessorRequestMessage.class) {
-			serverMessageHandler.handleSuccessorRequestMessage((SuccessorRequestMessage)message);
-		} else if(message.getClass() == MasterChainJoinReplyMessage.class) {
-			serverMessageHandler.handleChainJoinReplyMessage((MasterChainJoinReplyMessage) message);
-		} else if(message.getClass() == ChainJoinMessage.class) {
-			serverMessageHandler.handleChainJoinMessage((ChainJoinMessage) message);
+			serverMessageHandler
+					.handleSuccessorRequestMessage((SuccessorRequestMessage) message);
+		} else if (message.getClass() == MasterChainJoinReplyMessage.class) {
+			serverMessageHandler
+					.handleChainJoinReplyMessage((MasterChainJoinReplyMessage) message);
+		} else if (message.getClass() == ChainJoinMessage.class) {
+			serverMessageHandler
+					.handleChainJoinMessage((ChainJoinMessage) message);
 		}
 	}
 
@@ -162,7 +172,8 @@ public class ServerChainReplicationFacade {
 	/**
 	 * Log message.
 	 *
-	 * @param message the message
+	 * @param message
+	 *            the message
 	 */
 	public void logMessage(String message) {
 		serverImpl.logMessage(message);
@@ -171,14 +182,15 @@ public class ServerChainReplicationFacade {
 	/**
 	 * Start processing messages.
 	 *
-	 * @throws ServerChainReplicationException the server chain replication exception
+	 * @throws ServerChainReplicationException
+	 *             the server chain replication exception
 	 */
 	public void startProcessingMessages()
 			throws ServerChainReplicationException {
-		this.serverMessageHandler.handleStartServer();
+		serverMessageHandler.handleStartServer();
 		while (!isServerStopping) {
 			if (messageQueue.hasMoreMessages()) {
-				ChainReplicationMessage message = (ChainReplicationMessage) messageQueue
+				final ChainReplicationMessage message = (ChainReplicationMessage) messageQueue
 						.dequeueMessageAndReturnMessageObject();
 				this.handleMessage(message);
 			}

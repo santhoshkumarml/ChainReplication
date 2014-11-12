@@ -18,11 +18,12 @@ import java.io.OutputStream;
  * The Class ConfigUtil.
  */
 public class ConfigUtil {
-	
+
 	/**
 	 * Deserialize from file.
 	 *
-	 * @param filePath the file path
+	 * @param filePath
+	 *            the file path
 	 * @return the config
 	 */
 	public static Config deserializeFromFile(String filePath) {
@@ -42,14 +43,14 @@ public class ConfigUtil {
 			if (objectInput != null) {
 				try {
 					objectInput.close();
-				} catch (IOException e) {
+				} catch (final IOException e) {
 					e.printStackTrace();
 				}
 			}
 			if (fileInputStream != null) {
 				try {
 					fileInputStream.close();
-				} catch (IOException e) {
+				} catch (final IOException e) {
 					e.printStackTrace();
 				}
 			}
@@ -60,7 +61,8 @@ public class ConfigUtil {
 	/**
 	 * Serialize to file.
 	 *
-	 * @param config the config
+	 * @param config
+	 *            the config
 	 * @return the string
 	 */
 	public static String serializeToFile(Config config) {
@@ -70,27 +72,27 @@ public class ConfigUtil {
 		String fileName = "";
 		// serialize the config
 		try {
-			File temp = File.createTempFile("temp",
+			final File temp = File.createTempFile("temp",
 					Long.toString(System.nanoTime()) + ".ser");
 			fileName = temp.getAbsolutePath();
 			fileOutputStream = new FileOutputStream(fileName);
 			bufferOutputStream = new BufferedOutputStream(fileOutputStream);
 			outputStream = new ObjectOutputStream(bufferOutputStream);
 			outputStream.writeObject(config);
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			e.printStackTrace();
 		} finally {
 			if (outputStream != null) {
 				try {
 					outputStream.close();
-				} catch (IOException e) {
+				} catch (final IOException e) {
 					e.printStackTrace();
 				}
 			}
 			if (fileOutputStream != null) {
 				try {
 					fileOutputStream.close();
-				} catch (IOException e) {
+				} catch (final IOException e) {
 					e.printStackTrace();
 				}
 			}

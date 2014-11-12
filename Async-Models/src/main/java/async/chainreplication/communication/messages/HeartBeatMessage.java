@@ -17,7 +17,8 @@ public class HeartBeatMessage extends ChainReplicationMessage {
 	/**
 	 * Instantiates a new heart beat message.
 	 *
-	 * @param server the server
+	 * @param server
+	 *            the server
 	 */
 	public HeartBeatMessage(Server server) {
 		super(Priority.REALTIME_PRIORITY);
@@ -33,7 +34,9 @@ public class HeartBeatMessage extends ChainReplicationMessage {
 		return server;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	@Override

@@ -19,7 +19,8 @@ public class MasterChainReplicationException extends Exception {
 	/**
 	 * Instantiates a new master chain replication exception.
 	 *
-	 * @param e the e
+	 * @param e
+	 *            the e
 	 */
 	public MasterChainReplicationException(Exception e) {
 		super(e);
@@ -28,7 +29,8 @@ public class MasterChainReplicationException extends Exception {
 	/**
 	 * Instantiates a new master chain replication exception.
 	 *
-	 * @param message the message
+	 * @param message
+	 *            the message
 	 */
 	public MasterChainReplicationException(String message) {
 		super(message);

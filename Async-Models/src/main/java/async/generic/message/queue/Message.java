@@ -4,25 +4,29 @@ package async.generic.message.queue;
 /**
  * The Class Message.
  *
- * @param <T> the generic type
+ * @param <T>
+ *            the generic type
  */
 public class Message<T> {
-	
+
 	/** The timestamp. */
 	long timestamp;
-	
+
 	/** The message object. */
 	T messageObject;
-	
+
 	/** The priority. */
 	int priority;
 
 	/**
 	 * Constructor.
 	 *
-	 * @param timestamp the timestamp
-	 * @param messageObject the message object
-	 * @param priority the priority
+	 * @param timestamp
+	 *            the timestamp
+	 * @param messageObject
+	 *            the message object
+	 * @param priority
+	 *            the priority
 	 */
 	public Message(long timestamp, T messageObject, int priority) {
 		this.timestamp = timestamp;
@@ -33,7 +37,8 @@ public class Message<T> {
 	/**
 	 * Copy constructor.
 	 *
-	 * @param message the message
+	 * @param message
+	 *            the message
 	 */
 	public Message(Message<T> message) {
 		this.timestamp = message.getTimestamp();
@@ -68,7 +73,9 @@ public class Message<T> {
 		return timestamp;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	@Override

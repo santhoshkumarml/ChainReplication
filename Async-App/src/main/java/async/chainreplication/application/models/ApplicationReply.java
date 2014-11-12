@@ -13,10 +13,10 @@ public class ApplicationReply extends Reply {
 
 	/** The outcome. */
 	Outcome outcome;
-	
+
 	/** The account num. */
 	int accountNum;
-	
+
 	/** The balance. */
 	float balance;
 
@@ -50,7 +50,8 @@ public class ApplicationReply extends Reply {
 	/**
 	 * Sets the account num.
 	 *
-	 * @param accountNum the new account num
+	 * @param accountNum
+	 *            the new account num
 	 */
 	public void setAccountNum(int accountNum) {
 		this.accountNum = accountNum;
@@ -59,7 +60,8 @@ public class ApplicationReply extends Reply {
 	/**
 	 * Sets the balance.
 	 *
-	 * @param balance the new balance
+	 * @param balance
+	 *            the new balance
 	 */
 	public void setBalance(float balance) {
 		this.balance = balance;
@@ -68,14 +70,19 @@ public class ApplicationReply extends Reply {
 	/**
 	 * Sets the outcome.
 	 *
-	 * @param outcome the new outcome
+	 * @param outcome
+	 *            the new outcome
 	 */
 	public void setOutcome(Outcome outcome) {
 		this.outcome = outcome;
 	}
 
-	/* (non-Javadoc)
-	 * @see async.chainreplication.client.server.communication.models.Reply#toString()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * async.chainreplication.client.server.communication.models.Reply#toString
+	 * ()
 	 */
 	@Override
 	public String toString() {

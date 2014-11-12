@@ -7,7 +7,7 @@ import java.io.Serializable;
  * The Class SuccessorRequestMessage.
  */
 public class SuccessorRequestMessage extends ChainReplicationMessage implements
-		Serializable {
+Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = -8305112073142789983L;
@@ -18,7 +18,8 @@ public class SuccessorRequestMessage extends ChainReplicationMessage implements
 	/**
 	 * Instantiates a new successor request message.
 	 *
-	 * @param lastSequenceNumberReceived the last sequence number received
+	 * @param lastSequenceNumberReceived
+	 *            the last sequence number received
 	 */
 	public SuccessorRequestMessage(int lastSequenceNumberReceived) {
 		super(Priority.HIGHER_PRIORITY);
@@ -34,7 +35,9 @@ public class SuccessorRequestMessage extends ChainReplicationMessage implements
 		return lastSequenceNumberReceived;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	@Override

@@ -11,13 +11,13 @@ import async.chainreplication.master.models.Client;
  * The Class TestCases.
  */
 public class TestCases implements Serializable {
-	
+
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = -397223799879846009L;
-	
+
 	/** The client. */
 	Client client;
-	
+
 	/** The requests. */
 	List<RequestWithChain> requests = new ArrayList<RequestWithChain>();
 
@@ -42,13 +42,16 @@ public class TestCases implements Serializable {
 	/**
 	 * Sets the client.
 	 *
-	 * @param client the new client
+	 * @param client
+	 *            the new client
 	 */
 	public void setClient(Client client) {
 		this.client = client;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	@Override

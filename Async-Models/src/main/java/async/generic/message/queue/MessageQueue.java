@@ -8,7 +8,8 @@ import java.util.Queue;
 /**
  * The Class MessageQueue.
  *
- * @param <T> the generic type
+ * @param <T>
+ *            the generic type
  */
 public class MessageQueue<T> {
 
@@ -17,8 +18,8 @@ public class MessageQueue<T> {
 			new Comparator<Message<T>>() {
 				@Override
 				public int compare(Message<T> o1, Message<T> o2) {
-					int priorityCompare = new Integer(o1.getPriority())
-							.compareTo(o2.getPriority());
+					final int priorityCompare = new Integer(o1.getPriority())
+					.compareTo(o2.getPriority());
 					if (priorityCompare == 0)
 						return Long.compare(o1.getTimestamp(),
 								o2.getTimestamp());
@@ -52,8 +53,10 @@ public class MessageQueue<T> {
 	/**
 	 * Enqueue message object.
 	 *
-	 * @param pritority the pritority
-	 * @param messageObject the message object
+	 * @param pritority
+	 *            the pritority
+	 * @param messageObject
+	 *            the message object
 	 */
 	public void enqueueMessageObject(int pritority, T messageObject) {
 		synchronized (messages) {
@@ -79,14 +82,16 @@ public class MessageQueue<T> {
 	 * @return the message
 	 */
 	public Message<T> peekAtMessage() {
-		Message<T> message = messages.peek();
-		if(message != null) {
+		final Message<T> message = messages.peek();
+		if (message != null) {
 			return new Message<T>(message);
 		}
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	@Override

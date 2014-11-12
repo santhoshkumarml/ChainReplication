@@ -8,7 +8,6 @@ import async.chainreplication.master.models.Server;
  */
 public class MasterChainJoinReplyMessage extends MasterMessage {
 
-
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 7574520044298891698L;
 
@@ -18,7 +17,8 @@ public class MasterChainJoinReplyMessage extends MasterMessage {
 	/**
 	 * Instantiates a new master server change message.
 	 *
-	 * @param exisistingTail the exisisting tail
+	 * @param exisistingTail
+	 *            the exisisting tail
 	 */
 	public MasterChainJoinReplyMessage(Server exisistingTail) {
 		super(Priority.REALTIME_PRIORITY);
@@ -34,8 +34,9 @@ public class MasterChainJoinReplyMessage extends MasterMessage {
 		return exisistingTail;
 	}
 
-
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	@Override

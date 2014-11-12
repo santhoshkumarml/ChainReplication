@@ -20,7 +20,8 @@ public class ConnectClientException extends Exception {
 	/**
 	 * Instantiates a new connect client exception.
 	 *
-	 * @param e the e
+	 * @param e
+	 *            the e
 	 */
 	public ConnectClientException(Exception e) {
 		super(e);
@@ -29,7 +30,8 @@ public class ConnectClientException extends Exception {
 	/**
 	 * Instantiates a new connect client exception.
 	 *
-	 * @param message the message
+	 * @param message
+	 *            the message
 	 */
 	public ConnectClientException(String message) {
 		super(message);

@@ -7,17 +7,18 @@ import async.chainreplication.client.server.communication.models.Request;
  * The Class AckMessage.
  */
 public class AckMessage extends ChainReplicationMessage {
-	
+
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 7114891688432604776L;
-	
+
 	/** The request. */
 	Request request;
 
 	/**
 	 * Instantiates a new ack message.
 	 *
-	 * @param request the request
+	 * @param request
+	 *            the request
 	 */
 	public AckMessage(Request request) {
 		super(Priority.ABOVE_NORMAL_PRIORITY);
@@ -33,7 +34,9 @@ public class AckMessage extends ChainReplicationMessage {
 		return request;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	@Override

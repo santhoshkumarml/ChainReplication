@@ -19,7 +19,8 @@ public class ServerChainReplicationException extends Exception {
 	/**
 	 * Instantiates a new server chain replication exception.
 	 *
-	 * @param e the e
+	 * @param e
+	 *            the e
 	 */
 	public ServerChainReplicationException(Exception e) {
 		super(e);
@@ -28,7 +29,8 @@ public class ServerChainReplicationException extends Exception {
 	/**
 	 * Instantiates a new server chain replication exception.
 	 *
-	 * @param message the message
+	 * @param message
+	 *            the message
 	 */
 	public ServerChainReplicationException(String message) {
 		super(message);

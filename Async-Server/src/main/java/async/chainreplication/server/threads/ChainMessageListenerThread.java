@@ -15,18 +15,20 @@ public class ChainMessageListenerThread extends Thread {
 
 	/** The chain messages listener. */
 	IServerStarterHelper chainMessagesListener;
-	
+
 	/** The server impl. */
 	ServerImpl serverImpl;
-	
+
 	/** The should still run. */
 	boolean shouldStillRun = true;
 
 	/**
 	 * Instantiates a new chain message listener thread.
 	 *
-	 * @param serverImpl the server impl
-	 * @throws ServerChainReplicationException the server chain replication exception
+	 * @param serverImpl
+	 *            the server impl
+	 * @throws ServerChainReplicationException
+	 *             the server chain replication exception
 	 */
 	public ChainMessageListenerThread(ServerImpl serverImpl)
 			throws ServerChainReplicationException {
@@ -35,12 +37,14 @@ public class ChainMessageListenerThread extends Thread {
 				.getServer().getServerProcessDetails().getTcpPort());
 		try {
 			chainMessagesListener.initAndStartServer();
-		} catch (ConnectServerException e) {
+		} catch (final ConnectServerException e) {
 			throw new ServerChainReplicationException(e);
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Thread#run()
 	 */
 	public void run() {
@@ -49,21 +53,23 @@ public class ChainMessageListenerThread extends Thread {
 			try {
 				message = (ChainReplicationMessage) chainMessagesListener
 						.acceptAndReadObjectConnection();
-			} catch (ConnectServerException e) {
+			} catch (final ConnectServerException e) {
 				serverImpl.logMessage("Internal Error:" + e.getMessage());
 				this.stopThread();
 				e.printStackTrace();
 				break;
 			}
 			serverImpl.getServerChainReplicationFacade()
-					.deliverMessage(message);
-			/*serverImpl.getServerChainReplicationFacade()
-					.getServerMessageHandler().incrementReceiveSequenceNumber();
-			int receiveSequenceNumber = serverImpl
-					.getServerChainReplicationFacade()
-					.getServerMessageHandler().getReceiveSequenceNumber();
-			serverImpl.logMessage("Incoming Message-" + receiveSequenceNumber
-					+ ":" + message.toString());*/
+			.deliverMessage(message);
+			/*
+			 * serverImpl.getServerChainReplicationFacade()
+			 * .getServerMessageHandler().incrementReceiveSequenceNumber(); int
+			 * receiveSequenceNumber = serverImpl
+			 * .getServerChainReplicationFacade()
+			 * .getServerMessageHandler().getReceiveSequenceNumber();
+			 * serverImpl.logMessage("Incoming Message-" + receiveSequenceNumber
+			 * + ":" + message.toString());
+			 */
 		}
 
 	}

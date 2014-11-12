@@ -7,7 +7,7 @@ import async.chainreplication.client.server.communication.models.Request;
  * The Class RequestMessage.
  */
 public class RequestMessage extends ChainReplicationMessage {
-	
+
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 8953346890623222175L;
 
@@ -17,7 +17,8 @@ public class RequestMessage extends ChainReplicationMessage {
 	/**
 	 * Instantiates a new request message.
 	 *
-	 * @param request the request
+	 * @param request
+	 *            the request
 	 */
 	public RequestMessage(Request request) {
 		super(Priority.HIGH_PRIORITY);
@@ -36,13 +37,16 @@ public class RequestMessage extends ChainReplicationMessage {
 	/**
 	 * Sets the request.
 	 *
-	 * @param request the new request
+	 * @param request
+	 *            the new request
 	 */
 	public void setRequest(Request request) {
 		this.request = request;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	@Override

@@ -17,26 +17,31 @@ public class ApplicationReplyHandler implements IApplicationReplyHandler {
 
 	/** The response messages. */
 	MessageQueue<Response> responseMessages = new MessageQueue<Response>();
-	
+
 	/** The client message handler. */
 	ClientMessageHandler clientMessageHandler;
 
 	/**
 	 * Instantiates a new application reply handler.
 	 *
-	 * @param clientMessageHandler the client message handler
+	 * @param clientMessageHandler
+	 *            the client message handler
 	 */
 	public ApplicationReplyHandler(ClientMessageHandler clientMessageHandler) {
 		this.clientMessageHandler = clientMessageHandler;
 	}
 
-	/* (non-Javadoc)
-	 * @see async.chainreplication.client.IApplicationReplyHandler#getResponseForRequestId(async.chainreplication.client.server.communication.models.Request)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see async.chainreplication.client.IApplicationReplyHandler#
+	 * getResponseForRequestId
+	 * (async.chainreplication.client.server.communication.models.Request)
 	 */
 	@Override
 	public Reply getResponseForRequestId(Request request) {
 		while (responseMessages.hasMoreMessages()) {
-			Response response = (Response) responseMessages
+			final Response response = (Response) responseMessages
 					.dequeueMessageAndReturnMessageObject();
 			if (response.getRequestId().equals(request.getRequestId())) {
 				return response.getApplicationReply();
@@ -45,12 +50,17 @@ public class ApplicationReplyHandler implements IApplicationReplyHandler {
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see async.chainreplication.client.IApplicationReplyHandler#handleResponse(async.chainreplication.client.server.communication.models.Request, async.chainreplication.client.server.communication.models.Reply)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * async.chainreplication.client.IApplicationReplyHandler#handleResponse
+	 * (async.chainreplication.client.server.communication.models.Request,
+	 * async.chainreplication.client.server.communication.models.Reply)
 	 */
 	@Override
 	public void handleResponse(Request request, Reply reply) {
-		Response response = new Response(request.getRequestId(),
+		final Response response = new Response(request.getRequestId(),
 				(ApplicationReply) reply);
 		// All responses will have equal priority
 		responseMessages.enqueueMessageObject(Priority.HIGH_PRIORITY.ordinal(),

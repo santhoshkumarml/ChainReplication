@@ -5,13 +5,13 @@ package async.common.util;
  * The Class ProbablisticRequests.
  */
 public class ProbabilisticRequests {
-	
+
 	/** The seed. */
 	int seed;
-	
+
 	/** The client id. */
 	String clientId;
-	
+
 	/** The probability. */
 	float probability[] = new float[3];
 
@@ -25,9 +25,12 @@ public class ProbabilisticRequests {
 	/**
 	 * Instantiates a new probablistic requests.
 	 *
-	 * @param seed the seed
-	 * @param clientId the client id
-	 * @param probability the probability
+	 * @param seed
+	 *            the seed
+	 * @param clientId
+	 *            the client id
+	 * @param probability
+	 *            the probability
 	 */
 	public ProbabilisticRequests(int seed, String clientId, float[] probability) {
 		super();
@@ -66,7 +69,8 @@ public class ProbabilisticRequests {
 	/**
 	 * Sets the client id.
 	 *
-	 * @param clientId the new client id
+	 * @param clientId
+	 *            the new client id
 	 */
 	public void setClientId(String clientId) {
 		this.clientId = clientId;
@@ -75,7 +79,8 @@ public class ProbabilisticRequests {
 	/**
 	 * Sets the probability.
 	 *
-	 * @param probability the new probability
+	 * @param probability
+	 *            the new probability
 	 */
 	public void setProbability(float[] probability) {
 		this.probability = probability;
@@ -84,7 +89,8 @@ public class ProbabilisticRequests {
 	/**
 	 * Sets the seed.
 	 *
-	 * @param seed the new seed
+	 * @param seed
+	 *            the new seed
 	 */
 	public void setSeed(int seed) {
 		this.seed = seed;

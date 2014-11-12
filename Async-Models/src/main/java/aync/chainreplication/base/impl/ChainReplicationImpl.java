@@ -8,20 +8,21 @@ import async.generic.message.queue.MessageQueue;
  * The Class ChainReplicationImpl.
  */
 public abstract class ChainReplicationImpl {
-	
+
 	/** The log messages. */
 	MessageQueue<LogMessage> logMessages = new MessageQueue<LogMessage>();
-	
+
 	/** The unique id. */
 	String uniqueId;
-	
+
 	/** The chain replication logger thread. */
 	ChainReplicationLoggerThread chainReplicationLoggerThread;
 
 	/**
 	 * Instantiates a new chain replication impl.
 	 *
-	 * @param uniqueId the unique id
+	 * @param uniqueId
+	 *            the unique id
 	 */
 	public ChainReplicationImpl(String uniqueId) {
 		this.uniqueId = uniqueId;

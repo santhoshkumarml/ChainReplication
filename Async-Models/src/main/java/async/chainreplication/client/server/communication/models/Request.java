@@ -9,27 +9,29 @@ import async.chainreplication.master.models.Client;
  * The Class Request.
  */
 public class Request implements Serializable {
-	
+
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 2145253058392283227L;
-	
+
 	/** The request id. */
 	String requestId;
-	
+
 	/** The request type. */
 	RequestType requestType;
-	
+
 	/** The retry count. */
 	int retryCount = 0;
-	
+
 	/** The client. */
 	Client client;
 
 	/**
 	 * Instantiates a new request.
 	 *
-	 * @param client the client
-	 * @param requestId the request id
+	 * @param client
+	 *            the client
+	 * @param requestId
+	 *            the request id
 	 */
 	public Request(Client client, String requestId) {
 		// requestId = UUID.randomUUID().toString();
@@ -37,7 +39,9 @@ public class Request implements Serializable {
 		this.requestId = requestId;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
@@ -48,7 +52,7 @@ public class Request implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Request other = (Request) obj;
+		final Request other = (Request) obj;
 		if (requestId == null) {
 			if (other.requestId != null)
 				return false;
@@ -93,7 +97,9 @@ public class Request implements Serializable {
 		return retryCount;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -108,7 +114,8 @@ public class Request implements Serializable {
 	/**
 	 * Sets the request id.
 	 *
-	 * @param requestId the new request id
+	 * @param requestId
+	 *            the new request id
 	 */
 	public void setRequestId(String requestId) {
 		this.requestId = requestId;
@@ -117,7 +124,8 @@ public class Request implements Serializable {
 	/**
 	 * Sets the request type.
 	 *
-	 * @param requestType the new request type
+	 * @param requestType
+	 *            the new request type
 	 */
 	protected void setRequestType(RequestType requestType) {
 		this.requestType = requestType;
@@ -126,13 +134,16 @@ public class Request implements Serializable {
 	/**
 	 * Sets the retry count.
 	 *
-	 * @param retryCount the new retry count
+	 * @param retryCount
+	 *            the new retry count
 	 */
 	public void setRetryCount(int retryCount) {
 		this.retryCount = retryCount;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	@Override

@@ -14,28 +14,28 @@ import async.chainreplication.master.models.Server;
  * The Class Config.
  */
 public class Config implements Serializable {
-	
+
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = -5331163161507115921L;
-	
+
 	/** The chains. */
 	Map<String, Chain> chains = new HashMap<String, Chain>();
-	
+
 	/** The chain to server map. */
 	Map<String, Map<String, Server>> chainToServerMap = new HashMap<String, Map<String, Server>>();
-	
+
 	/** The clients. */
 	Map<String, Client> clients = new HashMap<String, Client>();
-	
+
 	/** The master. */
 	Master master;
-	
+
 	/** The test cases. */
 	Map<Client, TestCases> testCases = new HashMap<Client, TestCases>();
-	
+
 	/** The server to time to live. */
 	Map<Server, Long> serverToTimeToLive = new HashMap<Server, Long>();
-	
+
 	/** The server to initial sleep time. */
 	Map<Server, Long> serverToInitialSleepTime = new HashMap<Server, Long>();
 
@@ -105,13 +105,16 @@ public class Config implements Serializable {
 	/**
 	 * Sets the master.
 	 *
-	 * @param master the new master
+	 * @param master
+	 *            the new master
 	 */
 	public void setMaster(Master master) {
 		this.master = master;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	@Override

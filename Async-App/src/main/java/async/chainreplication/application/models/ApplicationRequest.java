@@ -10,37 +10,43 @@ import async.chainreplication.master.models.Client;
  * The Class ApplicationRequest.
  */
 public class ApplicationRequest extends Request implements Serializable {
-	
+
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = -8844277582877496842L;
-	
+
 	/** The application request type. */
 	ApplicationRequestType applicationRequestType;
-	
+
 	/** The account num. */
 	int accountNum;
-	
+
 	/** The amount. */
 	int amount;
-	
+
 	/** The dest bank. */
 	String destBank;
-	
+
 	/** The dest account num. */
 	int destAccountNum;
 
 	/**
 	 * Instantiates a new application request.
 	 *
-	 * @param client the client
-	 * @param requestId the request id
+	 * @param client
+	 *            the client
+	 * @param requestId
+	 *            the request id
 	 */
 	public ApplicationRequest(Client client, String requestId) {
 		super(client, requestId);
 	}
 
-	/* (non-Javadoc)
-	 * @see async.chainreplication.client.server.communication.models.Request#equals(java.lang.Object)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * async.chainreplication.client.server.communication.models.Request#equals
+	 * (java.lang.Object)
 	 */
 	@Override
 	public boolean equals(Object obj) {
@@ -50,7 +56,7 @@ public class ApplicationRequest extends Request implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		ApplicationRequest other = (ApplicationRequest) obj;
+		final ApplicationRequest other = (ApplicationRequest) obj;
 		if (accountNum != other.accountNum)
 			return false;
 		if (amount != other.amount)
@@ -112,8 +118,12 @@ public class ApplicationRequest extends Request implements Serializable {
 		return destBank;
 	}
 
-	/* (non-Javadoc)
-	 * @see async.chainreplication.client.server.communication.models.Request#hashCode()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * async.chainreplication.client.server.communication.models.Request#hashCode
+	 * ()
 	 */
 	@Override
 	public int hashCode() {
@@ -134,7 +144,8 @@ public class ApplicationRequest extends Request implements Serializable {
 	/**
 	 * Sets the account num.
 	 *
-	 * @param accountNum the new account num
+	 * @param accountNum
+	 *            the new account num
 	 */
 	public void setAccountNum(int accountNum) {
 		this.accountNum = accountNum;
@@ -143,7 +154,8 @@ public class ApplicationRequest extends Request implements Serializable {
 	/**
 	 * Sets the amount.
 	 *
-	 * @param amount the new amount
+	 * @param amount
+	 *            the new amount
 	 */
 	public void setAmount(int amount) {
 		this.amount = amount;
@@ -152,7 +164,8 @@ public class ApplicationRequest extends Request implements Serializable {
 	/**
 	 * Sets the application request type.
 	 *
-	 * @param applicationRequestType the new application request type
+	 * @param applicationRequestType
+	 *            the new application request type
 	 */
 	public void setApplicationRequestType(
 			ApplicationRequestType applicationRequestType) {
@@ -163,7 +176,8 @@ public class ApplicationRequest extends Request implements Serializable {
 	/**
 	 * Sets the dest account num.
 	 *
-	 * @param destAccountNum the new dest account num
+	 * @param destAccountNum
+	 *            the new dest account num
 	 */
 	public void setDestAccountNum(int destAccountNum) {
 		this.destAccountNum = destAccountNum;
@@ -172,14 +186,19 @@ public class ApplicationRequest extends Request implements Serializable {
 	/**
 	 * Sets the dest bank.
 	 *
-	 * @param destBank the new dest bank
+	 * @param destBank
+	 *            the new dest bank
 	 */
 	public void setDestBank(String destBank) {
 		this.destBank = destBank;
 	}
 
-	/* (non-Javadoc)
-	 * @see async.chainreplication.client.server.communication.models.Request#toString()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * async.chainreplication.client.server.communication.models.Request#toString
+	 * ()
 	 */
 	@Override
 	public String toString() {

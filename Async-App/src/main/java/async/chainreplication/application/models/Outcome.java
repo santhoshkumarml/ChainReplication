@@ -5,11 +5,11 @@ package async.chainreplication.application.models;
  * The Enum Outcome.
  */
 public enum Outcome {
-	
+
 	/** The Processed. */
-	Processed, 
- /** The Inconsistent with history. */
- InconsistentWithHistory, 
- /** The Insufficient funds. */
- InsufficientFunds;
+	Processed,
+	/** The Inconsistent with history. */
+	InconsistentWithHistory,
+	/** The Insufficient funds. */
+	InsufficientFunds;
 }

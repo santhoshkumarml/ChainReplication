@@ -8,21 +8,23 @@ import async.chainreplication.client.server.communication.models.Request;
  * The Class ResponseOrSyncMessage.
  */
 public class ResponseOrSyncMessage extends ChainReplicationMessage {
-	
+
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 6544018697459760664L;
-	
+
 	/** The request. */
 	Request request;
-	
+
 	/** The reply. */
 	Reply reply;
 
 	/**
 	 * Instantiates a new response or sync message.
 	 *
-	 * @param request the request
-	 * @param reply the reply
+	 * @param request
+	 *            the request
+	 * @param reply
+	 *            the reply
 	 */
 	public ResponseOrSyncMessage(Request request, Reply reply) {
 		super(Priority.HIGH_PRIORITY);
@@ -51,7 +53,8 @@ public class ResponseOrSyncMessage extends ChainReplicationMessage {
 	/**
 	 * Sets the reply.
 	 *
-	 * @param reply the new reply
+	 * @param reply
+	 *            the new reply
 	 */
 	public void setReply(Reply reply) {
 		this.reply = reply;
@@ -60,13 +63,16 @@ public class ResponseOrSyncMessage extends ChainReplicationMessage {
 	/**
 	 * Sets the request.
 	 *
-	 * @param request the new request
+	 * @param request
+	 *            the new request
 	 */
 	public void setRequest(Request request) {
 		this.request = request;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	@Override

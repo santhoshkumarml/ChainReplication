@@ -12,7 +12,8 @@ public class MasterMessage extends ChainReplicationMessage {
 	/**
 	 * Instantiates a new master message.
 	 *
-	 * @param pritority the pritority
+	 * @param pritority
+	 *            the pritority
 	 */
 	public MasterMessage(Priority pritority) {
 		super(pritority);

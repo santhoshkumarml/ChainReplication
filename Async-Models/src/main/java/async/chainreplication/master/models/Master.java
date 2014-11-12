@@ -7,34 +7,39 @@ import java.io.Serializable;
  * The Class Master.
  */
 public class Master implements Serializable {
-	
+
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = -3255536825088625386L;
-	
+
 	/** The master host. */
 	String masterHost;
-	
+
 	/** The master port. */
 	int masterPort;
-	
+
 	/** The master Debug port. */
 	int masterDebugPort;
-	
+
 	/** The master name. */
 	String masterName;
-	
+
 	/** The heartbeat timeout. */
 	long heartbeatTimeout = 5000;
 
 	/**
 	 * Instantiates a new master.
 	 *
-	 * @param masterHost the master host
-	 * @param masterPort the master port
-	 * @param masterName the master name
-	 * @param masterDebugPort the master debug port
+	 * @param masterHost
+	 *            the master host
+	 * @param masterPort
+	 *            the master port
+	 * @param masterName
+	 *            the master name
+	 * @param masterDebugPort
+	 *            the master debug port
 	 */
-	public Master(String masterHost, int masterPort, String masterName, int masterDebugPort) {
+	public Master(String masterHost, int masterPort, String masterName,
+			int masterDebugPort) {
 		this.masterHost = masterHost;
 		this.masterPort = masterPort;
 		this.masterName = masterName;
@@ -48,6 +53,15 @@ public class Master implements Serializable {
 	 */
 	public long getHeartbeatTimeout() {
 		return heartbeatTimeout;
+	}
+
+	/**
+	 * Gets the master debug port.
+	 *
+	 * @return the master debug port
+	 */
+	public int getMasterDebugPort() {
+		return masterDebugPort;
 	}
 
 	/**
@@ -76,28 +90,20 @@ public class Master implements Serializable {
 	public int getMasterPort() {
 		return masterPort;
 	}
-	
-	
-
-	/**
-	 * Gets the master debug port.
-	 *
-	 * @return the master debug port
-	 */
-	public int getMasterDebugPort() {
-		return masterDebugPort;
-	}
 
 	/**
 	 * Sets the heartbeat timeout.
 	 *
-	 * @param heartbeatTimeout the new heartbeat timeout
+	 * @param heartbeatTimeout
+	 *            the new heartbeat timeout
 	 */
 	public void setHeartbeatTimeout(long heartbeatTimeout) {
 		this.heartbeatTimeout = heartbeatTimeout;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	@Override

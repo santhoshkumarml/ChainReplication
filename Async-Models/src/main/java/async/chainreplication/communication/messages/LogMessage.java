@@ -20,7 +20,8 @@ public class LogMessage extends ChainReplicationMessage {
 	/**
 	 * Instantiates a new log message.
 	 *
-	 * @param message the message
+	 * @param message
+	 *            the message
 	 */
 	public LogMessage(String message) {
 		super(Priority.NORMAL_PRIORITY);
@@ -36,7 +37,9 @@ public class LogMessage extends ChainReplicationMessage {
 		return message;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	@Override

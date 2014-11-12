@@ -21,7 +21,8 @@ public class MasterGenericServerChangeMessage extends MasterMessage {
 	/**
 	 * Instantiates a new master generic server change message.
 	 *
-	 * @param diedServers the died servers
+	 * @param diedServers
+	 *            the died servers
 	 */
 	public MasterGenericServerChangeMessage(List<Server> diedServers) {
 		super(Priority.REALTIME_PRIORITY);
@@ -37,7 +38,9 @@ public class MasterGenericServerChangeMessage extends MasterMessage {
 		return diedServers;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	@Override

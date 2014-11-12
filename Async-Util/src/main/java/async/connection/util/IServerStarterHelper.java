@@ -10,7 +10,8 @@ public interface IServerStarterHelper {
 	 * Accept and read object connection.
 	 *
 	 * @return the object
-	 * @throws ConnectServerException the connect server exception
+	 * @throws ConnectServerException
+	 *             the connect server exception
 	 */
 	Object acceptAndReadObjectConnection() throws ConnectServerException;
 
@@ -24,7 +25,8 @@ public interface IServerStarterHelper {
 	/**
 	 * Inits the and start server.
 	 *
-	 * @throws ConnectServerException the connect server exception
+	 * @throws ConnectServerException
+	 *             the connect server exception
 	 */
 	void initAndStartServer() throws ConnectServerException;
 

@@ -11,46 +11,52 @@ import java.net.DatagramSocket;
  * The Class UDPServerStarterHelper.
  */
 public class UDPServerStarterHelper implements IServerStarterHelper {
-	
+
 	/** The server socket. */
 	DatagramSocket serverSocket;
-	
+
 	/** The port. */
 	int port;
 
 	/**
 	 * Instantiates a new UDP server starter helper.
 	 *
-	 * @param port the port
+	 * @param port
+	 *            the port
 	 */
 	public UDPServerStarterHelper(int port) {
 		this.port = port;
 	}
 
-	/* (non-Javadoc)
-	 * @see async.connection.util.IServerStarterHelper#acceptAndReadObjectConnection()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * async.connection.util.IServerStarterHelper#acceptAndReadObjectConnection
+	 * ()
 	 */
 	@Override
 	public Object acceptAndReadObjectConnection() throws ConnectServerException {
 		Object message = null;
-		byte[] receiveData = new byte[10240];
+		final byte[] receiveData = new byte[10240];
 		ObjectInputStream oos = null;
 		try {
-			DatagramPacket packet = new DatagramPacket(receiveData,
+			final DatagramPacket packet = new DatagramPacket(receiveData,
 					receiveData.length);
 			serverSocket.receive(packet);
-			ByteArrayInputStream baos = new ByteArrayInputStream(receiveData);
+			final ByteArrayInputStream baos = new ByteArrayInputStream(
+					receiveData);
 			oos = new ObjectInputStream(baos);
 			message = oos.readObject();
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			throw new ConnectServerException(e);
-		} catch (ClassNotFoundException e) {
+		} catch (final ClassNotFoundException e) {
 			throw new ConnectServerException(e);
 		} finally {
 			if (oos != null) {
 				try {
 					oos.close();
-				} catch (IOException e) {
+				} catch (final IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
@@ -59,7 +65,9 @@ public class UDPServerStarterHelper implements IServerStarterHelper {
 		return message;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see async.connection.util.IServerStarterHelper#getServerPort()
 	 */
 	@Override
@@ -67,19 +75,23 @@ public class UDPServerStarterHelper implements IServerStarterHelper {
 		return serverSocket.getLocalPort();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see async.connection.util.IServerStarterHelper#initAndStartServer()
 	 */
 	@Override
 	public void initAndStartServer() throws ConnectServerException {
 		try {
 			serverSocket = new DatagramSocket(port);
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			throw new ConnectServerException(e);
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see async.connection.util.IServerStarterHelper#stopServer()
 	 */
 	@Override

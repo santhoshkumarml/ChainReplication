@@ -34,33 +34,38 @@ public class MasterChainReplicationFacade {
 	/** The heart beat message queue. */
 	MessageQueue<ChainReplicationMessage> heartBeatMessageQueue = new MessageQueue<ChainReplicationMessage>();
 
-
 	/** The is master stopping. */
 	volatile boolean isMasterStopping = false;
 
 	/**
 	 * Instantiates a new master chain replication facade.
 	 *
-	 * @param master the master
-	 * @param chains the chains
-	 * @param clients the clients
-	 * @param masterImpl the master impl
+	 * @param master
+	 *            the master
+	 * @param chains
+	 *            the chains
+	 * @param clients
+	 *            the clients
+	 * @param masterImpl
+	 *            the master impl
 	 */
 	public MasterChainReplicationFacade(Master master,
-			Map<String, Chain> chains,
-			Map<String, Client> clients, MasterImpl masterImpl) {
+			Map<String, Chain> chains, Map<String, Client> clients,
+			MasterImpl masterImpl) {
 		this.masterImpl = masterImpl;
-		masterMessageHandler = new MasterMessageHandler(master, chains, clients, this);
+		masterMessageHandler = new MasterMessageHandler(master, chains,
+				clients, this);
 	}
 
 	/**
 	 * Deliver message.
 	 *
-	 * @param message the message
+	 * @param message
+	 *            the message
 	 */
 	public void deliverMessage(ChainReplicationMessage message) {
-		//TODO remove this later
-		this.logMessages("Message Delivered:"+message.toString());
+		// TODO remove this later
+		this.logMessages("Message Delivered:" + message.toString());
 		if (message != null) {
 			if (message.getClass() == HeartBeatMessage.class) {
 				synchronized (heartBeatMessageQueue) {
@@ -80,9 +85,9 @@ public class MasterChainReplicationFacade {
 	 * @return the heart beat message queue
 	 */
 	public List<Message<ChainReplicationMessage>> dequeueAllHeartBeatMessages() {
-		List<Message<ChainReplicationMessage>> messages = new ArrayList<Message<ChainReplicationMessage>>();
+		final List<Message<ChainReplicationMessage>> messages = new ArrayList<Message<ChainReplicationMessage>>();
 		synchronized (heartBeatMessageQueue) {
-			while(heartBeatMessageQueue.hasMoreMessages()) {
+			while (heartBeatMessageQueue.hasMoreMessages()) {
 				messages.add(heartBeatMessageQueue.dequeueMessage());
 			}
 		}
@@ -90,15 +95,50 @@ public class MasterChainReplicationFacade {
 	}
 
 	/**
+	 * Handle message.
+	 *
+	 * @param message
+	 *            the message
+	 * @throws MasterChainReplicationException
+	 *             the master chain replication exception
+	 */
+	public void handleMessage(ChainReplicationMessage message)
+			throws MasterChainReplicationException {
+		// TODO Remove this later
+		this.logMessages("Handling message: " + message.toString());
+		if (message.getClass() == MasterGenericServerChangeMessage.class) {
+			masterMessageHandler
+					.handleGenericServerChangeMessage((MasterGenericServerChangeMessage) message);
+		} else if (message.getClass() == ChainJoinMessage.class) {
+			masterMessageHandler
+					.handleChainJoinMessage((ChainJoinMessage) message);
+		} else if (message.getClass() == NewNodeInitializedMessage.class) {
+			masterMessageHandler
+					.handleNewNodeInitializedMessage((NewNodeInitializedMessage) message);
+		}
+	}
+
+	/**
+	 * Log messages.
+	 *
+	 * @param message
+	 *            the message
+	 */
+	public void logMessages(String message) {
+		masterImpl.logMessage(message);
+	}
+
+	/**
 	 * Start processing messages.
 	 *
-	 * @throws MasterChainReplicationException the master chain replication exception
+	 * @throws MasterChainReplicationException
+	 *             the master chain replication exception
 	 */
 	public void startProcessingMessages()
-			throws MasterChainReplicationException{
+			throws MasterChainReplicationException {
 		while (!isMasterStopping) {
 			if (messageQueue.hasMoreMessages()) {
-				ChainReplicationMessage message = (ChainReplicationMessage) messageQueue
+				final ChainReplicationMessage message = (ChainReplicationMessage) messageQueue
 						.dequeueMessageAndReturnMessageObject();
 				this.handleMessage(message);
 			}
@@ -110,37 +150,7 @@ public class MasterChainReplicationFacade {
 	 */
 	public void stopProcessingMessages() {
 		isMasterStopping = true;
-		this.masterMessageHandler.getChainJoinHelper().stopServer();
-	}
-
-	/**
-	 * Handle message.
-	 *
-	 * @param message the message
-	 * @throws MasterChainReplicationException the master chain replication exception
-	 */
-	public void handleMessage(ChainReplicationMessage message)
-			throws MasterChainReplicationException {
-		//TODO Remove this later
-		this.logMessages("Handling message: "+message.toString());
-		if (message.getClass() == MasterGenericServerChangeMessage.class) {
-			masterMessageHandler
-			.handleGenericServerChangeMessage((MasterGenericServerChangeMessage) message);
-		} else if(message.getClass() == ChainJoinMessage.class) {
-			masterMessageHandler.handleChainJoinMessage((ChainJoinMessage) message);
-		} else if(message.getClass() == NewNodeInitializedMessage.class) {
-			masterMessageHandler.handleNewNodeInitializedMessage(
-					(NewNodeInitializedMessage) message);
-		}
-	}
-
-	/**
-	 * Log messages.
-	 *
-	 * @param message the message
-	 */
-	public void logMessages(String message) {
-		masterImpl.logMessage(message);
+		masterMessageHandler.getChainJoinHelper().stopServer();
 	}
 
 }

@@ -12,25 +12,29 @@ import java.net.InetAddress;
  * The Class UDPClientHelper.
  */
 public class UDPClientHelper implements IClientHelper {
-	
+
 	/** The server host. */
 	String serverHost;
-	
+
 	/** The port. */
 	int port;
 
 	/**
 	 * Instantiates a new UDP client helper.
 	 *
-	 * @param serverHost the server host
-	 * @param port the port
+	 * @param serverHost
+	 *            the server host
+	 * @param port
+	 *            the port
 	 */
 	public UDPClientHelper(String serverHost, int port) {
 		this.serverHost = serverHost;
 		this.port = port;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see async.connection.util.IClientHelper#sendMessage(java.lang.Object)
 	 */
 	@Override
@@ -41,30 +45,31 @@ public class UDPClientHelper implements IClientHelper {
 			byte[] data = null;
 			ObjectOutputStream os = null;
 			try {
-				ByteArrayOutputStream baos = new ByteArrayOutputStream(2048);
+				final ByteArrayOutputStream baos = new ByteArrayOutputStream(
+						2048);
 				os = new ObjectOutputStream(baos);
 				os.writeObject(message);
 				data = baos.toByteArray();
-			} catch (IOException e) {
+			} catch (final IOException e) {
 				throw new ConnectClientException(e);
 			} finally {
 				if (os != null) {
 					try {
 						os.close();
-					} catch (IOException e) {
+					} catch (final IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}
 			}
 			try {
-				DatagramPacket dp = new DatagramPacket(data, data.length,
+				final DatagramPacket dp = new DatagramPacket(data, data.length,
 						InetAddress.getByName(serverHost), port);
 				clientSocket.send(dp);
-			} catch (IOException e) {
+			} catch (final IOException e) {
 				throw new ConnectClientException(e);
 			}
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			throw new ConnectClientException(e);
 		} finally {
 			if (clientSocket != null) {

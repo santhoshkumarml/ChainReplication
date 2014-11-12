@@ -17,14 +17,15 @@ public class MasterClientChangeMessage extends MasterMessage {
 
 	/** The client. */
 	Client client;
-	
+
 	/** The chain changes. */
 	Set<Chain> chainChanges = new HashSet<Chain>();
 
 	/**
 	 * Instantiates a new master client change message.
 	 *
-	 * @param client the client
+	 * @param client
+	 *            the client
 	 */
 	public MasterClientChangeMessage(Client client) {
 		super(Priority.REALTIME_PRIORITY);
@@ -40,7 +41,9 @@ public class MasterClientChangeMessage extends MasterMessage {
 		return chainChanges;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	@Override

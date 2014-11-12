@@ -15,13 +15,13 @@ import async.generic.message.queue.MessageQueue;
  * The Class ChainReplicationLoggerThread.
  */
 public class ChainReplicationLoggerThread extends Thread {
-	
+
 	/** The chain replication impl. */
 	ChainReplicationImpl chainReplicationImpl;
-	
+
 	/** The chain replicationlogger. */
 	Logger chainReplicationlogger;
-	
+
 	/** The should still run. */
 	volatile boolean shouldStillRun = true;
 	/** The pw. */
@@ -30,7 +30,8 @@ public class ChainReplicationLoggerThread extends Thread {
 	/**
 	 * Instantiates a new chain replication logger thread.
 	 *
-	 * @param chainReplicationImpl the chain replication impl
+	 * @param chainReplicationImpl
+	 *            the chain replication impl
 	 */
 	public ChainReplicationLoggerThread(
 			ChainReplicationImpl chainReplicationImpl) {
@@ -45,16 +46,18 @@ public class ChainReplicationLoggerThread extends Thread {
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Thread#run()
 	 */
 	public void run() {
 		while (shouldStillRun
 				|| chainReplicationImpl.getLogMessages().hasMoreMessages()) {
 			if (chainReplicationImpl.getLogMessages().hasMoreMessages()) {
-				MessageQueue<LogMessage> queue = chainReplicationImpl
+				final MessageQueue<LogMessage> queue = chainReplicationImpl
 						.getLogMessages();
-				Message<LogMessage> message = queue.dequeueMessage();
+				final Message<LogMessage> message = queue.dequeueMessage();
 				pw.println(new Date(message.getTimestamp()) + ":"
 						+ message.getMessageObject().getMessage() + "\r\n");
 				pw.flush();

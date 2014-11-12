@@ -20,15 +20,19 @@ public abstract class RequestKey implements Serializable {
 	/**
 	 * Instantiates a new request key.
 	 *
-	 * @param requestId the request id
-	 * @param sequenceNumber the sequence number
+	 * @param requestId
+	 *            the request id
+	 * @param sequenceNumber
+	 *            the sequence number
 	 */
 	public RequestKey(String requestId, int sequenceNumber) {
 		this.requestId = requestId;
 		this.sequenceNumber = sequenceNumber;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
@@ -39,7 +43,7 @@ public abstract class RequestKey implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		RequestKey other = (RequestKey) obj;
+		final RequestKey other = (RequestKey) obj;
 		if (requestId == null) {
 			if (other.requestId != null)
 				return false;
@@ -68,7 +72,9 @@ public abstract class RequestKey implements Serializable {
 		return sequenceNumber;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -84,7 +90,8 @@ public abstract class RequestKey implements Serializable {
 	/**
 	 * Sets the request id.
 	 *
-	 * @param requestId the new request id
+	 * @param requestId
+	 *            the new request id
 	 */
 	public void setRequestId(String requestId) {
 		this.requestId = requestId;
@@ -93,13 +100,16 @@ public abstract class RequestKey implements Serializable {
 	/**
 	 * Sets the sequence number.
 	 *
-	 * @param sequenceNumber the new sequence number
+	 * @param sequenceNumber
+	 *            the new sequence number
 	 */
 	public void setSequenceNumber(int sequenceNumber) {
 		this.sequenceNumber = sequenceNumber;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	@Override

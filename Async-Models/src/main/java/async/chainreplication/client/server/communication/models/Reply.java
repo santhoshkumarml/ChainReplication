@@ -7,7 +7,7 @@ import java.io.Serializable;
  * The Class Reply.
  */
 public class Reply implements Serializable {
-	
+
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = -6844641999813461387L;
 
@@ -26,13 +26,16 @@ public class Reply implements Serializable {
 	/**
 	 * Sets the req id.
 	 *
-	 * @param reqID the new req id
+	 * @param reqID
+	 *            the new req id
 	 */
 	public void setReqID(String reqID) {
 		this.reqID = reqID;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	@Override

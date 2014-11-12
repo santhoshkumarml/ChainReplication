@@ -9,8 +9,8 @@ import java.util.List;
  * The Class BulkSyncMessage.
  */
 public class BulkSyncMessage extends ChainReplicationMessage implements
-		Serializable {
-	
+Serializable {
+
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = -499882516978443630L;
 
@@ -33,14 +33,14 @@ public class BulkSyncMessage extends ChainReplicationMessage implements
 		return syncMessages;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
 	public String toString() {
 		return "BulkSyncMessage [syncMessages=" + syncMessages + "]";
 	}
-	
-	
 
 }

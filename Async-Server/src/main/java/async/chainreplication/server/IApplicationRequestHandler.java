@@ -10,18 +10,27 @@ import async.chainreplication.client.server.communication.models.Request;
  * The Interface IApplicationRequestHandler.
  */
 public interface IApplicationRequestHandler {
-	
+
+	/**
+	 * Gets the transactional objects.
+	 *
+	 * @return the transactional objects
+	 */
+	Set<?> getTransactionalObjects();
+
 	/**
 	 * Handle ack.
 	 *
-	 * @param request the request
+	 * @param request
+	 *            the request
 	 */
 	void handleAck(Request request);
 
 	/**
 	 * Handle request.
 	 *
-	 * @param request the request
+	 * @param request
+	 *            the request
 	 * @return the reply
 	 */
 	Reply handleRequest(Request request);
@@ -29,30 +38,28 @@ public interface IApplicationRequestHandler {
 	/**
 	 * Handle sync update.
 	 *
-	 * @param request the request
-	 * @param reply the reply
+	 * @param request
+	 *            the request
+	 * @param reply
+	 *            the reply
 	 */
 	void handleSyncUpdate(Request request, Reply reply);
 
 	/**
 	 * Update histories.
 	 *
-	 * @param request the request
-	 * @param reply the reply
+	 * @param request
+	 *            the request
+	 * @param reply
+	 *            the reply
 	 */
 	void updateHistories(Request request, Reply reply);
-	
-	/**
-	 * Gets the transactional objects.
-	 *
-	 * @return the transactional objects
-	 */
-	Set<?> getTransactionalObjects();
-	
+
 	/**
 	 * Update transactional object.
 	 *
-	 * @param transactionalObject the transactional object
+	 * @param transactionalObject
+	 *            the transactional object
 	 */
 	void updateTransactionalObject(Object transactionalObject);
 }

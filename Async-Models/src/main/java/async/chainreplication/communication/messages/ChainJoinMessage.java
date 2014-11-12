@@ -7,7 +7,7 @@ import async.chainreplication.master.models.Server;
  * The Class ChainJoinMessage.
  */
 public class ChainJoinMessage extends ChainReplicationMessage {
-	
+
 	/** The server. */
 	Server server;
 
@@ -17,7 +17,8 @@ public class ChainJoinMessage extends ChainReplicationMessage {
 	/**
 	 * Instantiates a new chain join message.
 	 *
-	 * @param server the server
+	 * @param server
+	 *            the server
 	 */
 	public ChainJoinMessage(Server server) {
 		super(Priority.REALTIME_PRIORITY);
@@ -33,14 +34,14 @@ public class ChainJoinMessage extends ChainReplicationMessage {
 		return server;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
 	public String toString() {
 		return "ChainJoinMessage [server=" + server.toString() + "]";
 	}
-	
-	
 
 }

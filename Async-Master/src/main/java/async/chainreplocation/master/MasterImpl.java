@@ -16,28 +16,29 @@ import aync.chainreplication.base.impl.ChainReplicationImpl;
  * The Class MasterImpl.
  */
 public class MasterImpl extends ChainReplicationImpl {
-	
+
 	/**
 	 * The main method.
 	 *
-	 * @param args the arguments
+	 * @param args
+	 *            the arguments
 	 */
 	public static void main(String args[]) {
-		MasterImpl masterImpl = new MasterImpl(
+		final MasterImpl masterImpl = new MasterImpl(
 				ConfigUtil.deserializeFromFile(args[0]), args[1]);
 		masterImpl.init();
-		//masterImpl.stop();
+		// masterImpl.stop();
 	}
 
 	/** The master. */
 	Master master;
-	
+
 	/** The listerner thread. */
 	ServerMessageListenerThread listernerThread;
-	
+
 	/** The checker thread. */
 	Timer checkerThread;
-	
+
 	/** The master chain replication facade. */
 	MasterChainReplicationFacade masterChainReplicationFacade;
 
@@ -47,8 +48,10 @@ public class MasterImpl extends ChainReplicationImpl {
 	/**
 	 * Instantiates a new master impl.
 	 *
-	 * @param config the config
-	 * @param masterId the master id
+	 * @param config
+	 *            the config
+	 * @param masterId
+	 *            the master id
 	 */
 	public MasterImpl(Config config, String masterId) {
 		super(masterId);
@@ -57,7 +60,7 @@ public class MasterImpl extends ChainReplicationImpl {
 			masterChainReplicationFacade = new MasterChainReplicationFacade(
 					master, config.getChains(), config.getClients(), this);
 			heartBeatTimeout = master.getHeartbeatTimeout();
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			this.logMessage(e.getMessage());
 		}
 	}
@@ -89,7 +92,9 @@ public class MasterImpl extends ChainReplicationImpl {
 		return masterChainReplicationFacade;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see aync.chainreplication.base.impl.ChainReplicationImpl#init()
 	 */
 	public void init() {
@@ -97,11 +102,11 @@ public class MasterImpl extends ChainReplicationImpl {
 			super.init();
 			listernerThread = new ServerMessageListenerThread(this);
 			checkerThread = new Timer();
-			HeartBeatCheckerTask task = new HeartBeatCheckerTask(this);
+			final HeartBeatCheckerTask task = new HeartBeatCheckerTask(this);
 			checkerThread.scheduleAtFixedRate(task, 0, heartBeatTimeout);
 			listernerThread.start();
-			this.masterChainReplicationFacade.startProcessingMessages();
-		} catch (MasterChainReplicationException e) {
+			masterChainReplicationFacade.startProcessingMessages();
+		} catch (final MasterChainReplicationException e) {
 			this.logMessage("Internal Error:" + e.getMessage());
 			this.stop();
 			e.printStackTrace();
@@ -112,20 +117,23 @@ public class MasterImpl extends ChainReplicationImpl {
 	/**
 	 * Log message.
 	 *
-	 * @param message the message
+	 * @param message
+	 *            the message
 	 */
 	public void logMessage(String message) {
-		LogMessage logMessage = new LogMessage(message);
+		final LogMessage logMessage = new LogMessage(message);
 		this.getLogMessages().enqueueMessageObject(
 				logMessage.getPriority().ordinal(), logMessage);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see aync.chainreplication.base.impl.ChainReplicationImpl#stop()
 	 */
 	public void stop() {
 		this.logMessage("Master Stopping");
-		this.masterChainReplicationFacade.stopProcessingMessages();
+		masterChainReplicationFacade.stopProcessingMessages();
 		checkerThread.cancel();
 		listernerThread.stopThread();
 		super.stop();

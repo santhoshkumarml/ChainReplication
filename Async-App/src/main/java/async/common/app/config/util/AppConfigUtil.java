@@ -22,18 +22,20 @@ public class AppConfigUtil {
 	/**
 	 * Creates the request.
 	 *
-	 * @param client the client
-	 * @param requestStringSplit the request string split
+	 * @param client
+	 *            the client
+	 * @param requestStringSplit
+	 *            the request string split
 	 * @return the application request
 	 */
 	private static ApplicationRequest createRequest(Client client,
 			String[] requestStringSplit) {
-		String reqId = requestStringSplit[2].trim();
-		String accountNum = requestStringSplit[3].trim();
-		ApplicationRequestType applicationRequestType = ApplicationRequestType
+		final String reqId = requestStringSplit[2].trim();
+		final String accountNum = requestStringSplit[3].trim();
+		final ApplicationRequestType applicationRequestType = ApplicationRequestType
 				.valueOf(requestStringSplit[1].toUpperCase().trim());
-		ApplicationRequest applicationRequest = new ApplicationRequest(client,
-				reqId);
+		final ApplicationRequest applicationRequest = new ApplicationRequest(
+				client, reqId);
 		applicationRequest.setApplicationRequestType(applicationRequestType);
 		applicationRequest.setAccountNum(Integer.valueOf(accountNum));
 		switch (applicationRequestType) {
@@ -42,9 +44,10 @@ public class AppConfigUtil {
 		case TRANSFER:
 			int amount = Integer.valueOf(requestStringSplit[4].trim());
 			applicationRequest.setAmount(amount);
-			String destBank = requestStringSplit[5];
+			final String destBank = requestStringSplit[5];
 			applicationRequest.setDestBank(destBank);
-			int destAccountNum = Integer.valueOf(requestStringSplit[6].trim());
+			final int destAccountNum = Integer.valueOf(requestStringSplit[6]
+					.trim());
 			applicationRequest.setAmount(destAccountNum);
 			break;
 		case DEPOSIT:
@@ -65,11 +68,12 @@ public class AppConfigUtil {
 	/**
 	 * Read config from file.
 	 *
-	 * @param configFile the config file
+	 * @param configFile
+	 *            the config file
 	 * @return the config
 	 */
 	public static Config readConfigFromFile(String configFile) {
-		Config config = new Config();
+		final Config config = new Config();
 		// Config.createDefaultValues();
 		readTestCases(config, configFile);
 		return config;
@@ -78,8 +82,10 @@ public class AppConfigUtil {
 	/**
 	 * Read test cases.
 	 *
-	 * @param config the config
-	 * @param configFile the config file
+	 * @param config
+	 *            the config
+	 * @param configFile
+	 *            the config file
 	 */
 	private static void readTestCases(Config config, String configFile) {
 		BufferedReader br = null;
@@ -88,15 +94,15 @@ public class AppConfigUtil {
 					new File(configFile))));
 			String input = "";
 			while ((input = br.readLine()) != null) {
-				String[] inputSplit = input.split(":");
-				String clientId = inputSplit[0].trim();
-				Client client = config.getClients().get(clientId);
-				String requestString = inputSplit[1].trim();
-				String[] requestStringSplit = requestString.split(",");
-				ApplicationRequest request = createRequest(client,
+				final String[] inputSplit = input.split(":");
+				final String clientId = inputSplit[0].trim();
+				final Client client = config.getClients().get(clientId);
+				final String requestString = inputSplit[1].trim();
+				final String[] requestStringSplit = requestString.split(",");
+				final ApplicationRequest request = createRequest(client,
 						requestStringSplit);
 				TestCases testCases = config.getTestCases().get(client);
-				String chainName = requestStringSplit[0].trim();
+				final String chainName = requestStringSplit[0].trim();
 				if (testCases == null) {
 					testCases = new TestCases();
 					testCases.setClient(client);
@@ -106,14 +112,14 @@ public class AppConfigUtil {
 				config.getTestCases().put(client, testCases);
 			}
 
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
 			if (br != null) {
 				try {
 					br.close();
-				} catch (IOException e) {
+				} catch (final IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}

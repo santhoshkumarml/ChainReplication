@@ -30,7 +30,8 @@ public class HeartBeatCheckerTask extends TimerTask {
 	/**
 	 * Instantiates a new heart beat checker task.
 	 *
-	 * @param masterImpl the master impl
+	 * @param masterImpl
+	 *            the master impl
 	 */
 	public HeartBeatCheckerTask(MasterImpl masterImpl) {
 		this.masterImpl = masterImpl;
@@ -42,45 +43,50 @@ public class HeartBeatCheckerTask extends TimerTask {
 	 * @return the list
 	 */
 	private List<Server> checkAndReturnIfServerDidNotSendHeartBeat() {
-		List<Server> diedServers = new ArrayList<Server>();
+		final List<Server> diedServers = new ArrayList<Server>();
 		synchronized (serverToLastHeartBeatSentTime) {
-			for (Message<ChainReplicationMessage> message:
-				this.masterImpl.getMasterChainReplicationFacade().dequeueAllHeartBeatMessages()) {
-				HeartBeatMessage heartBeatMessage = (HeartBeatMessage) (message.getMessageObject());
-				long time = message.getTimestamp();
+			for (final Message<ChainReplicationMessage> message : masterImpl
+					.getMasterChainReplicationFacade()
+					.dequeueAllHeartBeatMessages()) {
+				final HeartBeatMessage heartBeatMessage = (HeartBeatMessage) (message
+						.getMessageObject());
+				final long time = message.getTimestamp();
 				serverToLastHeartBeatSentTime.put(heartBeatMessage.getServer(),
 						time);
 			}
-			long currentTime = System.currentTimeMillis();
-			for (Entry<Server, Long> serverToHeartBeatTimeStampEntry 
-					: serverToLastHeartBeatSentTime.entrySet()) {
-				long difference = currentTime
+			final long currentTime = System.currentTimeMillis();
+			for (final Entry<Server, Long> serverToHeartBeatTimeStampEntry : serverToLastHeartBeatSentTime
+					.entrySet()) {
+				final long difference = currentTime
 						- serverToHeartBeatTimeStampEntry.getValue();
 				if (difference > masterImpl.getHeartBeatTimeout()) {
-					Server diedServer = serverToHeartBeatTimeStampEntry.getKey();
+					final Server diedServer = serverToHeartBeatTimeStampEntry
+							.getKey();
 					diedServers.add(diedServer);
 				}
 			}
 		}
-		for(Server diedServer : diedServers) {
-			this.serverToLastHeartBeatSentTime.remove(diedServer);	
+		for (final Server diedServer : diedServers) {
+			serverToLastHeartBeatSentTime.remove(diedServer);
 		}
 		return diedServers;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.util.TimerTask#run()
 	 */
 	@Override
 	public void run() {
-		List<Server> diedServers = checkAndReturnIfServerDidNotSendHeartBeat();
+		final List<Server> diedServers = checkAndReturnIfServerDidNotSendHeartBeat();
 		if (!diedServers.isEmpty()) {
-			ChainReplicationMessage chainReplicationMessage = new MasterGenericServerChangeMessage(
+			final ChainReplicationMessage chainReplicationMessage = new MasterGenericServerChangeMessage(
 					diedServers);
 			try {
 				masterImpl.getMasterChainReplicationFacade().handleMessage(
 						chainReplicationMessage);
-			} catch (MasterChainReplicationException e) {
+			} catch (final MasterChainReplicationException e) {
 				masterImpl.logMessage("Internal Error:" + e.getMessage());
 				e.printStackTrace();
 				this.cancel();

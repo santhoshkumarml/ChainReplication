@@ -7,25 +7,28 @@ import java.io.Serializable;
  * The Class Client.
  */
 public class Client implements Serializable {
-	
+
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1866788520095538461L;
-	
+
 	/** The client id. */
 	String clientId;
-	
+
 	/** The response wait time. */
 	long responseWaitTime;
-	
+
 	/** The client process details. */
 	ProcessDetails clientProcessDetails;
 
 	/**
 	 * Instantiates a new client.
 	 *
-	 * @param clientId the client id
-	 * @param host the host
-	 * @param responseWaitTime the response wait time
+	 * @param clientId
+	 *            the client id
+	 * @param host
+	 *            the host
+	 * @param responseWaitTime
+	 *            the response wait time
 	 */
 	public Client(String clientId, String host, long responseWaitTime) {
 		this.clientId = clientId;
@@ -34,7 +37,9 @@ public class Client implements Serializable {
 		this.responseWaitTime = responseWaitTime;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
@@ -45,7 +50,7 @@ public class Client implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Client other = (Client) obj;
+		final Client other = (Client) obj;
 		if (clientId == null) {
 			if (other.clientId != null)
 				return false;
@@ -86,7 +91,9 @@ public class Client implements Serializable {
 		return responseWaitTime;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -105,7 +112,8 @@ public class Client implements Serializable {
 	/**
 	 * Sets the client id.
 	 *
-	 * @param clientId the new client id
+	 * @param clientId
+	 *            the new client id
 	 */
 	public void setClientId(String clientId) {
 		this.clientId = clientId;
@@ -114,13 +122,16 @@ public class Client implements Serializable {
 	/**
 	 * Sets the client process details.
 	 *
-	 * @param clientProcessDetails the new client process details
+	 * @param clientProcessDetails
+	 *            the new client process details
 	 */
 	public void setClientProcessDetails(ProcessDetails clientProcessDetails) {
 		this.clientProcessDetails = clientProcessDetails;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	@Override

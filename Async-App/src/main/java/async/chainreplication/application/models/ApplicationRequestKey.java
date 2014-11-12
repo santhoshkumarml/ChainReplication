@@ -17,16 +17,22 @@ public class ApplicationRequestKey extends RequestKey {
 	/**
 	 * Instantiates a new application request key.
 	 *
-	 * @param requestId the request id
-	 * @param accountNum the account num
+	 * @param requestId
+	 *            the request id
+	 * @param accountNum
+	 *            the account num
 	 */
 	public ApplicationRequestKey(String requestId, int accountNum) {
 		super(requestId, 0);
 		this.accountNum = accountNum;
 	}
 
-	/* (non-Javadoc)
-	 * @see async.chainreplication.client.server.communication.models.RequestKey#equals(java.lang.Object)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * async.chainreplication.client.server.communication.models.RequestKey#
+	 * equals(java.lang.Object)
 	 */
 	@Override
 	public boolean equals(Object obj) {
@@ -36,7 +42,7 @@ public class ApplicationRequestKey extends RequestKey {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		ApplicationRequestKey other = (ApplicationRequestKey) obj;
+		final ApplicationRequestKey other = (ApplicationRequestKey) obj;
 		if (accountNum != other.accountNum)
 			return false;
 		return true;
@@ -51,8 +57,12 @@ public class ApplicationRequestKey extends RequestKey {
 		return accountNum;
 	}
 
-	/* (non-Javadoc)
-	 * @see async.chainreplication.client.server.communication.models.RequestKey#hashCode()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * async.chainreplication.client.server.communication.models.RequestKey#
+	 * hashCode()
 	 */
 	@Override
 	public int hashCode() {
@@ -65,14 +75,19 @@ public class ApplicationRequestKey extends RequestKey {
 	/**
 	 * Sets the account num.
 	 *
-	 * @param accountNum the new account num
+	 * @param accountNum
+	 *            the new account num
 	 */
 	public void setAccountNum(int accountNum) {
 		this.accountNum = accountNum;
 	}
 
-	/* (non-Javadoc)
-	 * @see async.chainreplication.client.server.communication.models.RequestKey#toString()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * async.chainreplication.client.server.communication.models.RequestKey#
+	 * toString()
 	 */
 	@Override
 	public String toString() {

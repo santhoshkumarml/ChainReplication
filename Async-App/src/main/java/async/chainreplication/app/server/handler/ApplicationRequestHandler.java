@@ -30,7 +30,8 @@ public class ApplicationRequestHandler implements IApplicationRequestHandler {
 	/**
 	 * Instantiates a new application request handler.
 	 *
-	 * @param chainReplicationMessageHandler the chain replication message handler
+	 * @param chainReplicationMessageHandler
+	 *            the chain replication message handler
 	 */
 	public ApplicationRequestHandler(
 			ServerMessageHandler chainReplicationMessageHandler) {
@@ -41,13 +42,14 @@ public class ApplicationRequestHandler implements IApplicationRequestHandler {
 	/**
 	 * Check for existing transaction history and reply.
 	 *
-	 * @param request the request
+	 * @param request
+	 *            the request
 	 * @return the application reply
 	 */
 	private ApplicationReply checkForExistingTransactionHistoryAndReply(
 			Request request) {
-		ApplicationRequest applicationRequest = (ApplicationRequest) request;
-		ApplicationRequestKey requestKey = new ApplicationRequestKey(
+		final ApplicationRequest applicationRequest = (ApplicationRequest) request;
+		final ApplicationRequestKey requestKey = new ApplicationRequestKey(
 				applicationRequest.getRequestId(),
 				applicationRequest.getAccountNum());
 		if (chainReplicationMessageHandler.getHistoryOfRequests()
@@ -58,7 +60,7 @@ public class ApplicationRequestHandler implements IApplicationRequestHandler {
 						.getHistoryOfRequests().getExisistingReply(requestKey);
 			} else {
 				synchronized (accounts) {
-					AccountSnapshot accountSnapshot = accounts
+					final AccountSnapshot accountSnapshot = accounts
 							.getAccountSnapshot(applicationRequest
 									.getAccountNum());
 					reply.setBalance(accountSnapshot.getBalance());
@@ -71,26 +73,44 @@ public class ApplicationRequestHandler implements IApplicationRequestHandler {
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see async.chainreplication.server.IApplicationRequestHandler#handleAck(async.chainreplication.client.server.communication.models.Request)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see async.chainreplication.server.IApplicationRequestHandler#
+	 * getTransactionalObjects()
+	 */
+	@Override
+	public Set<?> getTransactionalObjects() {
+		return accounts.getAccountSnapShots();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * async.chainreplication.server.IApplicationRequestHandler#handleAck(async
+	 * .chainreplication.client.server.communication.models.Request)
 	 */
 	@Override
 	public void handleAck(Request request) {
-		RequestKey requestKey = new ApplicationRequestKey(
+		final RequestKey requestKey = new ApplicationRequestKey(
 				request.getRequestId(),
 				((ApplicationRequest) request).getAccountNum());
 		synchronized (chainReplicationMessageHandler.getSentHistory()) {
 			chainReplicationMessageHandler.getSentHistory().removeFromSent(
-					requestKey);		
+					requestKey);
 		}
 	}
 
 	/**
 	 * Handle deposit.
 	 *
-	 * @param accountNum the account num
-	 * @param amount the amount
-	 * @param reply the reply
+	 * @param accountNum
+	 *            the account num
+	 * @param amount
+	 *            the amount
+	 * @param reply
+	 *            the reply
 	 */
 	private void handleDeposit(int accountNum, int amount,
 			ApplicationReply reply) {
@@ -111,12 +131,14 @@ public class ApplicationRequestHandler implements IApplicationRequestHandler {
 	/**
 	 * Handle get balance.
 	 *
-	 * @param accountNum the account num
-	 * @param reply the reply
+	 * @param accountNum
+	 *            the account num
+	 * @param reply
+	 *            the reply
 	 */
 	private void handleGetBalance(int accountNum, ApplicationReply reply) {
 		synchronized (accounts) {
-			AccountSnapshot accountSnapshot = accounts
+			final AccountSnapshot accountSnapshot = accounts
 					.getAccountSnapshot(accountNum);
 			reply.setOutcome(Outcome.Processed);
 			reply.setAccountNum(accountNum);
@@ -132,16 +154,20 @@ public class ApplicationRequestHandler implements IApplicationRequestHandler {
 
 	// --------------------------------------------------------------------------
 	// Handler Methods
-	/* (non-Javadoc)
-	 * @see async.chainreplication.server.IApplicationRequestHandler#handleRequest(async.chainreplication.client.server.communication.models.Request)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * async.chainreplication.server.IApplicationRequestHandler#handleRequest
+	 * (async.chainreplication.client.server.communication.models.Request)
 	 */
 	@Override
 	public Reply handleRequest(Request request) {
 		ApplicationReply reply = checkForExistingTransactionHistoryAndReply(request);
-		ApplicationRequest applicationRequest = (ApplicationRequest) request;
+		final ApplicationRequest applicationRequest = (ApplicationRequest) request;
 		if (reply == null) {
-			int accountNum = applicationRequest.getAccountNum();
-			int amount = applicationRequest.getAmount();
+			final int accountNum = applicationRequest.getAccountNum();
+			final int amount = applicationRequest.getAmount();
 			reply = new ApplicationReply();
 			switch (applicationRequest.getApplicationRequestType()) {
 			case DEPOSIT:
@@ -164,25 +190,30 @@ public class ApplicationRequestHandler implements IApplicationRequestHandler {
 		return reply;
 	}
 
-	/* (non-Javadoc)
-	 * @see async.chainreplication.server.IApplicationRequestHandler#handleSyncUpdate(async.chainreplication.client.server.communication.models.Request, async.chainreplication.client.server.communication.models.Reply)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * async.chainreplication.server.IApplicationRequestHandler#handleSyncUpdate
+	 * (async.chainreplication.client.server.communication.models.Request,
+	 * async.chainreplication.client.server.communication.models.Reply)
 	 */
 	@Override
 	public void handleSyncUpdate(Request request, Reply reply) {
-		if(request.getRequestType() != RequestType.QUERY) {
+		if (request.getRequestType() != RequestType.QUERY) {
 			synchronized (accounts) {
-				ApplicationReply applicationReply = (ApplicationReply) reply;
+				final ApplicationReply applicationReply = (ApplicationReply) reply;
 				this.updateHistories(request, reply);
 				AccountSnapshot accountSnapshot = accounts
 						.getAccountSnapshot(applicationReply.getAccountNum());
 				if (accountSnapshot != null) {
 					accountSnapshot.setBalance(applicationReply.getBalance());
 				} else {
-					//if (request.getRequestType() != RequestType.QUERY) {
+					// if (request.getRequestType() != RequestType.QUERY) {
 					accountSnapshot = accounts.addAccount(applicationReply
 							.getAccountNum());
 					accountSnapshot.setBalance(applicationReply.getBalance());
-					//}
+					// }
 				}
 			}
 		}
@@ -191,9 +222,12 @@ public class ApplicationRequestHandler implements IApplicationRequestHandler {
 	/**
 	 * Handle withdraw or transfer.
 	 *
-	 * @param accountNum the account num
-	 * @param amount the amount
-	 * @param reply the reply
+	 * @param accountNum
+	 *            the account num
+	 * @param amount
+	 *            the amount
+	 * @param reply
+	 *            the reply
 	 */
 	private void handleWithdrawOrTransfer(int accountNum, int amount,
 			ApplicationReply reply) {
@@ -223,12 +257,13 @@ public class ApplicationRequestHandler implements IApplicationRequestHandler {
 	/**
 	 * Checks if is inconsistent with history.
 	 *
-	 * @param request the request
+	 * @param request
+	 *            the request
 	 * @return true, if is inconsistent with history
 	 */
 	private boolean isInconsistentWithHistory(Request request) {
-		ApplicationRequest applicationRequest = (ApplicationRequest) request;
-		ApplicationRequest existingRequest = (ApplicationRequest) chainReplicationMessageHandler
+		final ApplicationRequest applicationRequest = (ApplicationRequest) request;
+		final ApplicationRequest existingRequest = (ApplicationRequest) chainReplicationMessageHandler
 				.getHistoryOfRequests().getExisistingRequest(
 						new ApplicationRequestKey(applicationRequest
 								.getRequestId(), applicationRequest
@@ -239,12 +274,17 @@ public class ApplicationRequestHandler implements IApplicationRequestHandler {
 		return true;
 	}
 
-	/* (non-Javadoc)
-	 * @see async.chainreplication.server.IApplicationRequestHandler#updateHistories(async.chainreplication.client.server.communication.models.Request, async.chainreplication.client.server.communication.models.Reply)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * async.chainreplication.server.IApplicationRequestHandler#updateHistories
+	 * (async.chainreplication.client.server.communication.models.Request,
+	 * async.chainreplication.client.server.communication.models.Reply)
 	 */
 	@Override
 	public void updateHistories(Request request, Reply reply) {
-		RequestKey requestKey = new ApplicationRequestKey(
+		final RequestKey requestKey = new ApplicationRequestKey(
 				request.getRequestId(),
 				((ApplicationRequest) request).getAccountNum());
 		chainReplicationMessageHandler.getHistoryOfRequests().addToHistory(
@@ -253,21 +293,17 @@ public class ApplicationRequestHandler implements IApplicationRequestHandler {
 				requestKey);
 	}
 
-	/* (non-Javadoc)
-	 * @see async.chainreplication.server.IApplicationRequestHandler#getTransactionalObjects()
-	 */
-	@Override
-	public Set<?> getTransactionalObjects() {
-		return this.accounts.getAccountSnapShots();
-	}
-
-	/* (non-Javadoc)
-	 * @see async.chainreplication.server.IApplicationRequestHandler#updateTransactionalObject(java.lang.Object)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see async.chainreplication.server.IApplicationRequestHandler#
+	 * updateTransactionalObject(java.lang.Object)
 	 */
 	@Override
 	public void updateTransactionalObject(Object transactionalObject) {
-		AccountSnapshot snapshot = (AccountSnapshot)transactionalObject;
-		this.accounts.updateAccountSnapshot(snapshot.getAccountNum(), snapshot.getBalance());
+		final AccountSnapshot snapshot = (AccountSnapshot) transactionalObject;
+		accounts.updateAccountSnapshot(snapshot.getAccountNum(),
+				snapshot.getBalance());
 	}
 
 }

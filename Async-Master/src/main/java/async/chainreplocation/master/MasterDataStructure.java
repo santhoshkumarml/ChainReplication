@@ -33,17 +33,20 @@ public class MasterDataStructure {
 	Map<String, Client> clients = new HashMap<String, Client>();
 
 	/** The chain to new servers map. */
-	Map<String, List<Pair<Server, Boolean>>> chainToNewServersMap = new HashMap<String, List<Pair<Server,Boolean>>>();
+	Map<String, List<Pair<Server, Boolean>>> chainToNewServersMap = new HashMap<String, List<Pair<Server, Boolean>>>();
 
 	/**
 	 * Instantiates a new master data structure.
 	 *
-	 * @param chains the chains
-	 * @param master the master
-	 * @param clients the clients
+	 * @param chains
+	 *            the chains
+	 * @param master
+	 *            the master
+	 * @param clients
+	 *            the clients
 	 */
-	public MasterDataStructure(Map<String, Chain> chains,
-			Master master, Map<String, Client> clients) {
+	public MasterDataStructure(Map<String, Chain> chains, Master master,
+			Map<String, Client> clients) {
 		this.chains = chains;
 		this.master = master;
 		this.clients = clients;
@@ -52,34 +55,37 @@ public class MasterDataStructure {
 	/**
 	 * Calculate changes.
 	 *
-	 * @param diedServers the died servers
+	 * @param diedServers
+	 *            the died servers
 	 * @return the chain changes
 	 */
 	public ChainChanges calculateChanges(Set<Server> diedServers) {
-		Map<String, List<Boolean>> chainsToIsHeadChanged = new HashMap<String, List<Boolean>>();
-		Map<String, Set<String>> chainToServersChanged = new HashMap<String, Set<String>>();
+		final Map<String, List<Boolean>> chainsToIsHeadChanged = new HashMap<String, List<Boolean>>();
+		final Map<String, Set<String>> chainToServersChanged = new HashMap<String, Set<String>>();
 
-		Map<String, Set<Server>> chainToDiedServers = new HashMap<String, Set<Server>>();
+		final Map<String, Set<Server>> chainToDiedServers = new HashMap<String, Set<Server>>();
 		synchronized (this) {
-			for (Server diedServer : diedServers) {
-				boolean wasPresentinNewNodes = checkAndRemoveFromNewServersChain(diedServer);
-				if(!wasPresentinNewNodes) {
-					Set<Server> diedServerSet = chainToDiedServers.get(diedServer
-							.getChainName());
+			for (final Server diedServer : diedServers) {
+				final boolean wasPresentinNewNodes = checkAndRemoveFromNewServersChain(diedServer);
+				if (!wasPresentinNewNodes) {
+					Set<Server> diedServerSet = chainToDiedServers
+							.get(diedServer.getChainName());
 					if (diedServerSet == null) {
 						diedServerSet = new HashSet<Server>();
 					}
 					diedServerSet.add(diedServer);
-					chainToDiedServers.put(diedServer.getChainName(), diedServerSet);
+					chainToDiedServers.put(diedServer.getChainName(),
+							diedServerSet);
 				}
 			}
 
-			for (String chainId : chainToDiedServers.keySet()) {
-				Set<Server> diedServerSet = chainToDiedServers.get(chainId);
-				Set<String> serverIdsChanged = new HashSet<String>();
-				Chain chain = chains.get(chainId);
+			for (final String chainId : chainToDiedServers.keySet()) {
+				final Set<Server> diedServerSet = chainToDiedServers
+						.get(chainId);
+				final Set<String> serverIdsChanged = new HashSet<String>();
+				final Chain chain = chains.get(chainId);
 				Server temp = chain.getHead();
-				List<Server> servers = new ArrayList<Server>();
+				final List<Server> servers = new ArrayList<Server>();
 				while (temp != null) {
 					servers.add(temp);
 					temp = temp.getAdjacencyList().getSucessor();
@@ -91,15 +97,16 @@ public class MasterDataStructure {
 					if ((i == 0 && temp != chains.get(chainId).getHead())
 							|| (i == servers.size() - 1 && temp != chains.get(
 									chainId).getTail())) {
-						List<Boolean> headTailChanges = chainsToIsHeadChanged.get(chainId);
-						if(headTailChanges == null) {
+						List<Boolean> headTailChanges = chainsToIsHeadChanged
+								.get(chainId);
+						if (headTailChanges == null) {
 							headTailChanges = new ArrayList<Boolean>(2);
 						}
-						if(i == 0 && temp != chains.get(chainId).getHead()) {
+						if (i == 0 && temp != chains.get(chainId).getHead()) {
 							headTailChanges.set(0, true);
 						}
-						if(i == servers.size() - 1 && temp != chains.get(
-								chainId).getTail()){
+						if (i == servers.size() - 1
+								&& temp != chains.get(chainId).getTail()) {
 							headTailChanges.set(1, true);
 						}
 						chainsToIsHeadChanged.put(chainId, headTailChanges);
@@ -121,13 +128,14 @@ public class MasterDataStructure {
 				chain.setTail(servers.get(servers.size() - 1));
 
 				chainToServerMap.get(chainId).clear();
-				for (Server server : servers) {
-					chainToServerMap.get(chainId).put(server.getServerId(), server);
+				for (final Server server : servers) {
+					chainToServerMap.get(chainId).put(server.getServerId(),
+							server);
 				}
 				chainToServersChanged.put(chainId, serverIdsChanged);
 			}
 		}
-		ChainChanges chainChanges = new ChainChanges();
+		final ChainChanges chainChanges = new ChainChanges();
 		chainChanges.getChainsToHeadTailChanges().putAll(chainsToIsHeadChanged);
 		chainChanges.getChainToServersChanged().putAll(chainToServersChanged);
 		return chainChanges;
@@ -136,16 +144,19 @@ public class MasterDataStructure {
 	/**
 	 * Check and remove from new servers chain.
 	 *
-	 * @param diedServer the died server
+	 * @param diedServer
+	 *            the died server
 	 * @return true, if successful
 	 */
 	private boolean checkAndRemoveFromNewServersChain(Server diedServer) {
-		String chainId = diedServer.getChainName();
-		List<Pair<Server,Boolean>> newServers = this.chainToNewServersMap.get(chainId);
-		Iterator<Pair<Server,Boolean>> newServersIterator = newServers.iterator();
+		final String chainId = diedServer.getChainName();
+		final List<Pair<Server, Boolean>> newServers = chainToNewServersMap
+				.get(chainId);
+		final Iterator<Pair<Server, Boolean>> newServersIterator = newServers
+				.iterator();
 		while (newServersIterator.hasNext()) {
-			Server server = (Server) newServersIterator.next().getFirst();
-			if(server.equals(diedServer)) {
+			final Server server = newServersIterator.next().getFirst();
+			if (server.equals(diedServer)) {
 				newServersIterator.remove();
 				return true;
 			}
@@ -160,6 +171,15 @@ public class MasterDataStructure {
 	 */
 	public Map<String, Chain> getChains() {
 		return chains;
+	}
+
+	/**
+	 * Gets the chain to new servers map.
+	 *
+	 * @return the chain to new servers map
+	 */
+	public Map<String, List<Pair<Server, Boolean>>> getChainToNewServersMap() {
+		return chainToNewServersMap;
 	}
 
 	/**
@@ -192,18 +212,10 @@ public class MasterDataStructure {
 	/**
 	 * Sets the master.
 	 *
-	 * @param master the new master
+	 * @param master
+	 *            the new master
 	 */
 	public void setMaster(Master master) {
 		this.master = master;
-	}
-
-	/**
-	 * Gets the chain to new servers map.
-	 *
-	 * @return the chain to new servers map
-	 */
-	public Map<String, List<Pair<Server, Boolean>>> getChainToNewServersMap() {
-		return chainToNewServersMap;
 	}
 }

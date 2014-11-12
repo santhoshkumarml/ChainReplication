@@ -27,41 +27,46 @@ public class ClientMessageHandler {
 
 	/** The client. */
 	Client client;
-	
+
 	/** The chain name to chain map. */
 	Map<String, Chain> chainNameToChainMap = new HashMap<String, Chain>();
-	
+
 	/** The master. */
 	Master master;
-	
+
 	/** The client message client helper. */
 	IClientHelper clientMessageClientHelper;
-	
+
 	/** The application reply handler. */
 	IApplicationReplyHandler applicationReplyHandler;
-	
+
 	/** The client chain replication facade. */
 	ClientChainReplicationFacade clientChainReplicationFacade;
 
 	/** The send sequence number. */
 	volatile int sendSequenceNumber = 0;
-	
+
 	/** The receive sequence number. */
 	volatile int receiveSequenceNumber = 0;
 
 	/**
 	 * Instantiates a new client message handler.
 	 *
-	 * @param client the client
-	 * @param chainNameToChainMap the chain name to chain map
-	 * @param master the master
-	 * @param clientChainReplicationFacade the client chain replication facade
-	 * @throws ClientChainReplicationException the client chain replication exception
+	 * @param client
+	 *            the client
+	 * @param chainNameToChainMap
+	 *            the chain name to chain map
+	 * @param master
+	 *            the master
+	 * @param clientChainReplicationFacade
+	 *            the client chain replication facade
+	 * @throws ClientChainReplicationException
+	 *             the client chain replication exception
 	 */
 	public ClientMessageHandler(Client client,
 			Map<String, Chain> chainNameToChainMap, Master master,
 			ClientChainReplicationFacade clientChainReplicationFacade)
-			throws ClientChainReplicationException {
+					throws ClientChainReplicationException {
 		this.client = client;
 		this.chainNameToChainMap.putAll(chainNameToChainMap);
 		this.master = master;
@@ -72,8 +77,8 @@ public class ClientMessageHandler {
 					.forName(
 							"async.chainreplication.app.client."
 									+ "handler.ApplicationReplyHandler")
-					.getConstructor(ClientMessageHandler.class)
-					.newInstance(this);
+									.getConstructor(ClientMessageHandler.class)
+									.newInstance(this);
 		} catch (InstantiationException | IllegalAccessException
 				| ClassNotFoundException | IllegalArgumentException
 				| InvocationTargetException | NoSuchMethodException
@@ -103,7 +108,8 @@ public class ClientMessageHandler {
 	/**
 	 * Gets the head for chain.
 	 *
-	 * @param chainName the chain name
+	 * @param chainName
+	 *            the chain name
 	 * @return the head for chain
 	 */
 	private Server getHeadForChain(String chainName) {
@@ -142,7 +148,8 @@ public class ClientMessageHandler {
 	/**
 	 * Gets the tail for chain.
 	 *
-	 * @param chainName the chain name
+	 * @param chainName
+	 *            the chain name
 	 * @return the tail for chain
 	 */
 	private Server getTailForChain(String chainName) {
@@ -156,21 +163,23 @@ public class ClientMessageHandler {
 	/**
 	 * Handle client request message.
 	 *
-	 * @param message the message
-	 * @throws ClientChainReplicationException the client chain replication exception
+	 * @param message
+	 *            the message
+	 * @throws ClientChainReplicationException
+	 *             the client chain replication exception
 	 */
 	public void handleClientRequestMessage(ClientRequestMessage message)
 			throws ClientChainReplicationException {
-		String chainName = message.getChainName();
+		final String chainName = message.getChainName();
 		switch (message.getRequestMessage().getRequest().getRequestType()) {
 		case QUERY:
-			Server tail = getTailForChain(chainName);
+			final Server tail = getTailForChain(chainName);
 			clientMessageClientHelper = new UDPClientHelper(tail
 					.getServerProcessDetails().getHost(), tail
 					.getServerProcessDetails().getUdpPort());
 			break;
 		case UPDATE:
-			Server head = getHeadForChain(chainName);
+			final Server head = getHeadForChain(chainName);
 			clientMessageClientHelper = new UDPClientHelper(head
 					.getServerProcessDetails().getHost(), head
 					.getServerProcessDetails().getUdpPort());
@@ -178,25 +187,27 @@ public class ClientMessageHandler {
 		}
 		try {
 			clientMessageClientHelper.sendMessage(message.getRequestMessage());
-		} catch (ConnectClientException e) {
+		} catch (final ConnectClientException e) {
 			throw new ClientChainReplicationException(e);
 		}
-		/*incrementSendSequenceNumber();
-		this.getClientChainReplicationFacade().logMessage(
-				"Outgoing Message-" + sendSequenceNumber + ":"
-						+ message.toString());*/
+		/*
+		 * incrementSendSequenceNumber();
+		 * this.getClientChainReplicationFacade().logMessage(
+		 * "Outgoing Message-" + sendSequenceNumber + ":" + message.toString());
+		 */
 	}
 
 	/**
 	 * Handle master message.
 	 *
-	 * @param message the message
+	 * @param message
+	 *            the message
 	 */
 	public void handleMasterMessage(MasterClientChangeMessage message) {
-		Set<Chain> chains = message.getChainChanges();
+		final Set<Chain> chains = message.getChainChanges();
 		if (!chains.isEmpty()) {
 			synchronized (chainNameToChainMap) {
-				for (Chain chain : chains) {
+				for (final Chain chain : chains) {
 					chainNameToChainMap.put(chain.getChainName(), chain);
 				}
 			}
@@ -207,7 +218,8 @@ public class ClientMessageHandler {
 	/**
 	 * Handle reponse message.
 	 *
-	 * @param message the message
+	 * @param message
+	 *            the message
 	 */
 	public void handleReponseMessage(ResponseOrSyncMessage message) {
 		synchronized (applicationReplyHandler) {
@@ -235,7 +247,8 @@ public class ClientMessageHandler {
 	/**
 	 * Read responses.
 	 *
-	 * @param request the request
+	 * @param request
+	 *            the request
 	 * @return the reply
 	 */
 	public Reply readResponses(Request request) {

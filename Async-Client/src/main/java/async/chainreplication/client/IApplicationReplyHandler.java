@@ -8,11 +8,12 @@ import async.chainreplication.client.server.communication.models.Request;
  * The Interface IApplicationReplyHandler.
  */
 public interface IApplicationReplyHandler {
-	
+
 	/**
 	 * Gets the response for request id.
 	 *
-	 * @param request the request
+	 * @param request
+	 *            the request
 	 * @return the response for request id
 	 */
 	public Reply getResponseForRequestId(Request request);
@@ -20,8 +21,10 @@ public interface IApplicationReplyHandler {
 	/**
 	 * Handle response.
 	 *
-	 * @param request the request
-	 * @param reply the reply
+	 * @param request
+	 *            the request
+	 * @param reply
+	 *            the reply
 	 */
 	public void handleResponse(Request request, Reply reply);
 }

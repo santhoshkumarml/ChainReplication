@@ -17,7 +17,8 @@ public class Accounts {
 	/**
 	 * Adds the account.
 	 *
-	 * @param accountNum the account num
+	 * @param accountNum
+	 *            the account num
 	 * @return the account snapshot
 	 */
 	public AccountSnapshot addAccount(int accountNum) {
@@ -32,7 +33,8 @@ public class Accounts {
 	/**
 	 * Gets the account snapshot.
 	 *
-	 * @param accountNum the account num
+	 * @param accountNum
+	 *            the account num
 	 * @return the account snapshot
 	 */
 	public AccountSnapshot getAccountSnapshot(Integer accountNum) {
@@ -42,32 +44,33 @@ public class Accounts {
 	}
 
 	/**
-	 * Update account snapshot.
-	 *
-	 * @param accountNum the account num
-	 * @param balance the balance
-	 */
-	public void updateAccountSnapshot(Integer accountNum, float balance) {
-		synchronized (accountNumToAccountSnapShot) {
-			accountNumToAccountSnapShot.get(accountNum).setBalance(balance);
-		}
-	}
-
-	/**
 	 * Copy.
 	 *
 	 * @return the accounts
 	 */
 	public Set<AccountSnapshot> getAccountSnapShots() {
-		Set<AccountSnapshot> accountSnapshots = new HashSet<AccountSnapshot>();
+		final Set<AccountSnapshot> accountSnapshots = new HashSet<AccountSnapshot>();
 		synchronized (this) {
-			for (Map.Entry<Integer, AccountSnapshot> accountEntry :
-				this.accountNumToAccountSnapShot.entrySet()){
-				accountSnapshots.add(new AccountSnapshot(
-						accountEntry.getKey(),
+			for (final Map.Entry<Integer, AccountSnapshot> accountEntry : accountNumToAccountSnapShot
+					.entrySet()) {
+				accountSnapshots.add(new AccountSnapshot(accountEntry.getKey(),
 						accountEntry.getValue().getBalance()));
-			}	
+			}
 		}
 		return accountSnapshots;
+	}
+
+	/**
+	 * Update account snapshot.
+	 *
+	 * @param accountNum
+	 *            the account num
+	 * @param balance
+	 *            the balance
+	 */
+	public void updateAccountSnapshot(Integer accountNum, float balance) {
+		synchronized (accountNumToAccountSnapShot) {
+			accountNumToAccountSnapShot.get(accountNum).setBalance(balance);
+		}
 	}
 }

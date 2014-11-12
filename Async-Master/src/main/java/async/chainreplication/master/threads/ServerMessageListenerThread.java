@@ -12,21 +12,23 @@ import async.connection.util.TCPServerStarterHelper;
  * The Class HeartBeatListenerThread.
  */
 public class ServerMessageListenerThread extends Thread {
-	
+
 	/** The should still run. */
 	volatile boolean shouldStillRun = true;
-	
+
 	/** The heart beat server helper. */
 	IServerStarterHelper serverMessagesHelper;
-	
+
 	/** The master impl. */
 	MasterImpl masterImpl;
 
 	/**
 	 * Instantiates a new heart beat listener thread.
 	 *
-	 * @param masterImpl the master impl
-	 * @throws MasterChainReplicationException the master chain replication exception
+	 * @param masterImpl
+	 *            the master impl
+	 * @throws MasterChainReplicationException
+	 *             the master chain replication exception
 	 */
 	public ServerMessageListenerThread(MasterImpl masterImpl)
 			throws MasterChainReplicationException {
@@ -35,21 +37,24 @@ public class ServerMessageListenerThread extends Thread {
 				.getMaster().getMasterPort());
 		try {
 			serverMessagesHelper.initAndStartServer();
-		} catch (ConnectServerException e) {
+		} catch (final ConnectServerException e) {
 			throw new MasterChainReplicationException(e);
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Thread#run()
 	 */
 	public void run() {
 		while (shouldStillRun) {
 			try {
-				ChainReplicationMessage message = (ChainReplicationMessage) serverMessagesHelper
+				final ChainReplicationMessage message = (ChainReplicationMessage) serverMessagesHelper
 						.acceptAndReadObjectConnection();
-				masterImpl.getMasterChainReplicationFacade().deliverMessage(message);
-			} catch (ConnectServerException e) {
+				masterImpl.getMasterChainReplicationFacade().deliverMessage(
+						message);
+			} catch (final ConnectServerException e) {
 				serverMessagesHelper.stopServer();
 				masterImpl.logMessage("Internal Error:" + e.getMessage());
 				e.printStackTrace();

@@ -37,39 +37,46 @@ public class JSONUtility {
 	/**
 	 * Generate randomized requests.
 	 *
-	 * @param client the client
-	 * @param seed the seed
-	 * @param probablities the probablities
-	 * @param numberOfRequests the number of requests
-	 * @param config the config
+	 * @param client
+	 *            the client
+	 * @param seed
+	 *            the seed
+	 * @param probablities
+	 *            the probablities
+	 * @param numberOfRequests
+	 *            the number of requests
+	 * @param config
+	 *            the config
 	 */
 	private static void generateRandomizedRequests(Client client, long seed,
 			float[] probablities, int numberOfRequests, Config config) {
-		Random random = new Random();
+		final Random random = new Random();
 		random.setSeed(seed);
-		List<RequestWithChain> requestWithChains = new ArrayList<RequestWithChain>();
+		final List<RequestWithChain> requestWithChains = new ArrayList<RequestWithChain>();
 		for (int j = 0; j < probablities.length; j++) {
-			float probability = probablities[j];
-			int noOfRequests = (int) (probability * numberOfRequests);
+			final float probability = probablities[j];
+			final int noOfRequests = (int) (probability * numberOfRequests);
 			for (int i = 0; i < noOfRequests; i++) {
-				String requestId = "req" + random.nextInt(numberOfRequests);
-				ApplicationRequest request = new ApplicationRequest(client,
-						requestId);
+				final String requestId = "req"
+						+ random.nextInt(numberOfRequests);
+				final ApplicationRequest request = new ApplicationRequest(
+						client, requestId);
 				request.setRetryCount(random.nextInt(3)); // max 3 retries
-				ApplicationRequestType requestType = ApplicationRequestType
+				final ApplicationRequestType requestType = ApplicationRequestType
 						.values()[j];
-				int accountNum = random.nextInt(Integer.MAX_VALUE);
-				int amount = random.nextInt(100000);// amount restricted to 1
+				final int accountNum = random.nextInt(Integer.MAX_VALUE);
+				final int amount = random.nextInt(100000);// amount restricted
+															// to 1
 				// lakh
 				request.setAccountNum(accountNum);
 				if (requestType != ApplicationRequestType.GET_BALANCE)
 					request.setAmount(amount);
-				List<String> chainIds = new ArrayList<String>();
+				final List<String> chainIds = new ArrayList<String>();
 				chainIds.addAll(config.getChains().keySet());
-				String chainId = chainIds.get(random.nextInt(Integer.MAX_VALUE)
-						% chainIds.size());
+				final String chainId = chainIds.get(random
+						.nextInt(Integer.MAX_VALUE) % chainIds.size());
 				request.setApplicationRequestType(requestType);
-				RequestWithChain requestWithChain = new RequestWithChain(
+				final RequestWithChain requestWithChain = new RequestWithChain(
 						request, chainId);
 				requestWithChains.add(requestWithChain);
 			}
@@ -89,80 +96,79 @@ public class JSONUtility {
 	/**
 	 * Read chains.
 	 *
-	 * @param config the config
-	 * @param jsonObject the json object
+	 * @param config
+	 *            the config
+	 * @param jsonObject
+	 *            the json object
 	 */
 	private static void readChains(Config config, JSONObject jsonObject) {
-		JSONArray jsonArray = (JSONArray) jsonObject.get("Chains");
+		final JSONArray jsonArray = (JSONArray) jsonObject.get("Chains");
 		@SuppressWarnings("unchecked")
-		Iterator<JSONObject> chainIterator = jsonArray.iterator();
+		final Iterator<JSONObject> chainIterator = jsonArray.iterator();
 		while (chainIterator.hasNext()) {
-			JSONObject chainObject = chainIterator.next();
-			String chainId = (String) chainObject.get("ChainId");
-			JSONArray serversArray = (JSONArray) chainObject.get("Servers");
-			int numberOfServers = Integer.parseInt((String) chainObject
+			final JSONObject chainObject = chainIterator.next();
+			final String chainId = (String) chainObject.get("ChainId");
+			final JSONArray serversArray = (JSONArray) chainObject
+					.get("Servers");
+			final int numberOfServers = Integer.parseInt((String) chainObject
 					.get("NumberOfServers"));
-			Map<String, Server> servers = new HashMap<String, Server>();
+			final Map<String, Server> servers = new HashMap<String, Server>();
 			for (int i = 0; i < numberOfServers; i++) {
-				JSONObject serverObject = (JSONObject) serversArray.get(i);
-				String serverId = (String) serverObject.get("ServerId");
-				String chainName = (String) serverObject.get("ChainId");
-				JSONObject processDetails = (JSONObject) serverObject
+				final JSONObject serverObject = (JSONObject) serversArray
+						.get(i);
+				final String serverId = (String) serverObject.get("ServerId");
+				final String chainName = (String) serverObject.get("ChainId");
+				final JSONObject processDetails = (JSONObject) serverObject
 						.get("ProcessDetails");
-				String host = (String) processDetails.get("Host");
-				int tcpPort = Integer.parseInt((String) processDetails
+				final String host = (String) processDetails.get("Host");
+				final int tcpPort = Integer.parseInt((String) processDetails
 						.get("TcpPort"));
-				int udpPort = Integer.parseInt((String) processDetails
+				final int udpPort = Integer.parseInt((String) processDetails
 						.get("UdpPort"));
 				int debugPort = -1;
-				if(processDetails.get("DebugPort") != null) {
-					debugPort = Integer.parseInt((String) processDetails.get("DebugPort"));
+				if (processDetails.get("DebugPort") != null) {
+					debugPort = Integer.parseInt((String) processDetails
+							.get("DebugPort"));
 				}
-				Server server = new Server(serverId, chainName, host);
+				final Server server = new Server(serverId, chainName, host);
 				server.getServerProcessDetails().setHost(host);
 				server.getServerProcessDetails().setTcpPort(tcpPort);
 				server.getServerProcessDetails().setUdpPort(udpPort);
 				server.getServerProcessDetails().setDebugPort(debugPort);
 				servers.put(serverId, server);
 
-				String initialSleepTimeString = (String) processDetails
+				final String initialSleepTimeString = (String) processDetails
 						.get("InitialSleepTime");
 				long initialSleepTime = 0;
-				if (initialSleepTimeString != null && !initialSleepTimeString.isEmpty()) {
+				if (initialSleepTimeString != null
+						&& !initialSleepTimeString.isEmpty()) {
 					initialSleepTime = Long.parseLong(initialSleepTimeString);
-					
+
 				}
-				config.getServerToInitialSleepTime().put(server, initialSleepTime);
-				
-				String timeToLiveString = (String) processDetails
+				config.getServerToInitialSleepTime().put(server,
+						initialSleepTime);
+
+				final String timeToLiveString = (String) processDetails
 						.get("TimeToLive");
 				if (timeToLiveString != null && !timeToLiveString.isEmpty()) {
-					long timeToLive = Long.parseLong(timeToLiveString);
+					final long timeToLive = Long.parseLong(timeToLiveString);
 					config.getServerToTimeToLive().put(server, timeToLive);
 				}
 			}
-			/*Server head = null;
-			Server tail = null;
-			for (int i = 0; i < numberOfServers; i++) {
-				JSONObject serverObject = (JSONObject) serversArray.get(i);
-				String serverId = (String) serverObject.get("ServerId");
-				String predecessor = (String) serverObject.get("Predecessor");
-				String successor = (String) serverObject.get("Successor");
-				Server server = servers.get(serverId);
-				if (!predecessor.isEmpty()) {
-					server.getAdjacencyList().setPredecessor(
-							servers.get(predecessor));
-				} else {
-					head = server;
-				}
-				if (!successor.isEmpty()) {
-					server.getAdjacencyList().setSucessor(
-							servers.get(successor));
-				} else {
-					tail = server;
-				}
-			}*/
-			Chain chain = new Chain(chainId, null, null);
+			/*
+			 * Server head = null; Server tail = null; for (int i = 0; i <
+			 * numberOfServers; i++) { JSONObject serverObject = (JSONObject)
+			 * serversArray.get(i); String serverId = (String)
+			 * serverObject.get("ServerId"); String predecessor = (String)
+			 * serverObject.get("Predecessor"); String successor = (String)
+			 * serverObject.get("Successor"); Server server =
+			 * servers.get(serverId); if (!predecessor.isEmpty()) {
+			 * server.getAdjacencyList().setPredecessor(
+			 * servers.get(predecessor)); } else { head = server; } if
+			 * (!successor.isEmpty()) { server.getAdjacencyList().setSucessor(
+			 * servers.get(successor)); } else { tail = server; } }
+			 */
+			final Chain chain = new Chain(chainId, null, null);
 			config.getChains().put(chainId, chain);
 			config.getChainToServerMap().put(chainId, servers);
 		}
@@ -172,30 +178,33 @@ public class JSONUtility {
 	/**
 	 * Read clients.
 	 *
-	 * @param config the config
-	 * @param jsonObject the json object
+	 * @param config
+	 *            the config
+	 * @param jsonObject
+	 *            the json object
 	 */
 	@SuppressWarnings("unchecked")
 	private static void readClients(Config config, JSONObject jsonObject) {
-		JSONArray jsonArray = (JSONArray) jsonObject.get("Clients");
-		Iterator<JSONObject> clientIterator = jsonArray.iterator();
+		final JSONArray jsonArray = (JSONArray) jsonObject.get("Clients");
+		final Iterator<JSONObject> clientIterator = jsonArray.iterator();
 		while (clientIterator.hasNext()) {
-			JSONObject clientObject = clientIterator.next();
-			String clientId = (String) clientObject.get("ClientId");
-			JSONObject processDetails = (JSONObject) clientObject
+			final JSONObject clientObject = clientIterator.next();
+			final String clientId = (String) clientObject.get("ClientId");
+			final JSONObject processDetails = (JSONObject) clientObject
 					.get("ProcessDetails");
-			String host = (String) processDetails.get("Host");
-			int tcpPort = Integer.parseInt((String) processDetails
+			final String host = (String) processDetails.get("Host");
+			final int tcpPort = Integer.parseInt((String) processDetails
 					.get("TcpPort"));
-			int udpPort = Integer.parseInt((String) processDetails
+			final int udpPort = Integer.parseInt((String) processDetails
 					.get("UdpPort"));
 			int debugPort = -1;
-			if(processDetails.get("DebugPort") != null) {
-				debugPort = Integer.parseInt((String) processDetails.get("DebugPort"));
+			if (processDetails.get("DebugPort") != null) {
+				debugPort = Integer.parseInt((String) processDetails
+						.get("DebugPort"));
 			}
-			int responseWaitTime = Integer.parseInt((String) clientObject
+			final int responseWaitTime = Integer.parseInt((String) clientObject
 					.get("ResponseWaitTime"));
-			Client client = new Client(clientId, host, responseWaitTime);
+			final Client client = new Client(clientId, host, responseWaitTime);
 			client.getClientProcessDetails().setTcpPort(tcpPort);
 			client.getClientProcessDetails().setUdpPort(udpPort);
 			client.getClientProcessDetails().setDebugPort(debugPort);
@@ -207,29 +216,32 @@ public class JSONUtility {
 	/**
 	 * Read config from json.
 	 *
-	 * @param filePath the file path
+	 * @param filePath
+	 *            the file path
 	 * @return the config
-	 * @throws InvalidActivityException the invalid activity exception
+	 * @throws InvalidActivityException
+	 *             the invalid activity exception
 	 */
-	public static Config readConfigFromJSON(String filePath) throws InvalidActivityException {
-		Config config = new Config();
+	public static Config readConfigFromJSON(String filePath)
+			throws InvalidActivityException {
+		final Config config = new Config();
 		FileReader reader = null;
 		try {
 			reader = new FileReader(new File(filePath));
-			JSONParser jsonParser = new JSONParser();
-			JSONObject jsonObject = (JSONObject) jsonParser.parse(reader);
+			final JSONParser jsonParser = new JSONParser();
+			final JSONObject jsonObject = (JSONObject) jsonParser.parse(reader);
 			readChains(config, jsonObject);
 			readClients(config, jsonObject);
 			readRequestTestCases(config, jsonObject);
 			readProbablityAndGenerateTestCases(config, jsonObject);
 			readMaster(config, jsonObject);
 		} catch (IOException | ParseException ex) {
-			throw new InvalidActivityException(ex.getMessage()) ;
+			throw new InvalidActivityException(ex.getMessage());
 		} finally {
 			if (reader != null) {
 				try {
 					reader.close();
-				} catch (IOException e) {
+				} catch (final IOException e) {
 					e.printStackTrace();
 				}
 			}
@@ -240,23 +252,26 @@ public class JSONUtility {
 	/**
 	 * Read master.
 	 *
-	 * @param config the config
-	 * @param jsonObject the json object
+	 * @param config
+	 *            the config
+	 * @param jsonObject
+	 *            the json object
 	 */
 	private static void readMaster(Config config, JSONObject jsonObject) {
-		JSONObject masterObject = (JSONObject) jsonObject.get("Master");
-		String masterName = (String) masterObject.get("MasterName");
-		String masterHost = (String) masterObject.get("MasterHost");
-		int masterPort = Integer.parseInt((String) masterObject
+		final JSONObject masterObject = (JSONObject) jsonObject.get("Master");
+		final String masterName = (String) masterObject.get("MasterName");
+		final String masterHost = (String) masterObject.get("MasterHost");
+		final int masterPort = Integer.parseInt((String) masterObject
 				.get("MasterPort"));
 		int masterDebugPort = -1;
-		if(masterObject.get("MasterDebugPort")!=null) {
+		if (masterObject.get("MasterDebugPort") != null) {
 			masterDebugPort = Integer.parseInt((String) masterObject
 					.get("MasterDebugPort"));
 		}
-		long heartBeatTimeout = Long.parseLong((String) masterObject
+		final long heartBeatTimeout = Long.parseLong((String) masterObject
 				.get("HeartBeatTimeout"));
-		Master master = new Master(masterHost, masterPort, masterName, masterDebugPort);
+		final Master master = new Master(masterHost, masterPort, masterName,
+				masterDebugPort);
 		master.setHeartbeatTimeout(heartBeatTimeout);
 		config.setMaster(master);
 	}
@@ -264,30 +279,33 @@ public class JSONUtility {
 	/**
 	 * Read probablity and generate test cases.
 	 *
-	 * @param config the config
-	 * @param jsonObject the json object
+	 * @param config
+	 *            the config
+	 * @param jsonObject
+	 *            the json object
 	 */
 	private static void readProbablityAndGenerateTestCases(Config config,
 			JSONObject jsonObject) {
-		JSONArray probablityRequests = (JSONArray) jsonObject
+		final JSONArray probablityRequests = (JSONArray) jsonObject
 				.get("ProbabilityRequests");
 		if (probablityRequests == null || probablityRequests.isEmpty())
 			return;
 		@SuppressWarnings("unchecked")
-		Iterator<JSONObject> probablityRequestIterator = probablityRequests
-		.iterator();
+		final Iterator<JSONObject> probablityRequestIterator = probablityRequests
+				.iterator();
 		while (probablityRequestIterator.hasNext()) {
-			JSONObject probabilityRequestObject = probablityRequestIterator
+			final JSONObject probabilityRequestObject = probablityRequestIterator
 					.next();
-			String clientId = (String) probabilityRequestObject.get("ClientId");
-			Client client = config.getClients().get(clientId);
-			int numberOfRequests = Integer
+			final String clientId = (String) probabilityRequestObject
+					.get("ClientId");
+			final Client client = config.getClients().get(clientId);
+			final int numberOfRequests = Integer
 					.parseInt((String) probabilityRequestObject
 							.get("NumberOfRequests"));
-			long seed = Long.parseLong((String) probabilityRequestObject
+			final long seed = Long.parseLong((String) probabilityRequestObject
 					.get("Seed"));
-			float probablity[] = new float[3];
-			JSONObject probabilityJson = ((JSONObject) probabilityRequestObject
+			final float probablity[] = new float[3];
+			final JSONObject probabilityJson = ((JSONObject) probabilityRequestObject
 					.get("Probability"));
 			probablity[ApplicationRequestType.GET_BALANCE.ordinal()] = Float
 					.parseFloat(((String) probabilityJson
@@ -311,36 +329,39 @@ public class JSONUtility {
 	/**
 	 * Read request test cases.
 	 *
-	 * @param config the config
-	 * @param jsonObject the json object
+	 * @param config
+	 *            the config
+	 * @param jsonObject
+	 *            the json object
 	 */
 	private static void readRequestTestCases(Config config,
 			JSONObject jsonObject) {
-		JSONArray jsonArray = (JSONArray) jsonObject.get("Requests");
+		final JSONArray jsonArray = (JSONArray) jsonObject.get("Requests");
 		@SuppressWarnings("unchecked")
-		Iterator<JSONObject> requestIterator = jsonArray.iterator();
+		final Iterator<JSONObject> requestIterator = jsonArray.iterator();
 		while (requestIterator.hasNext()) {
-			JSONObject requestObject = requestIterator.next();
-			String chainId = (String) requestObject.get("ChainId");
-			String clientId = (String) requestObject.get("ClientId");
-			String requestId = (String) requestObject.get("RequestId");
+			final JSONObject requestObject = requestIterator.next();
+			final String chainId = (String) requestObject.get("ChainId");
+			final String clientId = (String) requestObject.get("ClientId");
+			final String requestId = (String) requestObject.get("RequestId");
 
-			int accountNum = Integer.parseInt((String) requestObject
+			final int accountNum = Integer.parseInt((String) requestObject
 					.get("AccountNumber"));
-			ApplicationRequestType requestType = ApplicationRequestType
+			final ApplicationRequestType requestType = ApplicationRequestType
 					.valueOf((String) requestObject.get("RequestType"));
-			Client client = config.getClients().get(clientId);
-			ApplicationRequest applicationRequest = new ApplicationRequest(
+			final Client client = config.getClients().get(clientId);
+			final ApplicationRequest applicationRequest = new ApplicationRequest(
 					client, requestId);
-			String retryCountString = (String) requestObject.get("RetryCount");
+			final String retryCountString = (String) requestObject
+					.get("RetryCount");
 			if (retryCountString != null && !retryCountString.isEmpty()) {
 				applicationRequest.setRetryCount(Integer
 						.parseInt(retryCountString));
 			}
 			applicationRequest.setAccountNum(accountNum);
-			String amountString = (String) requestObject.get("Amount");
+			final String amountString = (String) requestObject.get("Amount");
 			if (amountString != null && !amountString.isEmpty()) {
-				int amount = Integer.parseInt(amountString);
+				final int amount = Integer.parseInt(amountString);
 				applicationRequest.setAmount(amount);
 			}
 			applicationRequest.setApplicationRequestType(requestType);
@@ -350,7 +371,7 @@ public class JSONUtility {
 				testCases = new TestCases();
 			}
 			testCases.setClient(client);
-			RequestWithChain requestWithChain = new RequestWithChain(
+			final RequestWithChain requestWithChain = new RequestWithChain(
 					applicationRequest, chainId);
 			testCases.getRequests().add(requestWithChain);
 			config.getTestCases().put(client, testCases);

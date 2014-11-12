@@ -10,15 +10,17 @@ public class Response {
 
 	/** The request id. */
 	String requestId;
-	
+
 	/** The application reply. */
 	ApplicationReply applicationReply;
 
 	/**
 	 * Instantiates a new response.
 	 *
-	 * @param requestId the request id
-	 * @param applicationReply the application reply
+	 * @param requestId
+	 *            the request id
+	 * @param applicationReply
+	 *            the application reply
 	 */
 	public Response(String requestId, ApplicationReply applicationReply) {
 		super();

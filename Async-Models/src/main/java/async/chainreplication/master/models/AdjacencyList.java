@@ -7,21 +7,23 @@ import java.io.Serializable;
  * The Class AdjacencyList.
  */
 public class AdjacencyList implements Serializable {
-	
+
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = -1825439574320948280L;
-	
+
 	/** The predecessor. */
 	Server predecessor;
-	
+
 	/** The sucessor. */
 	Server sucessor;
 
 	/**
 	 * Instantiates a new adjacency list.
 	 *
-	 * @param predecessor the predecessor
-	 * @param sucessor the sucessor
+	 * @param predecessor
+	 *            the predecessor
+	 * @param sucessor
+	 *            the sucessor
 	 */
 	public AdjacencyList(Server predecessor, Server sucessor) {
 		this.predecessor = predecessor;
@@ -49,7 +51,8 @@ public class AdjacencyList implements Serializable {
 	/**
 	 * Sets the predecessor.
 	 *
-	 * @param predecessor the new predecessor
+	 * @param predecessor
+	 *            the new predecessor
 	 */
 	public void setPredecessor(Server predecessor) {
 		this.predecessor = predecessor;
@@ -58,13 +61,16 @@ public class AdjacencyList implements Serializable {
 	/**
 	 * Sets the sucessor.
 	 *
-	 * @param sucessor the new sucessor
+	 * @param sucessor
+	 *            the new sucessor
 	 */
 	public void setSucessor(Server sucessor) {
 		this.sucessor = sucessor;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	@Override

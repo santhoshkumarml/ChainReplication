@@ -26,20 +26,23 @@ public class HistoryOfRequests {
 	/**
 	 * Adds the to history.
 	 *
-	 * @param requestKey the request key
-	 * @param request the request
-	 * @param reply the reply
+	 * @param requestKey
+	 *            the request key
+	 * @param request
+	 *            the request
+	 * @param reply
+	 *            the reply
 	 */
 	public void addToHistory(RequestKey requestKey, Request request, Reply reply) {
 		synchronized (requestToReply) {
 			if (!isHistoryPresent(requestKey)) {
-				if(requestKey.getSequenceNumber() == 0) {
+				if (requestKey.getSequenceNumber() == 0) {
 					requestKey.setSequenceNumber(++greatestSequenceNumber);
 				}
 				requestToReply.put(requestKey, reply);
 				requestKeyToRequest.put(requestKey, request);
-				if(requestKey.getSequenceNumber() > greatestSequenceNumber) {
-					this.greatestSequenceNumber = requestKey.getSequenceNumber();
+				if (requestKey.getSequenceNumber() > greatestSequenceNumber) {
+					greatestSequenceNumber = requestKey.getSequenceNumber();
 				}
 			}
 		}
@@ -48,7 +51,8 @@ public class HistoryOfRequests {
 	/**
 	 * Gets the exisisting reply.
 	 *
-	 * @param requestKey the request key
+	 * @param requestKey
+	 *            the request key
 	 * @return the exisisting reply
 	 */
 	public Reply getExisistingReply(RequestKey requestKey) {
@@ -60,7 +64,8 @@ public class HistoryOfRequests {
 	/**
 	 * Gets the exisisting request.
 	 *
-	 * @param requestKey the request key
+	 * @param requestKey
+	 *            the request key
 	 * @return the exisisting request
 	 */
 	public Request getExisistingRequest(RequestKey requestKey) {
@@ -70,9 +75,19 @@ public class HistoryOfRequests {
 	}
 
 	/**
+	 * Gets the greatest sequence number received.
+	 *
+	 * @return the greatest sequence number received
+	 */
+	public int getGreatestSequenceNumberReceived() {
+		return greatestSequenceNumber;
+	}
+
+	/**
 	 * Checks if is history present.
 	 *
-	 * @param requestKey the request key
+	 * @param requestKey
+	 *            the request key
 	 * @return true, if is history present
 	 */
 	public boolean isHistoryPresent(RequestKey requestKey) {
@@ -81,23 +96,13 @@ public class HistoryOfRequests {
 		}
 	}
 
-
-	/**
-	 * Gets the greatest sequence number received.
-	 *
-	 * @return the greatest sequence number received
-	 */
-	public int getGreatestSequenceNumberReceived() {
-		return this.greatestSequenceNumber;
-	}
-	
 	/**
 	 * List request keys.
 	 *
 	 * @return the sets the
 	 */
 	public Set<RequestKey> listRequestKeys() {
-		return this.requestKeyToRequest.keySet();
+		return requestKeyToRequest.keySet();
 	}
 
 }

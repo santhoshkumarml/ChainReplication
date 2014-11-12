@@ -15,18 +15,20 @@ public class RequestQueryOrUpdateThread extends Thread {
 
 	/** The request server helper. */
 	IServerStarterHelper requestServerHelper;
-	
+
 	/** The server impl. */
 	ServerImpl serverImpl;
-	
+
 	/** The should still run. */
 	boolean shouldStillRun = true;
 
 	/**
 	 * Instantiates a new request query or update thread.
 	 *
-	 * @param serverImpl the server impl
-	 * @throws ServerChainReplicationException the server chain replication exception
+	 * @param serverImpl
+	 *            the server impl
+	 * @throws ServerChainReplicationException
+	 *             the server chain replication exception
 	 */
 	public RequestQueryOrUpdateThread(ServerImpl serverImpl)
 			throws ServerChainReplicationException {
@@ -37,13 +39,15 @@ public class RequestQueryOrUpdateThread extends Thread {
 					.getServer().getServerProcessDetails().getUdpPort());
 			try {
 				requestServerHelper.initAndStartServer();
-			} catch (ConnectServerException e) {
+			} catch (final ConnectServerException e) {
 				throw new ServerChainReplicationException(e);
 			}
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Thread#run()
 	 */
 	public void run() {
@@ -54,20 +58,22 @@ public class RequestQueryOrUpdateThread extends Thread {
 			try {
 				message = (ChainReplicationMessage) requestServerHelper
 						.acceptAndReadObjectConnection();
-			} catch (ConnectServerException e) {
+			} catch (final ConnectServerException e) {
 				e.printStackTrace();
 				serverImpl.logMessage("Internal Error:" + e.getMessage());
 				break;
 			}
 			serverImpl.getServerChainReplicationFacade()
-					.deliverMessage(message);
-			/*serverImpl.getServerChainReplicationFacade()
-					.getServerMessageHandler().incrementReceiveSequenceNumber();
-			int receiveSequenceNumber = serverImpl
-					.getServerChainReplicationFacade()
-					.getServerMessageHandler().getReceiveSequenceNumber();
-			serverImpl.logMessage("Incoming Message-" + receiveSequenceNumber
-					+ ":" + message.toString());*/
+			.deliverMessage(message);
+			/*
+			 * serverImpl.getServerChainReplicationFacade()
+			 * .getServerMessageHandler().incrementReceiveSequenceNumber(); int
+			 * receiveSequenceNumber = serverImpl
+			 * .getServerChainReplicationFacade()
+			 * .getServerMessageHandler().getReceiveSequenceNumber();
+			 * serverImpl.logMessage("Incoming Message-" + receiveSequenceNumber
+			 * + ":" + message.toString());
+			 */
 		}
 		requestServerHelper.stopServer();
 	}

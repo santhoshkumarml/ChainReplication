@@ -26,7 +26,8 @@ public class SentHistory {
 	/**
 	 * Adds the to sent history.
 	 *
-	 * @param requestKey the request key
+	 * @param requestKey
+	 *            the request key
 	 */
 	public void addToSentHistory(RequestKey requestKey) {
 		synchronized (requestKeys) {
@@ -35,9 +36,28 @@ public class SentHistory {
 	}
 
 	/**
+	 * Gets the request keys from sent.
+	 *
+	 * @param sequenceNumber
+	 *            the sequence number
+	 * @return the request keys from sent
+	 */
+	public List<RequestKey> getRequestKeysFromSent(int sequenceNumber) {
+		final List<RequestKey> matchingRequestKeys = new ArrayList<RequestKey>();
+		synchronized (requestKeys) {
+			final int lastKey = requestKeys.lastKey();
+			for (int i = sequenceNumber + 1; i <= lastKey; i++) {
+				matchingRequestKeys.add(requestKeys.get(i));
+			}
+		}
+		return matchingRequestKeys;
+	}
+
+	/**
 	 * Removes the from sent.
 	 *
-	 * @param sequenceNumber the sequence number
+	 * @param sequenceNumber
+	 *            the sequence number
 	 */
 	public void removeFromSent(int sequenceNumber) {
 		synchronized (requestKeys) {
@@ -50,7 +70,8 @@ public class SentHistory {
 	/**
 	 * Removes the from sent.
 	 *
-	 * @param requestKey the request key
+	 * @param requestKey
+	 *            the request key
 	 */
 	public void removeFromSent(RequestKey requestKey) {
 		synchronized (requestKeys) {
@@ -58,22 +79,5 @@ public class SentHistory {
 				requestKeys.remove(i);
 			}
 		}
-	}
-
-	/**
-	 * Gets the request keys from sent.
-	 *
-	 * @param sequenceNumber the sequence number
-	 * @return the request keys from sent
-	 */
-	public List<RequestKey> getRequestKeysFromSent(int sequenceNumber) {
-		List<RequestKey> matchingRequestKeys = new ArrayList<RequestKey>();
-		synchronized (requestKeys) {
-			int lastKey = this.requestKeys.lastKey();
-			for(int i=sequenceNumber+1;i<=lastKey;i++) {
-				matchingRequestKeys.add(this.requestKeys.get(i));
-			}
-		}
-		return matchingRequestKeys;
 	}
 }

@@ -10,18 +10,20 @@ public class AccountSnapshot implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 7489153312094528373L;
-	
+
 	/** The account num. */
 	int accountNum;
-	
+
 	/** The balance. */
 	float balance;
 
 	/**
 	 * Instantiates a new account snapshot.
 	 *
-	 * @param accountNum the account num
-	 * @param balance the balance
+	 * @param accountNum
+	 *            the account num
+	 * @param balance
+	 *            the balance
 	 */
 	public AccountSnapshot(int accountNum, float balance) {
 		super();
@@ -50,7 +52,8 @@ public class AccountSnapshot implements Serializable {
 	/**
 	 * Sets the account num.
 	 *
-	 * @param accountNum the new account num
+	 * @param accountNum
+	 *            the new account num
 	 */
 	public void setAccountNum(int accountNum) {
 		this.accountNum = accountNum;
@@ -59,13 +62,16 @@ public class AccountSnapshot implements Serializable {
 	/**
 	 * Sets the balance.
 	 *
-	 * @param balance the new balance
+	 * @param balance
+	 *            the new balance
 	 */
 	public void setBalance(float balance) {
 		this.balance = balance;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	@Override

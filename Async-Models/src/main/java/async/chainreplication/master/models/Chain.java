@@ -7,25 +7,28 @@ import java.io.Serializable;
  * The Class Chain.
  */
 public class Chain implements Serializable {
-	
+
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1094492046636943340L;
-	
+
 	/** The chain name. */
 	String chainName;
-	
+
 	/** The head. */
 	Server head;
-	
+
 	/** The tail. */
 	Server tail;
 
 	/**
 	 * Instantiates a new chain.
 	 *
-	 * @param bankName the bank name
-	 * @param head the head
-	 * @param tail the tail
+	 * @param bankName
+	 *            the bank name
+	 * @param head
+	 *            the head
+	 * @param tail
+	 *            the tail
 	 */
 	public Chain(String bankName, Server head, Server tail) {
 		chainName = bankName;
@@ -63,7 +66,8 @@ public class Chain implements Serializable {
 	/**
 	 * Sets the chain name.
 	 *
-	 * @param chainName the new chain name
+	 * @param chainName
+	 *            the new chain name
 	 */
 	public void setChainName(String chainName) {
 		this.chainName = chainName;
@@ -72,7 +76,8 @@ public class Chain implements Serializable {
 	/**
 	 * Sets the head.
 	 *
-	 * @param head the new head
+	 * @param head
+	 *            the new head
 	 */
 	public void setHead(Server head) {
 		this.head = head;
@@ -81,7 +86,8 @@ public class Chain implements Serializable {
 	/**
 	 * Sets the tail.
 	 *
-	 * @param tail the new tail
+	 * @param tail
+	 *            the new tail
 	 */
 	public void setTail(Server tail) {
 		this.tail = tail;

@@ -9,21 +9,23 @@ import async.chainreplication.client.server.communication.models.Request;
  * The Class RequestWithChain.
  */
 public class RequestWithChain implements Serializable {
-	
+
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 8331602387525625831L;
 
 	/** The request. */
 	Request request;
-	
+
 	/** The chain name. */
 	String chainName;
 
 	/**
 	 * Instantiates a new request with chain.
 	 *
-	 * @param request the request
-	 * @param chainName the chain name
+	 * @param request
+	 *            the request
+	 * @param chainName
+	 *            the chain name
 	 */
 	public RequestWithChain(Request request, String chainName) {
 		super();
@@ -52,7 +54,8 @@ public class RequestWithChain implements Serializable {
 	/**
 	 * Sets the chain name.
 	 *
-	 * @param chainName the new chain name
+	 * @param chainName
+	 *            the new chain name
 	 */
 	public void setChainName(String chainName) {
 		this.chainName = chainName;
@@ -61,13 +64,16 @@ public class RequestWithChain implements Serializable {
 	/**
 	 * Sets the request.
 	 *
-	 * @param request the new request
+	 * @param request
+	 *            the new request
 	 */
 	public void setRequest(Request request) {
 		this.request = request;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	@Override

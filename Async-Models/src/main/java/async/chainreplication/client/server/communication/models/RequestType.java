@@ -5,9 +5,9 @@ package async.chainreplication.client.server.communication.models;
  * The Enum RequestType.
  */
 public enum RequestType {
-	
+
 	/** The query. */
-	QUERY, 
- /** The update. */
- UPDATE;
+	QUERY,
+	/** The update. */
+	UPDATE;
 }

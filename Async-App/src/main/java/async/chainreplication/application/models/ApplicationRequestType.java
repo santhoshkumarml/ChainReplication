@@ -7,16 +7,15 @@ import async.chainreplication.client.server.communication.models.RequestType;
  * The Enum ApplicationRequestType.
  */
 public enum ApplicationRequestType {
-	
+
 	/** The get balance. */
-	GET_BALANCE(RequestType.QUERY), 
- /** The deposit. */
- DEPOSIT(RequestType.UPDATE), 
- /** The withdraw. */
- WITHDRAW(
-			RequestType.UPDATE), 
- /** The transfer. */
- TRANSFER(RequestType.UPDATE);
+	GET_BALANCE(RequestType.QUERY),
+	/** The deposit. */
+	DEPOSIT(RequestType.UPDATE),
+	/** The withdraw. */
+	WITHDRAW(RequestType.UPDATE),
+	/** The transfer. */
+	TRANSFER(RequestType.UPDATE);
 
 	/** The request type. */
 	private RequestType requestType;
@@ -24,7 +23,8 @@ public enum ApplicationRequestType {
 	/**
 	 * Instantiates a new application request type.
 	 *
-	 * @param requestType the request type
+	 * @param requestType
+	 *            the request type
 	 */
 	ApplicationRequestType(RequestType requestType) {
 		this.requestType = requestType;

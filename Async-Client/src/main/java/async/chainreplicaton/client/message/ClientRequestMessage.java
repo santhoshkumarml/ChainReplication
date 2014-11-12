@@ -15,15 +15,17 @@ public class ClientRequestMessage extends ChainReplicationMessage {
 
 	/** The chain name. */
 	String chainName;
-	
+
 	/** The request message. */
 	RequestMessage requestMessage;
 
 	/**
 	 * Instantiates a new client request message.
 	 *
-	 * @param chainName the chain name
-	 * @param requestMessage the request message
+	 * @param chainName
+	 *            the chain name
+	 * @param requestMessage
+	 *            the request message
 	 */
 	public ClientRequestMessage(String chainName, RequestMessage requestMessage) {
 		super(Priority.HIGH_PRIORITY);
@@ -52,7 +54,8 @@ public class ClientRequestMessage extends ChainReplicationMessage {
 	/**
 	 * Sets the chain name.
 	 *
-	 * @param chainName the new chain name
+	 * @param chainName
+	 *            the new chain name
 	 */
 	public void setChainName(String chainName) {
 		this.chainName = chainName;
@@ -61,13 +64,16 @@ public class ClientRequestMessage extends ChainReplicationMessage {
 	/**
 	 * Sets the request message.
 	 *
-	 * @param requestMessage the new request message
+	 * @param requestMessage
+	 *            the new request message
 	 */
 	public void setRequestMessage(RequestMessage requestMessage) {
 		this.requestMessage = requestMessage;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	@Override

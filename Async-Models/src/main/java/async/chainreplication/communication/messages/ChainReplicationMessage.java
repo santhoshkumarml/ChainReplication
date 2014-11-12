@@ -7,7 +7,7 @@ import java.io.Serializable;
  * The Class ChainReplicationMessage.
  */
 public abstract class ChainReplicationMessage implements Serializable {
-	
+
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = -8967268676106433943L;
 
@@ -17,7 +17,8 @@ public abstract class ChainReplicationMessage implements Serializable {
 	/**
 	 * Instantiates a new chain replication message.
 	 *
-	 * @param priority the priority
+	 * @param priority
+	 *            the priority
 	 */
 	public ChainReplicationMessage(Priority priority) {
 		this.priority = priority;

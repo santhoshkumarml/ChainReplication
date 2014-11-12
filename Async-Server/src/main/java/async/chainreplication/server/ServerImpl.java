@@ -22,13 +22,14 @@ public class ServerImpl extends ChainReplicationImpl {
 	/**
 	 * The main method.
 	 *
-	 * @param args the arguments
+	 * @param args
+	 *            the arguments
 	 */
 	public static void main(String args[]) {
-		Config config = ConfigUtil.deserializeFromFile(args[0]);
+		final Config config = ConfigUtil.deserializeFromFile(args[0]);
 		// String command = args[3];
-		String chainName = args[1];
-		String serverId = args[2];
+		final String chainName = args[1];
+		final String serverId = args[2];
 		// assert command.trim().equals("start")||command.trim().equals("stop");
 		// if(command.trim().equals("start")) {
 		serverImpl = new ServerImpl(config, chainName, serverId);
@@ -62,9 +63,12 @@ public class ServerImpl extends ChainReplicationImpl {
 	/**
 	 * Instantiates a new server impl.
 	 *
-	 * @param config the config
-	 * @param chainName the chain name
-	 * @param serverId the server id
+	 * @param config
+	 *            the config
+	 * @param chainName
+	 *            the chain name
+	 * @param serverId
+	 *            the server id
 	 */
 	public ServerImpl(Config config, String chainName, String serverId) {
 		super(chainName + "-" + serverId);
@@ -73,14 +77,13 @@ public class ServerImpl extends ChainReplicationImpl {
 					config.getChainToServerMap().get(chainName).get(serverId),
 					config.getChains(), config.getMaster(), this);
 			heartBeatTimeOut = config.getMaster().getHeartbeatTimeout();
-		} catch (ServerChainReplicationException e) {
+		} catch (final ServerChainReplicationException e) {
 			this.logMessage(e.getMessage());
 		}
 		try {
-			Thread.sleep(
-					config.getServerToInitialSleepTime().get(
-							config.getChainToServerMap().get(chainName).get(serverId)));
-		} catch (InterruptedException e) {
+			Thread.sleep(config.getServerToInitialSleepTime().get(
+					config.getChainToServerMap().get(chainName).get(serverId)));
+		} catch (final InterruptedException e) {
 			e.printStackTrace();
 			e.printStackTrace();
 		}
@@ -113,7 +116,9 @@ public class ServerImpl extends ChainReplicationImpl {
 		return serverChainReplicationFacade;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see aync.chainreplication.base.impl.ChainReplicationImpl#init()
 	 */
 	public void init() {
@@ -122,7 +127,7 @@ public class ServerImpl extends ChainReplicationImpl {
 			this.logMessage("Server Starting" + this.getServer());
 			try {
 				heartBeatSenderTimer = new Timer();
-				HeartBeatSenderTask heartBeatSender = new HeartBeatSenderTask(
+				final HeartBeatSenderTask heartBeatSender = new HeartBeatSenderTask(
 						this);
 				heartBeatSenderTimer.scheduleAtFixedRate(heartBeatSender, 0,
 						(heartBeatTimeOut - 3000));
@@ -133,7 +138,7 @@ public class ServerImpl extends ChainReplicationImpl {
 						this);
 				chainMessageListenerThread.start();
 				serverChainReplicationFacade.startProcessingMessages();
-			} catch (ServerChainReplicationException e) {
+			} catch (final ServerChainReplicationException e) {
 				this.logMessage(e.getMessage());
 				this.stop();
 				e.printStackTrace();
@@ -164,10 +169,11 @@ public class ServerImpl extends ChainReplicationImpl {
 	/**
 	 * Log message.
 	 *
-	 * @param message the message
+	 * @param message
+	 *            the message
 	 */
 	public void logMessage(String message) {
-		LogMessage logMessage = new LogMessage(message);
+		final LogMessage logMessage = new LogMessage(message);
 		this.getLogMessages().enqueueMessageObject(
 				logMessage.getPriority().ordinal(), logMessage);
 	}
@@ -181,7 +187,7 @@ public class ServerImpl extends ChainReplicationImpl {
 			heartBeatSenderTimer.wait();
 			requestOrQueryUpdateThread.wait();
 			chainMessageListenerThread.wait();
-		} catch (InterruptedException e) {
+		} catch (final InterruptedException e) {
 			this.logMessage("Internal Error:" + e.getMessage());
 			e.printStackTrace();
 		}
@@ -197,7 +203,9 @@ public class ServerImpl extends ChainReplicationImpl {
 		chainMessageListenerThread.notifyAll();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see aync.chainreplication.base.impl.ChainReplicationImpl#stop()
 	 */
 	public void stop() {

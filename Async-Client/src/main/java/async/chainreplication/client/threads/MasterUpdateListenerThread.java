@@ -12,21 +12,23 @@ import async.connection.util.TCPServerStarterHelper;
  * The Class MasterUpdateListenerThread.
  */
 public class MasterUpdateListenerThread extends Thread {
-	
+
 	/** The client impl. */
 	ClientImpl clientImpl;
-	
+
 	/** The should still run. */
 	volatile boolean shouldStillRun = true;
-	
+
 	/** The master message listener. */
 	IServerStarterHelper masterMessageListener = null;
 
 	/**
 	 * Instantiates a new master update listener thread.
 	 *
-	 * @param clientImpl the client impl
-	 * @throws ClientChainReplicationException the client chain replication exception
+	 * @param clientImpl
+	 *            the client impl
+	 * @throws ClientChainReplicationException
+	 *             the client chain replication exception
 	 */
 	public MasterUpdateListenerThread(ClientImpl clientImpl)
 			throws ClientChainReplicationException {
@@ -35,12 +37,14 @@ public class MasterUpdateListenerThread extends Thread {
 				.getClient().getClientProcessDetails().getTcpPort());
 		try {
 			masterMessageListener.initAndStartServer();
-		} catch (ConnectServerException e) {
+		} catch (final ConnectServerException e) {
 			throw new ClientChainReplicationException(e);
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Thread#run()
 	 */
 	public void run() {
@@ -58,12 +62,14 @@ public class MasterUpdateListenerThread extends Thread {
 				break;
 			}
 			clientImpl.getClientChainReplicationFacade()
-					.getClientMessageHandler().incrementReceiveSequenceNumber();
-			/*int receiveSequenceNumber = clientImpl
-					.getClientChainReplicationFacade()
-					.getClientMessageHandler().getReceiveSequenceNumber();
-			clientImpl.logMessage("Incoming Message-" + receiveSequenceNumber
-					+ ":" + masterMessage.toString());*/
+			.getClientMessageHandler().incrementReceiveSequenceNumber();
+			/*
+			 * int receiveSequenceNumber = clientImpl
+			 * .getClientChainReplicationFacade()
+			 * .getClientMessageHandler().getReceiveSequenceNumber();
+			 * clientImpl.logMessage("Incoming Message-" + receiveSequenceNumber
+			 * + ":" + masterMessage.toString());
+			 */
 		}
 	}
 

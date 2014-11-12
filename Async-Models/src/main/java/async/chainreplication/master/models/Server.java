@@ -7,28 +7,31 @@ import java.io.Serializable;
  * The Class Server.
  */
 public class Server implements Serializable {
-	
+
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = -7755158858181878162L;
-	
+
 	/** The server id. */
 	String serverId;
-	
+
 	/** The chain name. */
 	String chainName;
-	
+
 	/** The server process details. */
 	ProcessDetails serverProcessDetails;
-	
+
 	/** The adjacency list. */
 	AdjacencyList adjacencyList = new AdjacencyList(null, null);
 
 	/**
 	 * Instantiates a new server.
 	 *
-	 * @param serverId the server id
-	 * @param chainName the chain name
-	 * @param host the host
+	 * @param serverId
+	 *            the server id
+	 * @param chainName
+	 *            the chain name
+	 * @param host
+	 *            the host
 	 */
 	public Server(String serverId, String chainName, String host) {
 		this.serverId = serverId;
@@ -37,7 +40,9 @@ public class Server implements Serializable {
 		serverProcessDetails.setHost(host);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
@@ -48,7 +53,7 @@ public class Server implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Server other = (Server) obj;
+		final Server other = (Server) obj;
 		if (chainName == null) {
 			if (other.chainName != null)
 				return false;
@@ -98,7 +103,9 @@ public class Server implements Serializable {
 		return serverProcessDetails;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -133,7 +140,8 @@ public class Server implements Serializable {
 	/**
 	 * Sets the adjacency list.
 	 *
-	 * @param adjacencyList the new adjacency list
+	 * @param adjacencyList
+	 *            the new adjacency list
 	 */
 	public void setAdjacencyList(AdjacencyList adjacencyList) {
 		this.adjacencyList = adjacencyList;
@@ -142,7 +150,8 @@ public class Server implements Serializable {
 	/**
 	 * Sets the bank name.
 	 *
-	 * @param bankName the new bank name
+	 * @param bankName
+	 *            the new bank name
 	 */
 	public void setBankName(String bankName) {
 		chainName = bankName;
@@ -151,13 +160,16 @@ public class Server implements Serializable {
 	/**
 	 * Sets the server id.
 	 *
-	 * @param serverId the new server id
+	 * @param serverId
+	 *            the new server id
 	 */
 	public void setServerId(String serverId) {
 		this.serverId = serverId;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	@Override

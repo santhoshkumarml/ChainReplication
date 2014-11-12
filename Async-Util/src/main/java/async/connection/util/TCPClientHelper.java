@@ -10,25 +10,29 @@ import java.net.Socket;
  * The Class TCPClientHelper.
  */
 public class TCPClientHelper implements IClientHelper {
-	
+
 	/** The server host. */
 	String serverHost;
-	
+
 	/** The port. */
 	int port;
 
 	/**
 	 * Instantiates a new TCP client helper.
 	 *
-	 * @param serverHost the server host
-	 * @param port the port
+	 * @param serverHost
+	 *            the server host
+	 * @param port
+	 *            the port
 	 */
 	public TCPClientHelper(String serverHost, int port) {
 		this.serverHost = serverHost;
 		this.port = port;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see async.connection.util.IClientHelper#sendMessage(java.lang.Object)
 	 */
 	@Override
@@ -41,26 +45,26 @@ public class TCPClientHelper implements IClientHelper {
 			try {
 				os = new ObjectOutputStream(clientSocket.getOutputStream());
 				os.writeObject(message);
-			} catch (IOException e) {
+			} catch (final IOException e) {
 				throw new ConnectClientException(e);
 			} finally {
 				if (os != null) {
 					try {
 						os.close();
-					} catch (IOException e) {
+					} catch (final IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}
 			}
 
-		} catch (IOException e1) {
+		} catch (final IOException e1) {
 			throw new ConnectClientException(e1);
 		} finally {
 			if (clientSocket != null) {
 				try {
 					clientSocket.close();
-				} catch (IOException e) {
+				} catch (final IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}

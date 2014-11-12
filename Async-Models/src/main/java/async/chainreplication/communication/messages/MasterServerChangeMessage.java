@@ -24,7 +24,8 @@ public class MasterServerChangeMessage extends MasterMessage {
 	/**
 	 * Instantiates a new master server change message.
 	 *
-	 * @param server the server
+	 * @param server
+	 *            the server
 	 */
 	public MasterServerChangeMessage(Server server) {
 		super(Priority.REALTIME_PRIORITY);
@@ -50,7 +51,9 @@ public class MasterServerChangeMessage extends MasterMessage {
 		return server;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
