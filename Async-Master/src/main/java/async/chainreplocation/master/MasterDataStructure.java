@@ -40,7 +40,6 @@ public class MasterDataStructure {
 	 *
 	 * @param chains the chains
 	 * @param master the master
-	 * @param chainToServerMap the chain to server map
 	 * @param clients the clients
 	 */
 	public MasterDataStructure(Map<String, Chain> chains,

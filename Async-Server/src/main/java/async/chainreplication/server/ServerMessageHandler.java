@@ -525,8 +525,7 @@ public class ServerMessageHandler {
 	 * Handle chain join reply message.
 	 *
 	 * @param message the message
-	 * @throws ServerChainReplicationException 
-	 * @throws ConnectClientException the connect client exception
+	 * @throws ServerChainReplicationException the server chain replication exception
 	 */
 	public void handleChainJoinReplyMessage(MasterChainJoinReplyMessage message) throws ServerChainReplicationException {
 		if(message.getExisistingTail() == null) {
@@ -550,6 +549,11 @@ public class ServerMessageHandler {
 		}
 	}
 
+	/**
+	 * Handle start server.
+	 *
+	 * @throws ServerChainReplicationException the server chain replication exception
+	 */
 	public void handleStartServer() throws ServerChainReplicationException {
 		ChainJoinMessage joinMessage = new ChainJoinMessage(this.server);
 		IClientHelper masterContacter = new TCPClientHelper(master.getMasterHost(), master.getMasterPort());

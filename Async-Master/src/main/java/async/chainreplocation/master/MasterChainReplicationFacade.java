@@ -35,6 +35,7 @@ public class MasterChainReplicationFacade {
 	MessageQueue<ChainReplicationMessage> heartBeatMessageQueue = new MessageQueue<ChainReplicationMessage>();
 
 
+	/** The is master stopping. */
 	volatile boolean isMasterStopping = false;
 
 	/**
@@ -42,7 +43,6 @@ public class MasterChainReplicationFacade {
 	 *
 	 * @param master the master
 	 * @param chains the chains
-	 * @param chainToServerMap the chain to server map
 	 * @param clients the clients
 	 * @param masterImpl the master impl
 	 */
@@ -89,6 +89,11 @@ public class MasterChainReplicationFacade {
 		return messages;
 	}
 
+	/**
+	 * Start processing messages.
+	 *
+	 * @throws MasterChainReplicationException the master chain replication exception
+	 */
 	public void startProcessingMessages()
 			throws MasterChainReplicationException{
 		while (!isMasterStopping) {
@@ -100,6 +105,9 @@ public class MasterChainReplicationFacade {
 		}
 	}
 
+	/**
+	 * Stop processing messages.
+	 */
 	public void stopProcessingMessages() {
 		isMasterStopping = true;
 	}

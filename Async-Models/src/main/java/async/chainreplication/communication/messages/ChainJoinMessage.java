@@ -33,6 +33,9 @@ public class ChainJoinMessage extends ChainReplicationMessage {
 		return server;
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
 	@Override
 	public String toString() {
 		return "ChainJoinMessage [server=" + server.toString() + "]";
