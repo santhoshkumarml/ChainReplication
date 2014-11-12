@@ -128,7 +128,7 @@ public class AppStarter {
 		if (config.getMaster().getMasterDebugPort() != -1) {
 			command.add("-Xdebug");
 			command.add("-Xrunjdwp:transport=dt_socket,server=y,"
-					+ "suspend=y,address="
+					+ "suspend=n,address="
 					+ config.getMaster().getMasterDebugPort());
 		}
 		command.add(MasterImpl.class.getName());
@@ -189,7 +189,7 @@ public class AppStarter {
 		if (server.getServerProcessDetails().getDebugPort() != -1) {
 			command.add("-Xdebug");
 			command.add("-Xrunjdwp:transport=dt_socket,server=y,"
-					+ "suspend=y,address="
+					+ "suspend=n,address="
 					+ server.getServerProcessDetails().getDebugPort());
 		}
 		command.add(ServerImpl.class.getName());
@@ -266,7 +266,7 @@ public class AppStarter {
 				}
 			}
 			System.out.println("All Servers started");
-
+			
 			serverKiller = new ServerKiller(serverToTimeToDie, serverProcesses);
 			serverKiller.start();
 

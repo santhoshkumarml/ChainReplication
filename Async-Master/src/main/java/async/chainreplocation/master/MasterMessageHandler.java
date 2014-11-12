@@ -66,21 +66,24 @@ public class MasterMessageHandler {
 					for (final String chainId : chainIds) {
 						final List<Pair<Server, Boolean>> serversToRunning = masterDs
 								.getChainToNewServersMap().get(chainId);
-						final Pair<Server, Boolean> firstServerToRunning = serversToRunning
-								.get(0);
-						if (!firstServerToRunning.getSecond()) {
-							final MasterChainJoinReplyMessage masterReplyMessage = new MasterChainJoinReplyMessage(
-									masterDs.getChains().get(chainId).getTail());
-							try {
-								masterMessageHandler.sendServerMessage(
-										firstServerToRunning.getFirst(),
-										masterReplyMessage);
-							} catch (MasterChainReplicationException e) {
-								this.masterMessageHandler.logMessage(e.getMessage());
+						if(serversToRunning!=null && !serversToRunning.isEmpty()){
+							final Pair<Server, Boolean> firstServerToRunning = serversToRunning
+									.get(0);
+							if (!firstServerToRunning.getSecond()) {
+								final MasterChainJoinReplyMessage masterReplyMessage = new MasterChainJoinReplyMessage(
+										masterDs.getChains().get(chainId).getTail());
+								try {
+									masterMessageHandler.sendServerMessage(
+											firstServerToRunning.getFirst(),
+											masterReplyMessage);
+								} catch (MasterChainReplicationException e) {
+									this.masterMessageHandler.logMessage(e.getMessage());
+								}
+								firstServerToRunning.setSecond(true);
+								//TODO Remove this later
+								this.masterMessageHandler.logMessage(
+										"About to run"+firstServerToRunning.getFirst().toString());
 							}
-							firstServerToRunning.setSecond(true);
-							this.masterMessageHandler.logMessage(
-									"About to run"+firstServerToRunning.getFirst().toString());
 						}
 					}
 				}
@@ -242,7 +245,7 @@ public class MasterMessageHandler {
 	private MasterDataStructure getMasterDs() {
 		return masterDs;
 	}
-	
+
 	public void logMessage(String message) {
 		this.masterChainReplicationFacade.logMessages(message);
 	}
@@ -283,7 +286,7 @@ public class MasterMessageHandler {
 	 */
 	public void handleGenericServerChangeMessage(
 			MasterGenericServerChangeMessage message)
-			throws MasterChainReplicationException {
+					throws MasterChainReplicationException {
 		final Set<Server> diedServers = message.getDiedServers();
 		final ChainChanges chainChanges = masterDs
 				.calculateChanges(diedServers);
@@ -300,7 +303,7 @@ public class MasterMessageHandler {
 	 */
 	public void handleNewNodeInitializedMessage(
 			NewNodeInitializedMessage message)
-			throws MasterChainReplicationException {
+					throws MasterChainReplicationException {
 		final Server newServer = message.getServer();
 		final String chainName = newServer.getChainName();
 
@@ -346,13 +349,17 @@ public class MasterMessageHandler {
 			chain.setTail(newServer);
 
 			masterDs.getChains().put(chainName, chain);
-			masterDs.getChainToNewServersMap().get(chainName).remove(0);
+			Pair<Server, Boolean> serverRemoved = masterDs.getChainToNewServersMap().get(chainName).remove(0);
+			//TODO remove this
+			this.logMessage("Server Removed:"+serverRemoved.getFirst().toString());
 			Map<String, Server> servers = masterDs.getChainToServerMap().get(
 					chainName);
 			if (servers == null) {
 				servers = new HashMap<String, Server>();
 			}
-			servers.put(exisistingTail.getServerId(), exisistingTail);
+			if (exisistingTail != null) {
+				servers.put(exisistingTail.getServerId(), exisistingTail);
+			}
 			servers.put(newServer.getServerId(), newServer);
 			masterDs.getChainToServerMap().put(chainName, servers);
 			formAndDispatchMessagesForServerAndClient(changes);
@@ -371,7 +378,7 @@ public class MasterMessageHandler {
 	 */
 	private void sendClientMessage(Client client,
 			MasterClientChangeMessage message)
-			throws MasterChainReplicationException {
+					throws MasterChainReplicationException {
 		// TODO Remove this later
 		masterChainReplicationFacade.logMessages(message.toString());
 		try {
@@ -380,7 +387,9 @@ public class MasterMessageHandler {
 					.getClientProcessDetails().getTcpPort());
 			clientMessageHelper.sendMessage(message);
 		} catch (final ConnectClientException e) {
-			throw new MasterChainReplicationException(e);
+			throw new MasterChainReplicationException(
+					e.getMessage()+
+					"--port-"+clientMessageHelper.getServerPort());
 		}
 	}
 
@@ -396,7 +405,7 @@ public class MasterMessageHandler {
 	 */
 	private void sendServerMessage(Server server,
 			ChainReplicationMessage message)
-			throws MasterChainReplicationException {
+					throws MasterChainReplicationException {
 		// TODO Remove this later
 		masterChainReplicationFacade.logMessages(message.toString());
 		try {
@@ -405,7 +414,8 @@ public class MasterMessageHandler {
 					.getServerProcessDetails().getTcpPort());
 			serverMessageHelper.sendMessage(message);
 		} catch (final ConnectClientException e) {
-			throw new MasterChainReplicationException(e);
+			throw new MasterChainReplicationException(e.getMessage()+
+					"--Port-"+serverMessageHelper.getServerPort());
 		}
 
 	}

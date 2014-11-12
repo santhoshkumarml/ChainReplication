@@ -70,7 +70,12 @@ public class Accounts {
 	 */
 	public void updateAccountSnapshot(Integer accountNum, float balance) {
 		synchronized (accountNumToAccountSnapShot) {
-			accountNumToAccountSnapShot.get(accountNum).setBalance(balance);
+			AccountSnapshot accountSnapshot = accountNumToAccountSnapShot.get(accountNum);
+			if(accountSnapshot == null) {
+				accountSnapshot = new AccountSnapshot(accountNum, balance);
+			}
+			accountSnapshot.setBalance(balance);
+			accountNumToAccountSnapShot.put(accountNum, accountSnapshot);
 		}
 	}
 }

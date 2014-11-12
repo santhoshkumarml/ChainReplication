@@ -103,15 +103,15 @@ public class ClientImpl extends ChainReplicationImpl {
 	 */
 	public void init() {
 		super.init();
-		// masterUpdateListener = new MasterUpdateListenerThread(this);
-		// masterUpdateListener.start();
 		try {
+			masterUpdateListener = new MasterUpdateListenerThread(this);
 			responseListener = new ResponseListener(this);
 		} catch (final ClientChainReplicationException e) {
 			this.logMessage(e.getMessage());
 			e.printStackTrace();
 			this.stop();
 		}
+		masterUpdateListener.start();
 		responseListener.start();
 		this.logMessage("Client Started");
 	}

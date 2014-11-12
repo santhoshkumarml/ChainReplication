@@ -45,9 +45,11 @@ public class SentHistory {
 	public List<RequestKey> getRequestKeysFromSent(int sequenceNumber) {
 		final List<RequestKey> matchingRequestKeys = new ArrayList<RequestKey>();
 		synchronized (requestKeys) {
-			final int lastKey = requestKeys.lastKey();
-			for (int i = sequenceNumber + 1; i <= lastKey; i++) {
-				matchingRequestKeys.add(requestKeys.get(i));
+			if(!requestKeys.isEmpty()) {
+				final int lastKey = requestKeys.lastKey();
+				for (int i = sequenceNumber + 1; i <= lastKey; i++) {
+					matchingRequestKeys.add(requestKeys.get(i));
+				}
 			}
 		}
 		return matchingRequestKeys;

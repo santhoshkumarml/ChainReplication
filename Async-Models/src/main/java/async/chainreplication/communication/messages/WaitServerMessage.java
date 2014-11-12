@@ -67,4 +67,15 @@ public class WaitServerMessage extends ChainReplicationMessage {
 		return isWaitingClassConditionSatisified;
 	}
 
+	@Override
+	public String toString() {
+		String waitServerMessageString = "WaitServerMessage";
+		if(this.waitingClasses !=null ) {
+			waitServerMessageString = waitServerMessageString+" [waitingClasses=" + waitingClasses+"]";
+		}
+		return waitServerMessageString;
+	}
+	
+	
+
 }

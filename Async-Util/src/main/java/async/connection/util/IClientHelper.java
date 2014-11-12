@@ -15,5 +15,8 @@ public interface IClientHelper {
 	 *             the connect client exception
 	 */
 	public void sendMessage(Object message) throws ConnectClientException;
+	
+	
+	public int getServerPort();
 
 }

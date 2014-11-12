@@ -1,6 +1,8 @@
 package async.chainreplication.client;
 
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import async.chainreplication.client.exception.ClientChainReplicationException;
 import async.chainreplication.client.server.communication.models.Reply;
@@ -8,10 +10,12 @@ import async.chainreplication.client.server.communication.models.Request;
 import async.chainreplication.communication.messages.ChainReplicationMessage;
 import async.chainreplication.communication.messages.MasterClientChangeMessage;
 import async.chainreplication.communication.messages.ResponseOrSyncMessage;
+import async.chainreplication.communication.messages.WaitServerMessage;
 import async.chainreplication.master.models.Chain;
 import async.chainreplication.master.models.Client;
 import async.chainreplication.master.models.Master;
 import async.chainreplicaton.client.message.ClientRequestMessage;
+import async.generic.message.queue.Message;
 import async.generic.message.queue.MessageQueue;
 
 // TODO: Auto-generated Javadoc
@@ -49,6 +53,11 @@ public class ClientChainReplicationFacade {
 		clientMessageHandler = new ClientMessageHandler(client,
 				chainNameToChainMap, master, this);
 		this.clientImpl = clientImpl;
+		Set<Class<?>> waitingCLasses = new HashSet<Class<?>>();
+		waitingCLasses.add(MasterClientChangeMessage.class);
+		WaitServerMessage message = new WaitServerMessage(waitingCLasses, null);
+		messages.enqueueMessageObject(message.getPriority().ordinal(),
+				message);
 	}
 
 	/**
@@ -68,6 +77,7 @@ public class ClientChainReplicationFacade {
 		while (messages.hasMoreMessages()) {
 			final ChainReplicationMessage oldMessage = (ChainReplicationMessage) messages
 					.dequeueMessageAndReturnMessageObject();
+			this.logMessage("OLD Message"+oldMessage.toString());
 			handleMessage(oldMessage);
 		}
 	}
@@ -98,9 +108,17 @@ public class ClientChainReplicationFacade {
 		} else if (message.getClass() == ResponseOrSyncMessage.class) {
 			clientMessageHandler
 			.handleReponseMessage((ResponseOrSyncMessage) message);
-		} else if (message instanceof MasterClientChangeMessage) {
+		} else if (message.getClass() == MasterClientChangeMessage.class) {
 			clientMessageHandler
 			.handleMasterMessage((MasterClientChangeMessage) message);
+		} else if(message.getClass() == WaitServerMessage.class) {
+			while(true) {
+				WaitServerMessage waitMessage = ((WaitServerMessage)message);
+				Message<ChainReplicationMessage> chainMessage = this.messages.peekAtMessage();
+				if(chainMessage!=null && waitMessage.check(chainMessage.getMessageObject())) {
+					break;
+				}
+			}
 		}
 	}
 

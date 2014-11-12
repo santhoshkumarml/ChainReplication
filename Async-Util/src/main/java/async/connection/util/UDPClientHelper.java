@@ -31,6 +31,11 @@ public class UDPClientHelper implements IClientHelper {
 		this.serverHost = serverHost;
 		this.port = port;
 	}
+	
+	@Override
+	public int getServerPort() {
+		return this.port;
+	}
 
 	/*
 	 * (non-Javadoc)

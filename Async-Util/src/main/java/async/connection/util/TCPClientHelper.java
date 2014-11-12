@@ -71,4 +71,9 @@ public class TCPClientHelper implements IClientHelper {
 			}
 		}
 	}
+
+	@Override
+	public int getServerPort() {
+		return this.port;
+	}
 }

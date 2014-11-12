@@ -3,6 +3,7 @@ package async.chainreplication.server;
 import java.util.Map;
 
 import async.chainreplication.communication.messages.AckMessage;
+import async.chainreplication.communication.messages.ApplicationMessage;
 import async.chainreplication.communication.messages.ChainJoinMessage;
 import async.chainreplication.communication.messages.ChainReplicationMessage;
 import async.chainreplication.communication.messages.MasterChainJoinReplyMessage;
@@ -148,6 +149,9 @@ public class ServerChainReplicationFacade {
 		} else if (message.getClass() == ChainJoinMessage.class) {
 			serverMessageHandler
 					.handleChainJoinMessage((ChainJoinMessage) message);
+		} else if(message.getClass() ==  ApplicationMessage.class) {
+			serverMessageHandler
+			.handleApplicationMessage((ApplicationMessage) message);
 		}
 	}
 

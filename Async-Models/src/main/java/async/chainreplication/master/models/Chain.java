@@ -93,4 +93,19 @@ public class Chain implements Serializable {
 		this.tail = tail;
 	}
 
+	@Override
+	public String toString() {
+		String headString = null, tailString = null;
+		if(head!=null) {
+			headString = head.toString();
+		}
+		if(tail!=null) {
+			tailString = tail.toString();
+		}
+		return "Chain [chainName=" + chainName + ", head=" + headString + ", tail="
+				+ tailString + "]";
+	}
+	
+	
+
 }

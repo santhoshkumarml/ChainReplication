@@ -188,7 +188,7 @@ public class ClientMessageHandler {
 		try {
 			clientMessageClientHelper.sendMessage(message.getRequestMessage());
 		} catch (final ConnectClientException e) {
-			throw new ClientChainReplicationException(e);
+			throw new ClientChainReplicationException(e.getMessage()+"--port"+clientMessageClientHelper.getServerPort());
 		}
 		/*
 		 * incrementSendSequenceNumber();
