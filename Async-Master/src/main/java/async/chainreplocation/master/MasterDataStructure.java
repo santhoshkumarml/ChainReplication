@@ -11,6 +11,7 @@ import java.util.Set;
 import async.chainreplication.master.models.Chain;
 import async.chainreplication.master.models.Client;
 import async.chainreplication.master.models.Master;
+import async.chainreplication.master.models.Pair;
 import async.chainreplication.master.models.Server;
 
 // TODO: Auto-generated Javadoc
