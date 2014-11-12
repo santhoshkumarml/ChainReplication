@@ -18,7 +18,7 @@ import aync.chainreplication.base.impl.ChainReplicationImpl;
  * The Class ServerImpl.
  */
 public class ServerImpl extends ChainReplicationImpl {
-	
+
 	/**
 	 * The main method.
 	 *
@@ -40,19 +40,19 @@ public class ServerImpl extends ChainReplicationImpl {
 
 	/** The heart beat time out. */
 	long heartBeatTimeOut = 5000;
-	
+
 	/** The is started. */
 	boolean isStarted = false;
-	
+
 	/** The heart beat sender timer. */
 	Timer heartBeatSenderTimer;
-	
+
 	/** The server impl. */
 	private static ServerImpl serverImpl;
-	
+
 	/** The chain message listener thread. */
 	ChainMessageListenerThread chainMessageListenerThread;
-	
+
 	/** The request or query update thread. */
 	RequestQueryOrUpdateThread requestOrQueryUpdateThread;
 
@@ -75,6 +75,14 @@ public class ServerImpl extends ChainReplicationImpl {
 			heartBeatTimeOut = config.getMaster().getHeartbeatTimeout();
 		} catch (ServerChainReplicationException e) {
 			this.logMessage(e.getMessage());
+		}
+		try {
+			Thread.sleep(
+					config.getServerToInitialSleepTime().get(
+							config.getChainToServerMap().get(chainName).get(serverId)));
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+			e.printStackTrace();
 		}
 	}
 
