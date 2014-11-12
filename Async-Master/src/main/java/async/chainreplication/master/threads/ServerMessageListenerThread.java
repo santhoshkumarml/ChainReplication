@@ -48,8 +48,6 @@ public class ServerMessageListenerThread extends Thread {
 			try {
 				ChainReplicationMessage message = (ChainReplicationMessage) serverMessagesHelper
 						.acceptAndReadObjectConnection();
-				//TODO remove this later
-				masterImpl.logMessage(message.toString());
 				masterImpl.getMasterChainReplicationFacade().deliverMessage(message);
 			} catch (ConnectServerException e) {
 				serverMessagesHelper.stopServer();

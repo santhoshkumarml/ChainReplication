@@ -126,7 +126,7 @@ public class AppStarter {
 		if(config.getMaster().getMasterDebugPort() != -1) {
 			command.add("-Xdebug");
 			command.add("-Xrunjdwp:transport=dt_socket,server=y,"
-					+ "suspend=n,address="+config.getMaster().getMasterDebugPort());
+					+ "suspend=y,address="+config.getMaster().getMasterDebugPort());
 		}
 		command.add(MasterImpl.class.getName());
 		command.add(ConfigUtil.serializeToFile(config));
@@ -181,7 +181,7 @@ public class AppStarter {
 		if(server.getServerProcessDetails().getDebugPort() != -1) {
 			command.add("-Xdebug");
 			command.add("-Xrunjdwp:transport=dt_socket,server=y,"
-					+ "suspend=n,address="+server.getServerProcessDetails().getDebugPort());
+					+ "suspend=y,address="+server.getServerProcessDetails().getDebugPort());
 		}
 		command.add(ServerImpl.class.getName());
 		command.add(ConfigUtil.serializeToFile(config));
@@ -280,7 +280,7 @@ public class AppStarter {
 			System.out.println("All Clients Died");
 			
 			
-			serverKiller.killAllServers();
+			//serverKiller.killAllServers();
 			serverKiller.join();
 			System.out.println("All Servers Killed");
 

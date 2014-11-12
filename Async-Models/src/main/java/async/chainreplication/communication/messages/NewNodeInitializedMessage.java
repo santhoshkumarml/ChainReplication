@@ -32,4 +32,11 @@ public class NewNodeInitializedMessage extends ChainReplicationMessage {
 	public Server getServer() {
 		return server;
 	}
+
+	@Override
+	public String toString() {
+		return "NewNodeInitializedMessage [server=" + server + "]";
+	}
+	
+	
 }

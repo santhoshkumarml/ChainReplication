@@ -11,7 +11,7 @@
 	"Chains":[
 		{
 			"ChainId":"Chain1",
-			"NumberOfServers":"3",
+			"NumberOfServers":"2",
 			"Servers":[
 				{
 					"ServerId":"Server1",
@@ -31,22 +31,9 @@
 						"TcpPort":"10121",
 						"UdpPort":"10122",
 						"DebugPort":"10123",
-						"InitialSleepTime":"10000",
-						"TimeToLive":"40000"
-					},
-				},
-				{
-					"ServerId":"Server3",
-					"ChainId":"Chain1",
-					"ProcessDetails":{
-						"Host":"localhost",
-						"TcpPort":"10131",
-						"UdpPort":"10132",
-						"DebugPort":"10133",
 						"InitialSleepTime":"20000"
 					},
-				}
-				
+				}				
 			]
 			
 		}

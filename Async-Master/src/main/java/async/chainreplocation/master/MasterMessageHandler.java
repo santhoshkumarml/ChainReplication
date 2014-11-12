@@ -39,6 +39,9 @@ public class MasterMessageHandler {
 	/** The client message helper. */
 	IClientHelper serverMessageHelper, clientMessageHelper = null;
 
+
+	ChainJoinHelper chainJoinHelper;
+
 	/**
 	 * Instantiates a new master message handler.
 	 *
@@ -53,7 +56,17 @@ public class MasterMessageHandler {
 			MasterChainReplicationFacade masterChainReplicationFacade) {
 		masterDs = new MasterDataStructure(chains, master,clients);
 		this.masterChainReplicationFacade = masterChainReplicationFacade;
+		this.chainJoinHelper = new ChainJoinHelper(this);
+		this.chainJoinHelper.start();
 	}
+
+
+
+	private MasterDataStructure getMasterDs() {
+		return masterDs;
+	}
+
+
 
 	/**
 	 * Form and dispatch messages for server and client.
@@ -102,15 +115,18 @@ public class MasterMessageHandler {
 					serverMessageChanges.put(tail, serverMessage);
 				} else {
 					if(!changedChainEntry.getValue().get(1)) {
-						List<Server> servers = masterDs.getChainToNewServersMap().get(chainId);
-						if(servers!=null && !servers.isEmpty()) {
-							Server server = servers.get(0);
-							MasterServerChangeMessage serverMessage = serverMessageChanges.get(server);
-							if (serverMessage == null) {
-								serverMessage = new MasterServerChangeMessage(server);
+						List<Pair<Server,Boolean>> serversToRunning = masterDs.getChainToNewServersMap().get(chainId);
+						if(serversToRunning!=null && !serversToRunning.isEmpty()) {
+							Server server = serversToRunning.get(0).getFirst();
+							boolean isServerRunning = serversToRunning.get(0).getSecond();
+							if(isServerRunning) {
+								MasterServerChangeMessage serverMessage = serverMessageChanges.get(server);
+								if (serverMessage == null) {
+									serverMessage = new MasterServerChangeMessage(server);
+								}
+								serverMessage.getOtherChains().add(chain);
+								serverMessageChanges.put(server, serverMessage);
 							}
-							serverMessage.getOtherChains().add(chain);
-							serverMessageChanges.put(server, serverMessage);
 						}
 					}
 				}
@@ -165,14 +181,12 @@ public class MasterMessageHandler {
 			Server server = message.getServer();
 			server.getAdjacencyList().setPredecessor(null);
 			server.getAdjacencyList().setSucessor(null);
-			Chain chain = masterDs.getChains().get(server.getChainName());
-			List<Server> newServerQueue = masterDs.getChainToNewServersMap().get(message.getServer().getChainName());
+			List<Pair<Server,Boolean>> newServerQueue = masterDs.getChainToNewServersMap().get(message.getServer().getChainName());
 			if(newServerQueue == null) {
-				newServerQueue = new LinkedList<Server>();
+				newServerQueue = new LinkedList<Pair<Server,Boolean>>();
 			}
-			newServerQueue.add(message.getServer());
-			MasterChainJoinReplyMessage masterReplyMessage = new MasterChainJoinReplyMessage(chain.getTail());
-			sendServerMessage(server, masterReplyMessage);
+			newServerQueue.add(new Pair<Server, Boolean>(server, false));
+			masterDs.getChainToNewServersMap().put(server.getChainName(), newServerQueue);
 		}
 	}
 
@@ -284,5 +298,35 @@ public class MasterMessageHandler {
 			throw new MasterChainReplicationException(e);
 		}
 
+	}
+
+	private static class ChainJoinHelper extends Thread {
+		MasterMessageHandler masterMessageHandler;
+		public ChainJoinHelper(MasterMessageHandler masterMessageHandler) {
+			this.masterMessageHandler = masterMessageHandler;
+		}
+
+		public void run() {
+			MasterDataStructure masterDs = masterMessageHandler.getMasterDs();
+			synchronized (masterDs) {
+				Set<String> chainIds = masterDs.getChainToNewServersMap().keySet();
+				for(String chainId: chainIds) {
+					List<Pair<Server, Boolean>> serversToRunning = 
+							masterDs.getChainToNewServersMap().get(chainId);
+					Pair<Server, Boolean> firstServerToRunning = serversToRunning.get(0);
+					if(!firstServerToRunning.getSecond()) {
+						MasterChainJoinReplyMessage masterReplyMessage = new MasterChainJoinReplyMessage(masterDs.getChains().get(chainId).getTail());
+						try {
+							this.masterMessageHandler.sendServerMessage(
+									firstServerToRunning.getFirst(),
+									masterReplyMessage);
+						} catch (MasterChainReplicationException e) {
+							e.printStackTrace();
+						}
+						firstServerToRunning.setSecond(true);
+					}
+				}
+			}
+		}
 	}
 }

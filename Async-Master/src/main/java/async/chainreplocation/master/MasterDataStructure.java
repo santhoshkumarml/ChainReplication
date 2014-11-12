@@ -32,7 +32,7 @@ public class MasterDataStructure {
 	Map<String, Client> clients = new HashMap<String, Client>();
 
 	/** The chain to new servers map. */
-	Map<String, List<Server>> chainToNewServersMap = new HashMap<String, List<Server>>();
+	Map<String, List<Pair<Server, Boolean>>> chainToNewServersMap = new HashMap<String, List<Pair<Server,Boolean>>>();
 
 	/**
 	 * Instantiates a new master data structure.
@@ -60,70 +60,72 @@ public class MasterDataStructure {
 		Map<String, Set<String>> chainToServersChanged = new HashMap<String, Set<String>>();
 
 		Map<String, Set<Server>> chainToDiedServers = new HashMap<String, Set<Server>>();
-		for (Server diedServer : diedServers) {
-			boolean wasPresentinNewNodes = checkAndRemoveFromNewServersChain(diedServer);
-			if(!wasPresentinNewNodes) {
-				Set<Server> diedServerSet = chainToDiedServers.get(diedServer
-						.getChainName());
-				if (diedServerSet == null) {
-					diedServerSet = new HashSet<Server>();
+		synchronized (this) {
+			for (Server diedServer : diedServers) {
+				boolean wasPresentinNewNodes = checkAndRemoveFromNewServersChain(diedServer);
+				if(!wasPresentinNewNodes) {
+					Set<Server> diedServerSet = chainToDiedServers.get(diedServer
+							.getChainName());
+					if (diedServerSet == null) {
+						diedServerSet = new HashSet<Server>();
+					}
+					diedServerSet.add(diedServer);
+					chainToDiedServers.put(diedServer.getChainName(), diedServerSet);
 				}
-				diedServerSet.add(diedServer);
-				chainToDiedServers.put(diedServer.getChainName(), diedServerSet);
 			}
-		}
 
-		for (String chainId : chainToDiedServers.keySet()) {
-			Set<Server> diedServerSet = chainToDiedServers.get(chainId);
-			Set<String> serverIdsChanged = new HashSet<String>();
-			Chain chain = chains.get(chainId);
-			Server temp = chain.getHead();
-			List<Server> servers = new ArrayList<Server>();
-			while (temp != null) {
-				servers.add(temp);
-				temp = temp.getAdjacencyList().getSucessor();
-			}
-			servers.removeAll(diedServerSet);
-			Server predecessor = null;
-			for (int i = 0; i < servers.size(); i++) {
-				temp = servers.get(i);
-				if ((i == 0 && temp != chains.get(chainId).getHead())
-						|| (i == servers.size() - 1 && temp != chains.get(
-								chainId).getTail())) {
-					List<Boolean> headTailChanges = chainsToIsHeadChanged.get(chainId);
-					if(headTailChanges == null) {
-						headTailChanges = new ArrayList<Boolean>(2);
+			for (String chainId : chainToDiedServers.keySet()) {
+				Set<Server> diedServerSet = chainToDiedServers.get(chainId);
+				Set<String> serverIdsChanged = new HashSet<String>();
+				Chain chain = chains.get(chainId);
+				Server temp = chain.getHead();
+				List<Server> servers = new ArrayList<Server>();
+				while (temp != null) {
+					servers.add(temp);
+					temp = temp.getAdjacencyList().getSucessor();
+				}
+				servers.removeAll(diedServerSet);
+				Server predecessor = null;
+				for (int i = 0; i < servers.size(); i++) {
+					temp = servers.get(i);
+					if ((i == 0 && temp != chains.get(chainId).getHead())
+							|| (i == servers.size() - 1 && temp != chains.get(
+									chainId).getTail())) {
+						List<Boolean> headTailChanges = chainsToIsHeadChanged.get(chainId);
+						if(headTailChanges == null) {
+							headTailChanges = new ArrayList<Boolean>(2);
+						}
+						if(i == 0 && temp != chains.get(chainId).getHead()) {
+							headTailChanges.set(0, true);
+						}
+						if(i == servers.size() - 1 && temp != chains.get(
+								chainId).getTail()){
+							headTailChanges.set(1, true);
+						}
+						chainsToIsHeadChanged.put(chainId, headTailChanges);
+						if (i == servers.size() - 1) {
+							serverIdsChanged.add(temp.getServerId());
+						}
 					}
-					if(i == 0 && temp != chains.get(chainId).getHead()) {
-						headTailChanges.set(0, true);
-					}
-					if(i == servers.size() - 1 && temp != chains.get(
-							chainId).getTail()){
-						headTailChanges.set(1, true);
-					}
-					chainsToIsHeadChanged.put(chainId, headTailChanges);
-					if (i == servers.size() - 1) {
+					if (temp.getAdjacencyList().getPredecessor() != predecessor) {
 						serverIdsChanged.add(temp.getServerId());
+						if (predecessor != null) {
+							serverIdsChanged.add(predecessor.getServerId());
+							predecessor.getAdjacencyList().setSucessor(temp);
+						}
+						temp.getAdjacencyList().setPredecessor(predecessor);
 					}
+					predecessor = temp;
 				}
-				if (temp.getAdjacencyList().getPredecessor() != predecessor) {
-					serverIdsChanged.add(temp.getServerId());
-					if (predecessor != null) {
-						serverIdsChanged.add(predecessor.getServerId());
-						predecessor.getAdjacencyList().setSucessor(temp);
-					}
-					temp.getAdjacencyList().setPredecessor(predecessor);
-				}
-				predecessor = temp;
-			}
-			chain.setHead(servers.get(0));
-			chain.setTail(servers.get(servers.size() - 1));
+				chain.setHead(servers.get(0));
+				chain.setTail(servers.get(servers.size() - 1));
 
-			chainToServerMap.get(chainId).clear();
-			for (Server server : servers) {
-				chainToServerMap.get(chainId).put(server.getServerId(), server);
+				chainToServerMap.get(chainId).clear();
+				for (Server server : servers) {
+					chainToServerMap.get(chainId).put(server.getServerId(), server);
+				}
+				chainToServersChanged.put(chainId, serverIdsChanged);
 			}
-			chainToServersChanged.put(chainId, serverIdsChanged);
 		}
 		ChainChanges chainChanges = new ChainChanges();
 		chainChanges.getChainsToHeadTailChanges().putAll(chainsToIsHeadChanged);
@@ -139,10 +141,10 @@ public class MasterDataStructure {
 	 */
 	private boolean checkAndRemoveFromNewServersChain(Server diedServer) {
 		String chainId = diedServer.getChainName();
-		List<Server> newServers = this.chainToNewServersMap.get(chainId);
-		Iterator<Server> newServersIterator = newServers.iterator();
+		List<Pair<Server,Boolean>> newServers = this.chainToNewServersMap.get(chainId);
+		Iterator<Pair<Server,Boolean>> newServersIterator = newServers.iterator();
 		while (newServersIterator.hasNext()) {
-			Server server = (Server) newServersIterator.next();
+			Server server = (Server) newServersIterator.next().getFirst();
 			if(server.equals(diedServer)) {
 				newServersIterator.remove();
 				return true;
@@ -201,7 +203,7 @@ public class MasterDataStructure {
 	 *
 	 * @return the chain to new servers map
 	 */
-	public Map<String, List<Server>> getChainToNewServersMap() {
+	public Map<String, List<Pair<Server, Boolean>>> getChainToNewServersMap() {
 		return chainToNewServersMap;
 	}
 }
