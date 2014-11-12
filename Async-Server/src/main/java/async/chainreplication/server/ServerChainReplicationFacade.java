@@ -117,7 +117,7 @@ public class ServerChainReplicationFacade {
 	 */
 	public void handleMessage(ChainReplicationMessage message)
 			throws ServerChainReplicationException {
-		this.logMessage("Handling message"+message.toString());
+		this.logMessage("Handling message: "+message.toString());
 		if (message.getClass() == RequestMessage.class) {
 			serverMessageHandler.handleRequestMessage((RequestMessage) message);
 		} else if (message.getClass() == ResponseOrSyncMessage.class) {
