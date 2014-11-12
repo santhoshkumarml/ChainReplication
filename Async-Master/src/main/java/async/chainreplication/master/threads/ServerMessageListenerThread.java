@@ -1,7 +1,6 @@
 package async.chainreplication.master.threads;
 
 import async.chainreplication.communication.messages.ChainReplicationMessage;
-import async.chainreplication.communication.messages.HeartBeatMessage;
 import async.chainreplication.master.exception.MasterChainReplicationException;
 import async.chainreplocation.master.MasterImpl;
 import async.connection.util.ConnectServerException;

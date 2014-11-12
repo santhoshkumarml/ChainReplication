@@ -13,6 +13,7 @@ import async.chainreplication.master.exception.MasterChainReplicationException;
 import async.chainreplication.master.models.Chain;
 import async.chainreplication.master.models.Client;
 import async.chainreplication.master.models.Master;
+import async.chainreplication.server.exception.ServerChainReplicationException;
 import async.generic.message.queue.Message;
 import async.generic.message.queue.MessageQueue;
 
@@ -33,6 +34,9 @@ public class MasterChainReplicationFacade {
 
 	/** The heart beat message queue. */
 	MessageQueue<ChainReplicationMessage> heartBeatMessageQueue = new MessageQueue<ChainReplicationMessage>();
+
+
+	volatile boolean isMasterStopping = false;
 
 	/**
 	 * Instantiates a new master chain replication facade.
@@ -84,6 +88,21 @@ public class MasterChainReplicationFacade {
 			}
 		}
 		return messages;
+	}
+
+	public void startProcessingMessages()
+			throws MasterChainReplicationException{
+		while (!isMasterStopping) {
+			if (messageQueue.hasMoreMessages()) {
+				ChainReplicationMessage message = (ChainReplicationMessage) messageQueue
+						.dequeueMessageAndReturnMessageObject();
+				this.handleMessage(message);
+			}
+		}
+	}
+
+	public void stopProcessingMessages() {
+		isMasterStopping = true;
 	}
 
 	/**

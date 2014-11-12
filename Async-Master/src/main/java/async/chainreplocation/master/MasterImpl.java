@@ -100,6 +100,7 @@ public class MasterImpl extends ChainReplicationImpl {
 			HeartBeatCheckerTask task = new HeartBeatCheckerTask(this);
 			checkerThread.scheduleAtFixedRate(task, 0, heartBeatTimeout);
 			listernerThread.start();
+			this.masterChainReplicationFacade.startProcessingMessages();
 		} catch (MasterChainReplicationException e) {
 			this.logMessage("Internal Error:" + e.getMessage());
 			this.stop();
@@ -124,6 +125,7 @@ public class MasterImpl extends ChainReplicationImpl {
 	 */
 	public void stop() {
 		this.logMessage("Master Stopping");
+		this.masterChainReplicationFacade.stopProcessingMessages();
 		checkerThread.cancel();
 		listernerThread.stopThread();
 		super.stop();
