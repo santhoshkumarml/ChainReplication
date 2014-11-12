@@ -22,8 +22,6 @@
 						"UdpPort":"10112",
 						"DebugPort":"10113"
 					},
-					"Predecessor":"",
-					"Successor":"Server2"
 				},
 				{
 					"ServerId":"Server2",
@@ -33,10 +31,9 @@
 						"TcpPort":"10121",
 						"UdpPort":"10122",
 						"DebugPort":"10123",
+						"InitialSleepTime":"10000",
 						"TimeToLive":"40000"
 					},
-					"Predecessor":"Server1",
-					"Successor":"Server3"
 				},
 				{
 					"ServerId":"Server3",
@@ -45,10 +42,9 @@
 						"Host":"localhost",
 						"TcpPort":"10131",
 						"UdpPort":"10132",
-						"DebugPort":"10133"
+						"DebugPort":"10133",
+						"InitialSleepTime":"20000"
 					},
-					"Predecessor":"Server2",
-					"Successor":""
 				}
 				
 			]

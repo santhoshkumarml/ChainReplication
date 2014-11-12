@@ -578,6 +578,8 @@ public class ServerMessageHandler {
 	 */
 	public void sendMessage(IClientHelper client,
 			ChainReplicationMessage chainReplicationMessage) throws ConnectClientException {
+		//TODO Remove this later
+		this.logMessage(chainReplicationMessage.toString());
 		client.sendMessage(chainReplicationMessage);
 	}
 
