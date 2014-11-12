@@ -508,6 +508,12 @@ public class ServerMessageHandler {
 		}
 	}
 
+	/**
+	 * Handle chain join reply message.
+	 *
+	 * @param message the message
+	 * @throws ConnectClientException the connect client exception
+	 */
 	public void handleChainJoinReplyMessage(MasterChainJoinReplyMessage message) throws ConnectClientException {
 		if(message.getExisistingTail() == null) {
 			NewNodeInitializedMessage newNodeInitializedMessage = new NewNodeInitializedMessage(this.server);
