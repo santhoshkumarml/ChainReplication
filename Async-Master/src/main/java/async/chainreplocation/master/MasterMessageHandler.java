@@ -59,8 +59,7 @@ public class MasterMessageHandler {
 		 */
 		public void run() {
 			while (!stopRunning) {
-				final MasterDataStructure masterDs = masterMessageHandler
-						.getMasterDs();
+				final MasterDataStructure masterDs = masterMessageHandler.getMasterDs();
 				synchronized (masterDs) {
 					final Set<String> chainIds = masterDs
 							.getChainToNewServersMap().keySet();
@@ -76,10 +75,12 @@ public class MasterMessageHandler {
 								masterMessageHandler.sendServerMessage(
 										firstServerToRunning.getFirst(),
 										masterReplyMessage);
-							} catch (final MasterChainReplicationException e) {
-								e.printStackTrace();
+							} catch (MasterChainReplicationException e) {
+								this.masterMessageHandler.logMessage(e.getMessage());
 							}
 							firstServerToRunning.setSecond(true);
+							this.masterMessageHandler.logMessage(
+									"About to run"+firstServerToRunning.getFirst().toString());
 						}
 					}
 				}
@@ -240,6 +241,10 @@ public class MasterMessageHandler {
 	 */
 	private MasterDataStructure getMasterDs() {
 		return masterDs;
+	}
+	
+	public void logMessage(String message) {
+		this.masterChainReplicationFacade.logMessages(message);
 	}
 
 	/**
