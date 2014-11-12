@@ -1,7 +1,7 @@
 package async.chainreplocation.master;
 
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -12,7 +12,7 @@ import java.util.Set;
 public class ChainChanges {
 	
 	/** The chains changed. */
-	Set<String> chainsChanged = new HashSet<String>();
+	Map<String,List<Boolean>> chainsToHeadTailChanges = new HashMap<String, List<Boolean>>();
 	
 	/** The chain to servers changed. */
 	Map<String, Set<String>> chainToServersChanged = new HashMap<String, Set<String>>();
@@ -22,8 +22,8 @@ public class ChainChanges {
 	 *
 	 * @return the chains changed
 	 */
-	public Set<String> getChainsChanged() {
-		return chainsChanged;
+	public Map<String,List<Boolean>> getChainsToHeadTailChanges() {
+		return chainsToHeadTailChanges;
 	}
 
 	/**

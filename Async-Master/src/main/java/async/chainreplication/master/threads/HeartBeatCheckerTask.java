@@ -52,8 +52,8 @@ public class HeartBeatCheckerTask extends TimerTask {
 						time);
 			}
 			long currentTime = System.currentTimeMillis();
-			for (Entry<Server, Long> serverToHeartBeatTimeStampEntry : serverToLastHeartBeatSentTime
-					.entrySet()) {
+			for (Entry<Server, Long> serverToHeartBeatTimeStampEntry 
+					: serverToLastHeartBeatSentTime.entrySet()) {
 				long difference = currentTime
 						- serverToHeartBeatTimeStampEntry.getValue();
 				if (difference > masterImpl.getHeartBeatTimeout()) {

@@ -477,6 +477,12 @@ public class ServerMessageHandler {
 		}
 	}
 	
+	/**
+	 * Handle chain join message.
+	 *
+	 * @param message the message
+	 * @throws ServerChainReplicationException the server chain replication exception
+	 */
 	public void handleChainJoinMessage(ChainJoinMessage message) throws ServerChainReplicationException {
 		Server server = message.getServer();
 		NewNodeUpdater updater = 
@@ -485,6 +491,12 @@ public class ServerMessageHandler {
 	}
 	
 	
+	/**
+	 * Handle application message.
+	 *
+	 * @param message the message
+	 * @throws ConnectClientException the connect client exception
+	 */
 	public void handleApplicationMessage(ApplicationMessage message) throws ConnectClientException {
 		if(!message.isLastMessage()) {
 			this.applicationRequestHandler.updateTransactionalObject(message);
@@ -495,6 +507,11 @@ public class ServerMessageHandler {
 		}
 	}
 
+	/**
+	 * Log message.
+	 *
+	 * @param message the message
+	 */
 	private void logMessage(String message) {
 		this.serverChainReplicationFacade.logMessage(message);
 	}
@@ -523,6 +540,7 @@ public class ServerMessageHandler {
 		/** The new node client helper. */
 		IClientHelper newNodeClientHelper;
 
+		/** The message handler. */
 		ServerMessageHandler messageHandler;
 
 		/**
@@ -530,6 +548,7 @@ public class ServerMessageHandler {
 		 *
 		 * @param transactionalApplicationObjects the transactional application objects
 		 * @param server the server
+		 * @param serverMessageHandler the server message handler
 		 */
 		public NewNodeUpdater(
 				Set<?> transactionalApplicationObjects,

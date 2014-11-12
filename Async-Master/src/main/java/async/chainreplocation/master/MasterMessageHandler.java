@@ -70,8 +70,7 @@ public class MasterMessageHandler {
 			for (String serverIdChanged : serverIdsChanged) {
 				Server server = masterDs.getChainToServerMap().get(chainId)
 						.get(serverIdChanged);
-				MasterServerChangeMessage serverMessage = serverMessageChanges
-						.get(server);
+				MasterServerChangeMessage serverMessage = serverMessageChanges.get(server);
 				if (serverMessage == null) {
 					serverMessage = new MasterServerChangeMessage(server);
 				}
@@ -79,15 +78,15 @@ public class MasterMessageHandler {
 			}
 		}
 
-		for (String changedChain : chainChanges.getChainsChanged()) {
-			String chainId = changedChain;
+		for (Map.Entry<String, List<Boolean>> changedChainEntry
+				: chainChanges.getChainsToHeadTailChanges().entrySet()) {
+			String chainId = changedChainEntry.getKey();
 			Chain chain = masterDs.getChains().get(chainId);
 			for (Chain allChain : masterDs.getChains().values()) {
 				if (!allChain.getChainName().equals(chainId)) {
 					Server head = allChain.getHead();
 					Server tail = allChain.getTail();
-					MasterServerChangeMessage serverMessage = serverMessageChanges
-							.get(head);
+					MasterServerChangeMessage serverMessage = serverMessageChanges.get(head);
 					if (serverMessage == null) {
 						serverMessage = new MasterServerChangeMessage(head);
 					}
@@ -99,6 +98,19 @@ public class MasterMessageHandler {
 					}
 					serverMessage.getOtherChains().add(chain);
 					serverMessageChanges.put(tail, serverMessage);
+				} else {
+					if(!changedChainEntry.getValue().get(1)) {
+						List<Server> servers = masterDs.getChainToNewServersMap().get(chainId);
+						if(servers!=null && !servers.isEmpty()) {
+							Server server = servers.get(0);
+							MasterServerChangeMessage serverMessage = serverMessageChanges.get(server);
+							if (serverMessage == null) {
+								serverMessage = new MasterServerChangeMessage(server);
+							}
+							serverMessage.getOtherChains().add(chain);
+							serverMessageChanges.put(server, serverMessage);
+						}
+					}
 				}
 			}
 			for (Client client : masterDs.getClients().values()) {
@@ -139,6 +151,7 @@ public class MasterMessageHandler {
 		formAndDispatchMessagesForServerAndClient(chainChanges);
 	}
 
+
 	/**
 	 * Handle chain join message.
 	 *
@@ -148,22 +161,22 @@ public class MasterMessageHandler {
 	public void handleChainJoinMessage(ChainJoinMessage message) throws MasterChainReplicationException {
 		synchronized (masterDs) {
 			Map<String,Server> serverNameToServerMap = masterDs.getChainToServerMap().get(message.getServer().getChainName());
-			
+
 			Server server = message.getServer();
 			server.getAdjacencyList().setPredecessor(null);
 			server.getAdjacencyList().setSucessor(null);
 			Chain chain = masterDs.getChains().get(server.getChainName());
-			
+
 			if(serverNameToServerMap!=null && !serverNameToServerMap.isEmpty()) {
 				serverNameToServerMap = new HashMap<String, Server>();
-				
+
 				chain.setHead(server);
 				chain.setTail(server);
-				
+
 				serverNameToServerMap.put(server.getServerId(), server);
 				masterDs.getChainToServerMap().put(server.getChainName(), serverNameToServerMap);
 				masterDs.getChains().put(chain.getChainName(), chain);
-			}else {
+			} else {
 				List<Server> newServerQueue = masterDs.getChainToNewServersMap().get(message.getServer().getChainName());
 				if(newServerQueue == null) {
 					newServerQueue = new LinkedList<Server>();
@@ -175,8 +188,8 @@ public class MasterMessageHandler {
 			}
 		}
 	}
-	
-	
+
+
 
 	/**
 	 * Send client message.

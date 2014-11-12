@@ -91,6 +91,11 @@ public class HistoryOfRequests {
 		return this.greatestSequenceNumber;
 	}
 	
+	/**
+	 * List request keys.
+	 *
+	 * @return the sets the
+	 */
 	public Set<RequestKey> listRequestKeys() {
 		return this.requestKeyToRequest.keySet();
 	}

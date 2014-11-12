@@ -58,7 +58,7 @@ public class MasterDataStructure {
 	 * @return the chain changes
 	 */
 	public ChainChanges calculateChanges(Set<Server> diedServers) {
-		Set<String> chainsChanged = new HashSet<String>();
+		Map<String, List<Boolean>> chainsToIsHeadChanged = new HashMap<String, List<Boolean>>();
 		Map<String, Set<String>> chainToServersChanged = new HashMap<String, Set<String>>();
 
 		Map<String, Set<Server>> chainToDiedServers = new HashMap<String, Set<Server>>();
@@ -92,7 +92,18 @@ public class MasterDataStructure {
 				if ((i == 0 && temp != chains.get(chainId).getHead())
 						|| (i == servers.size() - 1 && temp != chains.get(
 								chainId).getTail())) {
-					chainsChanged.add(chainId);
+					List<Boolean> headTailChanges = chainsToIsHeadChanged.get(chainId);
+					if(headTailChanges == null) {
+						headTailChanges = new ArrayList<Boolean>(2);
+					}
+					if(i == 0 && temp != chains.get(chainId).getHead()) {
+						headTailChanges.set(0, true);
+					}
+					if(i == servers.size() - 1 && temp != chains.get(
+							chainId).getTail()){
+						headTailChanges.set(1, true);
+					}
+					chainsToIsHeadChanged.put(chainId, headTailChanges);
 					if (i == servers.size() - 1) {
 						serverIdsChanged.add(temp.getServerId());
 					}
@@ -117,7 +128,7 @@ public class MasterDataStructure {
 			chainToServersChanged.put(chainId, serverIdsChanged);
 		}
 		ChainChanges chainChanges = new ChainChanges();
-		chainChanges.getChainsChanged().addAll(chainsChanged);
+		chainChanges.getChainsToHeadTailChanges().putAll(chainsToIsHeadChanged);
 		chainChanges.getChainToServersChanged().putAll(chainToServersChanged);
 		return chainChanges;
 	}
