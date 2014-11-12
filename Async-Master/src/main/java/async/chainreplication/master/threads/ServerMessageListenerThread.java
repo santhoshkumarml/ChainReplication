@@ -12,7 +12,7 @@ import async.connection.util.TCPServerStarterHelper;
 /**
  * The Class HeartBeatListenerThread.
  */
-public class HeartBeatListenerThread extends Thread {
+public class ServerMessageListenerThread extends Thread {
 	
 	/** The should still run. */
 	volatile boolean shouldStillRun = true;
@@ -29,7 +29,7 @@ public class HeartBeatListenerThread extends Thread {
 	 * @param masterImpl the master impl
 	 * @throws MasterChainReplicationException the master chain replication exception
 	 */
-	public HeartBeatListenerThread(MasterImpl masterImpl)
+	public ServerMessageListenerThread(MasterImpl masterImpl)
 			throws MasterChainReplicationException {
 		this.masterImpl = masterImpl;
 		serverMessagesHelper = new TCPServerStarterHelper(masterImpl

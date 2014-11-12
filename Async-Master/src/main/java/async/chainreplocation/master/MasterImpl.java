@@ -6,7 +6,7 @@ import async.chainreplication.communication.messages.LogMessage;
 import async.chainreplication.master.exception.MasterChainReplicationException;
 import async.chainreplication.master.models.Master;
 import async.chainreplication.master.threads.HeartBeatCheckerTask;
-import async.chainreplication.master.threads.HeartBeatListenerThread;
+import async.chainreplication.master.threads.ServerMessageListenerThread;
 import async.common.util.Config;
 import async.common.util.ConfigUtil;
 import aync.chainreplication.base.impl.ChainReplicationImpl;
@@ -33,7 +33,7 @@ public class MasterImpl extends ChainReplicationImpl {
 	Master master;
 	
 	/** The listerner thread. */
-	HeartBeatListenerThread listernerThread;
+	ServerMessageListenerThread listernerThread;
 	
 	/** The checker thread. */
 	Timer checkerThread;
@@ -95,7 +95,7 @@ public class MasterImpl extends ChainReplicationImpl {
 	public void init() {
 		try {
 			super.init();
-			listernerThread = new HeartBeatListenerThread(this);
+			listernerThread = new ServerMessageListenerThread(this);
 			checkerThread = new Timer();
 			HeartBeatCheckerTask task = new HeartBeatCheckerTask(this);
 			checkerThread.scheduleAtFixedRate(task, 0, heartBeatTimeout);
