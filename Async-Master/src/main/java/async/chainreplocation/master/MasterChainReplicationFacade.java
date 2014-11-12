@@ -94,6 +94,7 @@ public class MasterChainReplicationFacade {
 	 */
 	public void handleMessage(ChainReplicationMessage message)
 			throws MasterChainReplicationException {
+		//TODO Remove this later
 		this.logMessages("Handling message: "+message.toString());
 		if (message.getClass() == MasterGenericServerChangeMessage.class) {
 			masterMessageHandler
