@@ -179,6 +179,12 @@ public class MasterMessageHandler {
 	}
 
 
+	/**
+	 * Handle new node initialized message.
+	 *
+	 * @param message the message
+	 * @throws MasterChainReplicationException the master chain replication exception
+	 */
 	public void handleNewNodeInitializedMessage(NewNodeInitializedMessage message) throws MasterChainReplicationException {
 		Server newServer = message.getServer();
 		String chainName = newServer.getChainName();

@@ -78,6 +78,9 @@ public class ServerMessageHandler {
 	/** The receive sequence number. */
 	volatile int receiveSequenceNumber = 0;
 
+
+	volatile boolean canSendAck = true;
+
 	/**
 	 * Instantiates a new server message handler.
 	 *
@@ -213,6 +216,15 @@ public class ServerMessageHandler {
 	 */
 	public Server getServer() {
 		return server;
+	}
+
+
+	private boolean isCanSendAck() {
+		return canSendAck;
+	}
+
+	private void setCanSendAck(boolean canSendAck) {
+		this.canSendAck = canSendAck;
 	}
 
 	/**
@@ -429,8 +441,8 @@ public class ServerMessageHandler {
 			}
 
 			//ACk so that other servers can remove the messages from Sent
-			if(request.getRequestType() != RequestType.QUERY) {
-				ACK(request);	
+			if(this.canSendAck && request.getRequestType() != RequestType.QUERY) {
+				ACK(request);
 			}
 		}
 	}
@@ -585,6 +597,7 @@ public class ServerMessageHandler {
 		 * @see java.lang.Thread#run()
 		 */
 		public void run() {
+			this.messageHandler.setCanSendAck(false);
 			synchronized (newNodeClientHelper) {
 				try {
 					for(Object transactionalObject : transactionalApplicationObjects) {
@@ -625,6 +638,7 @@ public class ServerMessageHandler {
 				} catch (ConnectClientException e) {
 					this.messageHandler.logMessage(e.getMessage());
 				}
+				this.messageHandler.setCanSendAck(true);
 			}
 		}
 	}

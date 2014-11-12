@@ -79,8 +79,10 @@ public class ApplicationRequestHandler implements IApplicationRequestHandler {
 		RequestKey requestKey = new ApplicationRequestKey(
 				request.getRequestId(),
 				((ApplicationRequest) request).getAccountNum());
-		chainReplicationMessageHandler.getSentHistory().removeFromSent(
-				requestKey);
+		synchronized (chainReplicationMessageHandler.getSentHistory()) {
+			chainReplicationMessageHandler.getSentHistory().removeFromSent(
+					requestKey);		
+		}
 	}
 
 	/**
