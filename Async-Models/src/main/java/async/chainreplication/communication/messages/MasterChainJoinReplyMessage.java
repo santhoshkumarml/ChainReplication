@@ -41,7 +41,11 @@ public class MasterChainJoinReplyMessage extends MasterMessage {
 	 */
 	@Override
 	public String toString() {
-		return "MasterChainJoinReplyMessage [exisistingTail=" + exisistingTail
+		String exisistingTailString = null;
+		if(exisistingTail != null) {
+			exisistingTailString = exisistingTail.toString();
+		}
+		return "MasterChainJoinReplyMessage [exisistingTail=" + exisistingTailString
 				+ "]";
 	}
 
