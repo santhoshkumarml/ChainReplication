@@ -79,6 +79,7 @@ public class ServerMessageHandler {
 	volatile int receiveSequenceNumber = 0;
 
 
+	/** The can send ack. */
 	volatile boolean canSendAck = true;
 
 	/**
@@ -218,6 +219,11 @@ public class ServerMessageHandler {
 		return server;
 	}
 
+	/**
+	 * Sets the can send ack.
+	 *
+	 * @param canSendAck the new can send ack
+	 */
 	private void setCanSendAck(boolean canSendAck) {
 		this.canSendAck = canSendAck;
 	}
