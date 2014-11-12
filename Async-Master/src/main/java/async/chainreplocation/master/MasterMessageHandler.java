@@ -251,6 +251,8 @@ public class MasterMessageHandler {
 	private void sendClientMessage(Client client,
 			MasterClientChangeMessage message)
 					throws MasterChainReplicationException {
+		//TODO Remove this later
+		this.masterChainReplicationFacade.logMessages(message.toString());
 		try {
 			clientMessageHelper = new TCPClientHelper(client
 					.getClientProcessDetails().getHost(), client
@@ -271,6 +273,8 @@ public class MasterMessageHandler {
 	private void sendServerMessage(Server server,
 			ChainReplicationMessage message)
 					throws MasterChainReplicationException {
+		//TODO Remove this later
+		this.masterChainReplicationFacade.logMessages(message.toString());
 		try {
 			serverMessageHelper = new TCPClientHelper(server
 					.getServerProcessDetails().getHost(), server
