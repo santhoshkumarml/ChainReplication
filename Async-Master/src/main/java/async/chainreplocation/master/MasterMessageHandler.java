@@ -41,6 +41,7 @@ public class MasterMessageHandler {
 	IClientHelper serverMessageHelper, clientMessageHelper = null;
 
 
+	/** The chain join helper. */
 	ChainJoinHelper chainJoinHelper;
 
 	/**
@@ -48,7 +49,6 @@ public class MasterMessageHandler {
 	 *
 	 * @param master the master
 	 * @param chains the chains
-	 * @param chainToServerMap the chain to server map
 	 * @param clients the clients
 	 * @param masterChainReplicationFacade the master chain replication facade
 	 */
@@ -63,6 +63,11 @@ public class MasterMessageHandler {
 
 
 
+	/**
+	 * Gets the master ds.
+	 *
+	 * @return the master ds
+	 */
 	private MasterDataStructure getMasterDs() {
 		return masterDs;
 	}
@@ -301,12 +306,26 @@ public class MasterMessageHandler {
 
 	}
 
+	/**
+	 * The Class ChainJoinHelper.
+	 */
 	private static class ChainJoinHelper extends Thread {
+		
+		/** The master message handler. */
 		MasterMessageHandler masterMessageHandler;
+		
+		/**
+		 * Instantiates a new chain join helper.
+		 *
+		 * @param masterMessageHandler the master message handler
+		 */
 		public ChainJoinHelper(MasterMessageHandler masterMessageHandler) {
 			this.masterMessageHandler = masterMessageHandler;
 		}
 
+		/* (non-Javadoc)
+		 * @see java.lang.Thread#run()
+		 */
 		public void run() {
 			MasterDataStructure masterDs = masterMessageHandler.getMasterDs();
 			synchronized (masterDs) {
