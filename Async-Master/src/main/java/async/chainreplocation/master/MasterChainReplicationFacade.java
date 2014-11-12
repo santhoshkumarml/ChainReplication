@@ -8,6 +8,7 @@ import async.chainreplication.communication.messages.ChainJoinMessage;
 import async.chainreplication.communication.messages.ChainReplicationMessage;
 import async.chainreplication.communication.messages.HeartBeatMessage;
 import async.chainreplication.communication.messages.MasterGenericServerChangeMessage;
+import async.chainreplication.communication.messages.NewNodeInitializedMessage;
 import async.chainreplication.master.exception.MasterChainReplicationException;
 import async.chainreplication.master.models.Chain;
 import async.chainreplication.master.models.Client;
@@ -21,10 +22,10 @@ import async.generic.message.queue.MessageQueue;
  * The Class MasterChainReplicationFacade.
  */
 public class MasterChainReplicationFacade {
-	
+
 	/** The master impl. */
 	MasterImpl masterImpl;
-	
+
 	/** The master message handler. */
 	MasterMessageHandler masterMessageHandler;
 
@@ -98,9 +99,12 @@ public class MasterChainReplicationFacade {
 			throws MasterChainReplicationException {
 		if (message.getClass() == MasterGenericServerChangeMessage.class) {
 			masterMessageHandler
-					.handleGenericServerChangeMessage((MasterGenericServerChangeMessage) message);
+			.handleGenericServerChangeMessage((MasterGenericServerChangeMessage) message);
 		} else if(message.getClass() == ChainJoinMessage.class) {
 			masterMessageHandler.handleChainJoinMessage((ChainJoinMessage) message);
+		} else if(message.getClass() == NewNodeInitializedMessage.class) {
+			masterMessageHandler.handleNewNodeInitializedMessage(
+					(NewNodeInitializedMessage) message);
 		}
 	}
 

@@ -15,6 +15,7 @@ import async.chainreplication.communication.messages.ApplicationMessage;
 import async.chainreplication.communication.messages.BulkSyncMessage;
 import async.chainreplication.communication.messages.ChainJoinMessage;
 import async.chainreplication.communication.messages.ChainReplicationMessage;
+import async.chainreplication.communication.messages.MasterChainJoinReplyMessage;
 import async.chainreplication.communication.messages.MasterServerChangeMessage;
 import async.chainreplication.communication.messages.NewNodeInitializedMessage;
 import async.chainreplication.communication.messages.RequestMessage;
@@ -476,7 +477,7 @@ public class ServerMessageHandler {
 			}
 		}
 	}
-	
+
 	/**
 	 * Handle chain join message.
 	 *
@@ -489,8 +490,8 @@ public class ServerMessageHandler {
 				new NewNodeUpdater(this.applicationRequestHandler.getTransactionalObjects(), server, this);
 		updater.start();
 	}
-	
-	
+
+
 	/**
 	 * Handle application message.
 	 *
@@ -504,6 +505,20 @@ public class ServerMessageHandler {
 			NewNodeInitializedMessage newNodeInitializedMessage = new NewNodeInitializedMessage(this.server);
 			IClientHelper masterContacter = new TCPClientHelper(master.getMasterHost(), master.getMasterPort());
 			sendMessage(masterContacter, newNodeInitializedMessage);
+		}
+	}
+
+	public void handleChainJoinReplyMessage(MasterChainJoinReplyMessage message) throws ConnectClientException {
+		if(message.getExisistingTail() == null) {
+			NewNodeInitializedMessage newNodeInitializedMessage = new NewNodeInitializedMessage(this.server);
+			IClientHelper masterContacter = new TCPClientHelper(master.getMasterHost(), master.getMasterPort());
+			sendMessage(masterContacter, newNodeInitializedMessage);
+		} else {
+			ChainJoinMessage joinMessageToServer = new ChainJoinMessage(this.server);
+			IClientHelper exisistingTailContacter = new TCPClientHelper(
+					message.getExisistingTail().getServerProcessDetails().getHost(),
+					message.getExisistingTail().getServerProcessDetails().getTcpPort());
+			sendMessage(exisistingTailContacter, joinMessageToServer);
 		}
 	}
 
@@ -599,6 +614,8 @@ public class ServerMessageHandler {
 							this.messageHandler.sendMessage(newNodeClientHelper, syncMessage);
 						}
 					}
+					ApplicationMessage message = new ApplicationMessage(null, true);
+					this.messageHandler.sendMessage(newNodeClientHelper, message);
 				} catch (ConnectClientException e) {
 					this.messageHandler.logMessage(e.getMessage());
 				}
