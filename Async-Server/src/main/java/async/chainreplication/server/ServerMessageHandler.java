@@ -218,11 +218,6 @@ public class ServerMessageHandler {
 		return server;
 	}
 
-
-	private boolean isCanSendAck() {
-		return canSendAck;
-	}
-
 	private void setCanSendAck(boolean canSendAck) {
 		this.canSendAck = canSendAck;
 	}
