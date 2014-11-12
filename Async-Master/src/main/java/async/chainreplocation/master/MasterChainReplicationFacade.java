@@ -110,6 +110,7 @@ public class MasterChainReplicationFacade {
 	 */
 	public void stopProcessingMessages() {
 		isMasterStopping = true;
+		this.masterMessageHandler.getChainJoinHelper().stopServer();
 	}
 
 	/**
