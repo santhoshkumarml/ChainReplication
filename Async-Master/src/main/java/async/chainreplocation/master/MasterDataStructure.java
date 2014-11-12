@@ -133,6 +133,12 @@ public class MasterDataStructure {
 		return chainChanges;
 	}
 
+	/**
+	 * Check and remove from new servers chain.
+	 *
+	 * @param diedServer the died server
+	 * @return true, if successful
+	 */
 	private boolean checkAndRemoveFromNewServersChain(Server diedServer) {
 		String chainId = diedServer.getChainName();
 		List<Server> newServers = this.chainToNewServersMap.get(chainId);
