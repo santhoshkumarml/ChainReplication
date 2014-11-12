@@ -187,56 +187,57 @@ public class MasterMessageHandler {
 		Server newServer = message.getServer();
 		String chainName = newServer.getChainName();
 
-		Chain chain = masterDs.getChains().get(chainName);
+		synchronized (masterDs) {
+			Chain chain = masterDs.getChains().get(chainName);
 
+			//calculatingChanges
+			ChainChanges changes = new ChainChanges();
 
-		//calculatingChanges
-		ChainChanges changes = new ChainChanges();
+			boolean isHeadChanged = false;
+			boolean isTailChanged = true;
 
-		boolean isHeadChanged = false;
-		boolean isTailChanged = true;
+			newServer.getAdjacencyList().setSucessor(null);
+			newServer.getAdjacencyList().setPredecessor(null);
+			Server exisistingTail = chain.getTail();
+			if(exisistingTail != null) {
+				exisistingTail.getAdjacencyList().setSucessor(newServer);
+				newServer.getAdjacencyList().setPredecessor(exisistingTail);
+			}
 
-		newServer.getAdjacencyList().setSucessor(null);
-		newServer.getAdjacencyList().setPredecessor(null);
-		Server exisistingTail = chain.getTail();
-		if(exisistingTail != null) {
-			exisistingTail.getAdjacencyList().setSucessor(newServer);
-			newServer.getAdjacencyList().setPredecessor(exisistingTail);
+			if(chain.getHead() == null) {
+				isHeadChanged=true;
+				chain.setHead(newServer);
+			}
+
+			changes.getChainsToHeadTailChanges().put(chainName,
+					Arrays.asList(isHeadChanged,isTailChanged));
+
+			Set<String> serversChangedInChain =
+					changes.getChainToServersChanged().get(chainName);
+			if(serversChangedInChain == null) {
+				serversChangedInChain = new HashSet<String>();
+			}
+			if(exisistingTail!=null) {
+				serversChangedInChain.add(exisistingTail.getServerId());
+			}
+			serversChangedInChain.add(newServer.getServerId());
+
+			changes.getChainToServersChanged().put(chainName, serversChangedInChain);
+
+			//Master updates
+			chain.setTail(newServer);
+
+			masterDs.getChains().put(chainName, chain);
+			masterDs.getChainToNewServersMap().get(chainName).remove(0);
+			Map<String, Server> servers = masterDs.getChainToServerMap().get(chainName);
+			if(servers == null) {
+				servers = new HashMap<String, Server>();
+			}
+			servers.put(exisistingTail.getServerId(), exisistingTail);
+			servers.put(newServer.getServerId(), newServer);
+			masterDs.getChainToServerMap().put(chainName, servers);
+			formAndDispatchMessagesForServerAndClient(changes);
 		}
-
-		if(chain.getHead() == null) {
-			isHeadChanged=true;
-			chain.setHead(newServer);
-		}
-
-		changes.getChainsToHeadTailChanges().put(chainName,
-				Arrays.asList(isHeadChanged,isTailChanged));
-
-		Set<String> serversChangedInChain =
-				changes.getChainToServersChanged().get(chainName);
-		if(serversChangedInChain == null) {
-			serversChangedInChain = new HashSet<String>();
-		}
-		if(exisistingTail!=null) {
-			serversChangedInChain.add(exisistingTail.getServerId());
-		}
-		serversChangedInChain.add(newServer.getServerId());
-
-		changes.getChainToServersChanged().put(chainName, serversChangedInChain);
-
-		//Master updates
-		chain.setTail(newServer);
-
-		masterDs.getChains().put(chainName, chain);
-		masterDs.getChainToNewServersMap().get(chainName).remove(0);
-		Map<String, Server> servers = masterDs.getChainToServerMap().get(chainName);
-		if(servers == null) {
-			servers = new HashMap<String, Server>();
-		}
-		servers.put(exisistingTail.getServerId(), exisistingTail);
-		servers.put(newServer.getServerId(), newServer);
-		masterDs.getChainToServerMap().put(chainName, servers);
-		formAndDispatchMessagesForServerAndClient(changes);
 	}
 
 

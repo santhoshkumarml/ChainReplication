@@ -138,7 +138,7 @@ public class JSONUtility {
 					config.getServerToTimeToLive().put(server, timeToLive);
 				}
 			}
-			Server head = null;
+			/*Server head = null;
 			Server tail = null;
 			for (int i = 0; i < numberOfServers; i++) {
 				JSONObject serverObject = (JSONObject) serversArray.get(i);
@@ -158,8 +158,8 @@ public class JSONUtility {
 				} else {
 					tail = server;
 				}
-			}
-			Chain chain = new Chain(chainId, head, tail);
+			}*/
+			Chain chain = new Chain(chainId, null, null);
 			config.getChains().put(chainId, chain);
 			config.getChainToServerMap().put(chainId, servers);
 		}
