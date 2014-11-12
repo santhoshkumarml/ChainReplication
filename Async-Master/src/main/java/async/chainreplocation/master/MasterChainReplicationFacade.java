@@ -13,7 +13,6 @@ import async.chainreplication.master.exception.MasterChainReplicationException;
 import async.chainreplication.master.models.Chain;
 import async.chainreplication.master.models.Client;
 import async.chainreplication.master.models.Master;
-import async.chainreplication.server.exception.ServerChainReplicationException;
 import async.generic.message.queue.Message;
 import async.generic.message.queue.MessageQueue;
 
