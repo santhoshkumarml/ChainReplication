@@ -55,7 +55,7 @@ public class AppStarter {
 		 * Kill all servers.
 		 */
 		public void killAllServers() {
-			//this.killAllServers = true;
+			this.killAllServers = true;
 		}
 
 		/*
