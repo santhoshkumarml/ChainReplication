@@ -81,17 +81,21 @@ public class ServerMessageHandler {
 			messageHandler.setCanSendAck(false);
 			synchronized (newNodeClientHelper) {
 				try {
-					for (final Object transactionalObject : transactionalApplicationObjects) {
+					for (Object transactionalObject : transactionalApplicationObjects) {
 						final ApplicationMessage message = new ApplicationMessage(
 								transactionalObject, false);
+						//try {
 						messageHandler.sendMessage(newNodeClientHelper, message);
+						//} catch(ServerChainReplicationException e) {
+						//messageHandler.setCanSendAck(true);
+						//messageHandler.logMessage(e.getMessage());
+						//break;
+						//}
 
 					}
 
-					final HistoryOfRequests historyOfRequests = messageHandler
+					HistoryOfRequests historyOfRequests = messageHandler
 							.getHistoryOfRequests();
-					final SentHistory sentHistory = messageHandler
-							.getSentHistory();
 					Set<RequestKey> requestKeys = new HashSet<RequestKey>();
 					int greatestSequenceNumber = 0;
 					synchronized (historyOfRequests) {
@@ -107,10 +111,17 @@ public class ServerMessageHandler {
 								.getExisistingReply(requestKey);
 						final ResponseOrSyncMessage syncMessage = new ResponseOrSyncMessage(
 								request, reply);
+						//try {
 						messageHandler.sendMessage(newNodeClientHelper,
 								syncMessage);
+						//} catch(ServerChainReplicationException e) {
+						//messageHandler.setCanSendAck(true);
+						//messageHandler.logMessage(e.getMessage());
+						//break;
+						//}
 					}
 
+					SentHistory sentHistory = messageHandler.getSentHistory();
 					synchronized (sentHistory) {
 						BulkSyncMessage bulkSyncMessage = null;
 						for (final RequestKey requestKey : sentHistory
@@ -129,13 +140,12 @@ public class ServerMessageHandler {
 							messageHandler.sendMessage(newNodeClientHelper, bulkSyncMessage);
 						}
 					}
-					final ApplicationMessage message = new ApplicationMessage(
+					ApplicationMessage message = new ApplicationMessage(
 							null, true);
 					messageHandler.sendMessage(newNodeClientHelper, message);
-					//this.messageHandler.logMessage("Finished Sending lastMessage");
-				} catch (final ServerChainReplicationException e) {
+				} catch (ServerChainReplicationException e) {
 					messageHandler.setCanSendAck(true);
-					messageHandler.logMessage(e.getMessage());
+					messageHandler.logMessage("Send failed to new Node"+e.getMessage());
 				}
 			}
 		}
@@ -289,7 +299,7 @@ public class ServerMessageHandler {
 	 *
 	 * @return the history of requests
 	 */
-	public HistoryOfRequests getHistoryOfRequests() {
+	public synchronized HistoryOfRequests getHistoryOfRequests() {
 		return historyOfRequests;
 	}
 
@@ -325,7 +335,7 @@ public class ServerMessageHandler {
 	 *
 	 * @return the sent history
 	 */
-	public SentHistory getSentHistory() {
+	public synchronized SentHistory getSentHistory() {
 		return sentHistory;
 	}
 

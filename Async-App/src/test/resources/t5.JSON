@@ -55,7 +55,7 @@
 						"UdpPort":"10142",
 						"DebugPort":"10143",
 						"InitialSleepTime":"40000",
-						"MaxReceiveSequenceNumber":"5"
+						"MaxReceiveSequenceNumber":"2"
 					},
 					
 				},
