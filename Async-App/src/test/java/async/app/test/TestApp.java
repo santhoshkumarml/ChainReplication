@@ -26,8 +26,8 @@ public class TestApp {
 	}
 	
 	
-	@Test
-	public void testApp2() {
+	//@Test
+	public void testApp4() {
 		final String args[] = new String[1];
 		args[0] = new File("." + File.separatorChar + "src"
 				+ File.separatorChar + "test" + File.separatorChar
@@ -36,6 +36,16 @@ public class TestApp {
 		AppStarter.main(args);
 	}
 
+	@Test
+	public void testApp5() {
+		final String args[] = new String[1];
+		args[0] = new File("." + File.separatorChar + "src"
+				+ File.separatorChar + "test" + File.separatorChar
+				+ "resources" + File.separatorChar + "t5.json")
+		.getAbsolutePath();
+		AppStarter.main(args);
+	}
+	
 	// @Test
 	/**
 	 * Test master data structure.

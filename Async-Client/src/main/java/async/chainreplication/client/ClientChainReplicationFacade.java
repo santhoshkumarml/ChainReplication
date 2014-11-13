@@ -84,10 +84,9 @@ public class ClientChainReplicationFacade {
 						clientImpl.getRequestDispatcher().start();
 					}
 				}
-				final ChainReplicationMessage oldMessage = (ChainReplicationMessage) messages
+				ChainReplicationMessage message = (ChainReplicationMessage) messages
 						.dequeueMessageAndReturnMessageObject();
-				this.logMessage("OLD Message"+oldMessage.toString());
-				handleMessage(oldMessage);
+				handleMessage(message);
 			}
 		}
 	}
@@ -116,7 +115,7 @@ public class ClientChainReplicationFacade {
 	 */
 	public void handleMessage(ChainReplicationMessage message)
 			throws ClientChainReplicationException {
-		this.logMessage(message.toString());
+		this.logMessage("Handling message:"+ message.toString());
 		if (message.getClass() == ClientRequestMessage.class) {
 			clientMessageHandler
 			.handleClientRequestMessage((ClientRequestMessage) message);

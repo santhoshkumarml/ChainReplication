@@ -181,8 +181,9 @@ public class ClientImpl extends ChainReplicationImpl {
 			isRunning = true;
 			try {
 				performOperations();
+				Thread.sleep(this.responseWaitTime);
 				this.clientImpl.getClientChainReplicationFacade().stopProcessingMessages();
-			} catch (ClientChainReplicationException e) {
+			} catch (ClientChainReplicationException | InterruptedException e) {
 				this.clientImpl.logMessage(e.getMessage());
 			}
 			isRunning = false;
