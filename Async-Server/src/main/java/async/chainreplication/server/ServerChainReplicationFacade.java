@@ -4,6 +4,7 @@ import java.util.Map;
 
 import async.chainreplication.communication.messages.AckMessage;
 import async.chainreplication.communication.messages.ApplicationMessage;
+import async.chainreplication.communication.messages.BulkSyncMessage;
 import async.chainreplication.communication.messages.ChainJoinMessage;
 import async.chainreplication.communication.messages.ChainReplicationMessage;
 import async.chainreplication.communication.messages.MasterChainJoinReplyMessage;
@@ -142,9 +143,9 @@ public class ServerChainReplicationFacade {
 		} else if (message.getClass() == MasterServerChangeMessage.class) {
 			serverMessageHandler
 			.handleMasterMessage((MasterServerChangeMessage) message);
-		} else if (message.getClass() == WaitServerMessage.class) {
+		} else if (message.getClass() == BulkSyncMessage.class) {
 			serverMessageHandler
-					.handleWaitServerMessage((WaitServerMessage) message);
+					.handleBulkSyncMessage((BulkSyncMessage) message);
 		} else if (message.getClass() == SuccessorRequestMessage.class) {
 			serverMessageHandler
 					.handleSuccessorRequestMessage((SuccessorRequestMessage) message);

@@ -459,7 +459,7 @@ public class ServerMessageHandler {
 				sendMessage(newTailContacter, joinMessageToServer);
 			} else if (server.getAdjacencyList().getPredecessor()!=null &&
 					!(server.getAdjacencyList().getPredecessor().equals(newServerObject
-					.getAdjacencyList().getPredecessor()))) {
+							.getAdjacencyList().getPredecessor()))) {
 				final int lastSequenceNumberReceived = this
 						.getHistoryOfRequests()
 						.getGreatestSequenceNumberReceived();
@@ -758,7 +758,7 @@ public class ServerMessageHandler {
 					sendMessage(peerSendClientHelper, syncMessage);
 				} catch (final ServerChainReplicationException e) {
 					this.logMessage(e.getMessage());
-				}
+				} 
 			}
 			// send sync
 		} else if(isServerInitialized){
@@ -781,6 +781,12 @@ public class ServerMessageHandler {
 			if (isServerInitialized && canSendAck && request.getRequestType() != RequestType.QUERY) {
 				ACK(request);
 			}
+		}
+	}
+
+	public void handleBulkSyncMessage(BulkSyncMessage message) throws ServerChainReplicationException {
+		for(ResponseOrSyncMessage syncMessages :message.getSyncMessages()) {
+			sync(syncMessages.getRequest(), syncMessages.getReply());
 		}
 	}
 }
