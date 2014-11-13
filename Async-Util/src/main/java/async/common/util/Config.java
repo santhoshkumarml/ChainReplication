@@ -7,6 +7,7 @@ import java.util.Map;
 import async.chainreplication.master.models.Chain;
 import async.chainreplication.master.models.Client;
 import async.chainreplication.master.models.Master;
+import async.chainreplication.master.models.Pair;
 import async.chainreplication.master.models.Server;
 
 // TODO: Auto-generated Javadoc
@@ -38,6 +39,13 @@ public class Config implements Serializable {
 
 	/** The server to initial sleep time. */
 	Map<Server, Long> serverToInitialSleepTime = new HashMap<Server, Long>();
+	
+	/** The server to initial sleep time. */
+	Map<Server, Pair<Integer, Integer>> receiveAndSendMessageLimit = new HashMap<Server, Pair<Integer,Integer>>();
+
+	public Map<Server, Pair<Integer, Integer>> getReceiveAndSendMessageLimit() {
+		return receiveAndSendMessageLimit;
+	}
 
 	/**
 	 * Gets the chains.

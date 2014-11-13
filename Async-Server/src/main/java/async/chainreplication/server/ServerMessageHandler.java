@@ -132,7 +132,7 @@ public class ServerMessageHandler {
 					final ApplicationMessage message = new ApplicationMessage(
 							null, true);
 					messageHandler.sendMessage(newNodeClientHelper, message);
-					this.messageHandler.logMessage("Finished Sending lastMessage");
+					//this.messageHandler.logMessage("Finished Sending lastMessage");
 				} catch (final ServerChainReplicationException e) {
 					messageHandler.setCanSendAck(true);
 					messageHandler.logMessage(e.getMessage());
@@ -174,15 +174,28 @@ public class ServerMessageHandler {
 	/** The server chain replication facade. */
 	ServerChainReplicationFacade serverChainReplicationFacade;
 
+	volatile int maxReceiveSequenceNumber =1000;
+	volatile int maxSendSequenceNumber =1000;
+
+
+
+	public void setMaxReceiveSequenceNumber(int maxReceiveSequenceNumber) {
+		this.maxReceiveSequenceNumber = maxReceiveSequenceNumber;
+	}
+
+	public void setMaxSendSequenceNumber(int maxSendSequenceNumber) {
+		this.maxSendSequenceNumber = maxSendSequenceNumber;
+	}
+
 	/** The send sequence number. */
-	volatile int sendSequenceNumber = 0;
+	volatile Integer sendSequenceNumber = 0;
 
 	/** The receive sequence number. */
-	volatile int receiveSequenceNumber = 0;
+	volatile Integer receiveSequenceNumber = 0;
 
 	/** The can send ack. */
 	volatile boolean canSendAck = true;
-	
+
 	/** The can send ack. */
 	volatile boolean isServerInitialized = false;
 
@@ -244,10 +257,11 @@ public class ServerMessageHandler {
 				final ChainReplicationMessage ackMessage = new AckMessage(
 						request);
 				// change it to ACK Message
-				peerSendClientHelper = new TCPClientHelper(predecessor
-						.getServerProcessDetails().getHost(), predecessor
-						.getServerProcessDetails().getTcpPort());
-				sendMessage(peerSendClientHelper, ackMessage);
+				try {
+					sendMessage(peerSendClientHelper, ackMessage);
+				} catch(ServerChainReplicationException e) {
+					this.logMessage("Internal Error:"+e.getMessage());
+				}
 			}
 		}
 	}
@@ -392,6 +406,7 @@ public class ServerMessageHandler {
 			final IClientHelper masterContacter = new TCPClientHelper(
 					master.getMasterHost(), master.getMasterPort());
 			sendMessage(masterContacter, newNodeInitializedMessage);
+			this.isServerInitialized = true;
 		} else {
 			final ChainJoinMessage joinMessageToServer = new ChainJoinMessage(
 					server);
@@ -423,8 +438,17 @@ public class ServerMessageHandler {
 			 * this.serverChainReplicationFacade
 			 * .deliverMessage(waitServerMessage); }
 			 */
-			if (server.getAdjacencyList().getPredecessor() != newServerObject
-					.getAdjacencyList().getPredecessor()) {
+			if(!isServerInitialized) {
+				Set<Chain> chains = message.getOtherChains();
+				Chain chain = chains.iterator().next();
+				final ChainJoinMessage joinMessageToServer = new ChainJoinMessage(
+						server);
+				final IClientHelper newTailContacter = new TCPClientHelper(
+						chain.getTail().getServerProcessDetails().getHost(),
+						chain.getTail().getServerProcessDetails().getTcpPort());
+				sendMessage(newTailContacter, joinMessageToServer);
+			} else if (server.getAdjacencyList().getPredecessor()!=null && !(server.getAdjacencyList().getPredecessor().equals(newServerObject
+					.getAdjacencyList().getPredecessor()))) {
 				final int lastSequenceNumberReceived = this
 						.getHistoryOfRequests()
 						.getGreatestSequenceNumberReceived();
@@ -563,15 +587,29 @@ public class ServerMessageHandler {
 	/**
 	 * Increment receive sequence number.
 	 */
-	public void incrementReceiveSequenceNumber() {
-		receiveSequenceNumber++;
+	public synchronized int incrementAndCheckReceiveSequenceNumber() {
+		synchronized (receiveSequenceNumber) {
+			receiveSequenceNumber++;
+			if(receiveSequenceNumber == maxReceiveSequenceNumber) {
+				this.logMessage("Server Shutting down - Max Receive Messages");
+				this.serverChainReplicationFacade.getServerImpl().stop();
+			}
+			return receiveSequenceNumber;	
+		}
 	}
 
 	/**
 	 * Increment send sequence number.
 	 */
-	public void incrementSendSequenceNumber() {
-		sendSequenceNumber++;
+	public synchronized int incrementAndCheckSendSequenceNumber() {
+		synchronized (sendSequenceNumber) {
+			sendSequenceNumber++;
+			if(sendSequenceNumber == maxSendSequenceNumber) {
+				this.logMessage("Server Shutting down - Max Send Messages");
+				this.serverChainReplicationFacade.getServerImpl().stop();
+			}
+			return sendSequenceNumber;	
+		}
 	}
 
 	/**
@@ -598,9 +636,12 @@ public class ServerMessageHandler {
 			ChainReplicationMessage chainReplicationMessage)
 					throws ServerChainReplicationException {
 		// TODO Remove this later
-		this.logMessage("Sending Message :" + chainReplicationMessage.toString()+" to "+client.getServerPort());
 		try {
 			client.sendMessage(chainReplicationMessage);
+			incrementAndCheckSendSequenceNumber();
+			serverChainReplicationFacade.logMessage(
+					"Outgoing Message-" + sendSequenceNumber +
+					":" + chainReplicationMessage.toString());
 		} catch (ConnectClientException e) {
 			throw new ServerChainReplicationException(
 					e.getMessage()+
@@ -707,11 +748,6 @@ public class ServerMessageHandler {
 				} catch (final ServerChainReplicationException e) {
 					this.logMessage(e.getMessage());
 				}
-				/*
-				 * incrementSendSequenceNumber();
-				 * serverChainReplicationFacade.logMessage("Outgoing Message-" +
-				 * sendSequenceNumber + ":" + syncMessage.toString());
-				 */
 			}
 			// send sync
 		} else if(isServerInitialized){
@@ -723,13 +759,11 @@ public class ServerMessageHandler {
 			synchronized (tailResponseClientHelper) {
 				final ChainReplicationMessage responseMessage = new ResponseOrSyncMessage(
 						request, reply);
-				sendMessage(tailResponseClientHelper, responseMessage);
-				// TODO uncomment this later
-				/*
-				 * incrementSendSequenceNumber(); serverChainReplicationFacade
-				 * .logMessage("Outgoing Message-" + sendSequenceNumber + ":" +
-				 * responseMessage.toString());
-				 */
+				try{
+					sendMessage(tailResponseClientHelper, responseMessage);
+				} catch (final ServerChainReplicationException e) {
+					this.logMessage(e.getMessage());
+				}
 			}
 
 			// ACk so that other servers can remove the messages from Sent

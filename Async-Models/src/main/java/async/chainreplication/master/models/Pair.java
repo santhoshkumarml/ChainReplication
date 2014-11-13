@@ -1,5 +1,7 @@
 package async.chainreplication.master.models;
 
+import java.io.Serializable;
+
 // TODO: Auto-generated Javadoc
 /**
  * The Class Pair.
@@ -9,7 +11,12 @@ package async.chainreplication.master.models;
  * @param <S>
  *            the generic type
  */
-public class Pair<F, S> {
+public class Pair<F, S> implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6579190661922473935L;
 
 	/** The first. */
 	F first;

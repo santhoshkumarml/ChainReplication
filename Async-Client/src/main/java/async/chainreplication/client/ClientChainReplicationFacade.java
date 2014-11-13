@@ -1,8 +1,6 @@
 package async.chainreplication.client;
 
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 import async.chainreplication.client.exception.ClientChainReplicationException;
 import async.chainreplication.client.server.communication.models.Reply;
@@ -33,6 +31,8 @@ public class ClientChainReplicationFacade {
 	/** The client impl. */
 	ClientImpl clientImpl;
 
+	volatile boolean stopProcessingMessages = false;
+
 	/**
 	 * Instantiates a new client chain replication facade.
 	 *
@@ -53,11 +53,11 @@ public class ClientChainReplicationFacade {
 		clientMessageHandler = new ClientMessageHandler(client,
 				chainNameToChainMap, master, this);
 		this.clientImpl = clientImpl;
-		Set<Class<?>> waitingCLasses = new HashSet<Class<?>>();
+		/*Set<Class<?>> waitingCLasses = new HashSet<Class<?>>();
 		waitingCLasses.add(MasterClientChangeMessage.class);
 		WaitServerMessage message = new WaitServerMessage(waitingCLasses, null);
 		messages.enqueueMessageObject(message.getPriority().ordinal(),
-				message);
+				message);*/
 	}
 
 	/**
@@ -74,12 +74,27 @@ public class ClientChainReplicationFacade {
 			messages.enqueueMessageObject(message.getPriority().ordinal(),
 					message);
 		}
-		while (messages.hasMoreMessages()) {
-			final ChainReplicationMessage oldMessage = (ChainReplicationMessage) messages
-					.dequeueMessageAndReturnMessageObject();
-			this.logMessage("OLD Message"+oldMessage.toString());
-			handleMessage(oldMessage);
+	}
+
+	public void startProcessingMessages() throws ClientChainReplicationException {
+		while(!stopProcessingMessages) {
+			while (messages.hasMoreMessages()) {
+				if(!clientMessageHandler.getChainNameToChainMap().isEmpty()) {
+					if(!clientImpl.getRequestDispatcher().isRunning()) {
+						clientImpl.getRequestDispatcher().start();
+					}
+				}
+				final ChainReplicationMessage oldMessage = (ChainReplicationMessage) messages
+						.dequeueMessageAndReturnMessageObject();
+				this.logMessage("OLD Message"+oldMessage.toString());
+				handleMessage(oldMessage);
+			}
 		}
+	}
+
+
+	public void stopProcessingMessages() {
+		this.stopProcessingMessages  = true;
 	}
 
 	/**

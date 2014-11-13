@@ -75,7 +75,10 @@ public class ServerImpl extends ChainReplicationImpl {
 		try {
 			serverChainReplicationFacade = new ServerChainReplicationFacade(
 					config.getChainToServerMap().get(chainName).get(serverId),
-					config.getChains(), config.getMaster(), this);
+					config.getChains(), config.getMaster(),
+					config.getReceiveAndSendMessageLimit().get(
+							config.getChainToServerMap().get(chainName).get(serverId)),
+							this);
 			heartBeatTimeOut = config.getMaster().getHeartbeatTimeout();
 		} catch (final ServerChainReplicationException e) {
 			this.logMessage(e.getMessage());
@@ -172,7 +175,7 @@ public class ServerImpl extends ChainReplicationImpl {
 	 * @param message
 	 *            the message
 	 */
-	public void logMessage(String message) {
+	public synchronized void logMessage(String message) {
 		final LogMessage logMessage = new LogMessage(message);
 		this.getLogMessages().enqueueMessageObject(
 				logMessage.getPriority().ordinal(), logMessage);

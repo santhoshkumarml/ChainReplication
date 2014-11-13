@@ -80,9 +80,9 @@ public class MasterMessageHandler {
 									this.masterMessageHandler.logMessage(e.getMessage());
 								}
 								firstServerToRunning.setSecond(true);
-								//TODO Remove this later
+/*								 Remove this later
 								this.masterMessageHandler.logMessage(
-										"About to run"+firstServerToRunning.getFirst().toString());
+										"About to run"+firstServerToRunning.getFirst().toString());*/
 							}
 						}
 					}
@@ -181,7 +181,7 @@ public class MasterMessageHandler {
 					serverMessage.getOtherChains().add(chain);
 					serverMessageChanges.put(tail, serverMessage);
 				} else {
-					if (!changedChainEntry.getValue().get(1)) {
+					if (changedChainEntry.getValue().get(1)) {
 						final List<Pair<Server, Boolean>> serversToRunning = masterDs
 								.getChainToNewServersMap().get(chainId);
 						if (serversToRunning != null

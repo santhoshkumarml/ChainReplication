@@ -14,6 +14,7 @@ import async.chainreplication.communication.messages.SuccessorRequestMessage;
 import async.chainreplication.communication.messages.WaitServerMessage;
 import async.chainreplication.master.models.Chain;
 import async.chainreplication.master.models.Master;
+import async.chainreplication.master.models.Pair;
 import async.chainreplication.master.models.Server;
 import async.chainreplication.server.exception.ServerChainReplicationException;
 import async.generic.message.queue.MessageQueue;
@@ -45,6 +46,7 @@ public class ServerChainReplicationFacade {
 	 *            the chain name to chain map
 	 * @param master
 	 *            the master
+	 * @param map 
 	 * @param serverImpl
 	 *            the server impl
 	 * @throws ServerChainReplicationException
@@ -52,9 +54,12 @@ public class ServerChainReplicationFacade {
 	 */
 	public ServerChainReplicationFacade(Server server,
 			Map<String, Chain> chainNameToChainMap, Master master,
+			Pair<Integer, Integer> receiveAndSendSequenceNumberLimit,
 			ServerImpl serverImpl) throws ServerChainReplicationException {
 		serverMessageHandler = new ServerMessageHandler(server,
 				chainNameToChainMap, master, this);
+		serverMessageHandler.setMaxReceiveSequenceNumber(receiveAndSendSequenceNumberLimit.getFirst());
+		serverMessageHandler.setMaxSendSequenceNumber(receiveAndSendSequenceNumberLimit.getSecond());
 		this.serverImpl = serverImpl;
 	}
 

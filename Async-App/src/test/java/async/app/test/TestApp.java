@@ -15,12 +15,23 @@ public class TestApp {
 	/**
 	 * Test app.
 	 */
-	@Test
-	public void testApp() {
+	//@Test
+	public void testApp1() {
 		final String args[] = new String[1];
 		args[0] = new File("." + File.separatorChar + "src"
 				+ File.separatorChar + "test" + File.separatorChar
 				+ "resources" + File.separatorChar + "t1.json")
+		.getAbsolutePath();
+		AppStarter.main(args);
+	}
+	
+	
+	@Test
+	public void testApp2() {
+		final String args[] = new String[1];
+		args[0] = new File("." + File.separatorChar + "src"
+				+ File.separatorChar + "test" + File.separatorChar
+				+ "resources" + File.separatorChar + "t4.json")
 		.getAbsolutePath();
 		AppStarter.main(args);
 	}

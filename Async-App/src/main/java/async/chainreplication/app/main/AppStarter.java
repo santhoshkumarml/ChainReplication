@@ -50,6 +50,10 @@ public class AppStarter {
 			this.serverToTimeToDie = serverToTimeToDie;
 			this.serverToProcess = serverToProcess;
 		}
+		
+		public void killAllServers() {
+			this.killAllServers = true;
+		}
 
 		/*
 		 * (non-Javadoc)
@@ -262,7 +266,7 @@ public class AppStarter {
 					}
 					serverToTimeToDie.put(pbEntry.getKey(),
 							System.currentTimeMillis()
-									+ (timeToLive - initialSleepTime));
+									+ (timeToLive+initialSleepTime));
 				}
 			}
 			System.out.println("All Servers started");
@@ -288,7 +292,7 @@ public class AppStarter {
 			}
 			System.out.println("All Clients Died");
 
-			// serverKiller.killAllServers();
+			serverKiller.killAllServers();
 			serverKiller.join();
 			System.out.println("All Servers Killed");
 

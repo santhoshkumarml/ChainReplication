@@ -59,17 +59,11 @@ public class ChainMessageListenerThread extends Thread {
 				e.printStackTrace();
 				break;
 			}
-			serverImpl.getServerChainReplicationFacade()
-			.deliverMessage(message);
-			/*
-			 * serverImpl.getServerChainReplicationFacade()
-			 * .getServerMessageHandler().incrementReceiveSequenceNumber(); int
-			 * receiveSequenceNumber = serverImpl
-			 * .getServerChainReplicationFacade()
-			 * .getServerMessageHandler().getReceiveSequenceNumber();
-			 * serverImpl.logMessage("Incoming Message-" + receiveSequenceNumber
-			 * + ":" + message.toString());
-			 */
+			serverImpl.getServerChainReplicationFacade().deliverMessage(message);
+			
+			
+			int receiveSequenceNumber = serverImpl.getServerChainReplicationFacade().getServerMessageHandler().incrementAndCheckReceiveSequenceNumber();
+			serverImpl.logMessage("Incoming Message-" + receiveSequenceNumber+ ":" + message.toString());
 		}
 
 	}

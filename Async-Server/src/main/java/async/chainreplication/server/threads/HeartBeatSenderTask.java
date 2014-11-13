@@ -43,7 +43,7 @@ public class HeartBeatSenderTask extends TimerTask {
 		try {
 			clientHelper.sendMessage(heartBeatMessage);
 			// TODO Remove Comment
-			serverImpl.logMessage(heartBeatMessage.toString());
+			//serverImpl.logMessage(heartBeatMessage.toString());
 		} catch (final ConnectClientException e) {
 			e.printStackTrace();
 		}

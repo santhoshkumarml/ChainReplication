@@ -77,7 +77,7 @@ public class ResponseOrSyncMessage extends ChainReplicationMessage {
 	 */
 	@Override
 	public String toString() {
-		return "[" + request.toString() + "],[" + reply.toString() + "]";
+		return "ResponseOrSync[" + request.toString() + "],[" + reply.toString() + "]";
 	}
 
 }

@@ -23,6 +23,7 @@ import async.chainreplication.application.models.ApplicationRequestType;
 import async.chainreplication.master.models.Chain;
 import async.chainreplication.master.models.Client;
 import async.chainreplication.master.models.Master;
+import async.chainreplication.master.models.Pair;
 import async.chainreplication.master.models.Server;
 import async.common.util.Config;
 import async.common.util.RequestWithChain;
@@ -154,6 +155,25 @@ public class JSONUtility {
 					final long timeToLive = Long.parseLong(timeToLiveString);
 					config.getServerToTimeToLive().put(server, timeToLive);
 				}
+				
+				final String maxReceiveSequenceNumberString = (String) processDetails
+						.get("MaxReceiveSequenceNumber");
+				int maxReceiveSequenceNumber = 1000;
+				if (maxReceiveSequenceNumberString != null && !maxReceiveSequenceNumberString.isEmpty()) {
+					maxReceiveSequenceNumber=Integer.parseInt(maxReceiveSequenceNumberString);
+				}
+				
+				final String maxSendSequenceNumberString = (String) processDetails
+						.get("MaxSendSequenceNumber");
+				int maxSendSequenceNumber = 1000;
+				if (maxSendSequenceNumberString != null && !maxSendSequenceNumberString.isEmpty()) {
+					maxSendSequenceNumber = Integer.parseInt(maxSendSequenceNumberString);
+				}
+				
+				config.getReceiveAndSendMessageLimit().put(
+						server,
+						new Pair<Integer, Integer>(
+								maxReceiveSequenceNumber, maxSendSequenceNumber));
 			}
 			/*
 			 * Server head = null; Server tail = null; for (int i = 0; i <

@@ -90,7 +90,10 @@ public class MasterDataStructure {
 					servers.add(temp);
 					temp = temp.getAdjacencyList().getSucessor();
 				}
+				//Remove died servers
 				servers.removeAll(diedServerSet);
+				
+				
 				Server predecessor = null;
 				for (int i = 0; i < servers.size(); i++) {
 					temp = servers.get(i);
@@ -101,6 +104,8 @@ public class MasterDataStructure {
 								.get(chainId);
 						if (headTailChanges == null) {
 							headTailChanges = new ArrayList<Boolean>(2);
+							headTailChanges.add(false);
+							headTailChanges.add(false);
 						}
 						if (i == 0 && temp != chains.get(chainId).getHead()) {
 							headTailChanges.set(0, true);
@@ -124,6 +129,9 @@ public class MasterDataStructure {
 					}
 					predecessor = temp;
 				}
+				//set the last guy's successor to be null
+				temp.getAdjacencyList().setSucessor(null);
+				
 				chain.setHead(servers.get(0));
 				chain.setTail(servers.get(servers.size() - 1));
 

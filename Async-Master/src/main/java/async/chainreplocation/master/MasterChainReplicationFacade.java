@@ -64,8 +64,6 @@ public class MasterChainReplicationFacade {
 	 *            the message
 	 */
 	public void deliverMessage(ChainReplicationMessage message) {
-		// TODO remove this later
-		this.logMessages("Message Delivered:" + message.toString());
 		if (message != null) {
 			if (message.getClass() == HeartBeatMessage.class) {
 				synchronized (heartBeatMessageQueue) {
