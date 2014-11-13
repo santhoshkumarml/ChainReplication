@@ -1,5 +1,5 @@
 {
-	"Description":"S+ fails after S- sends sequence number",
+	"Description":"S fails how S- and S+ contacts",
 	"Master":{
 		"MasterName":"Master",
 		"MasterHost":"localhost",
@@ -32,8 +32,7 @@
 						"TcpPort":"10121",
 						"UdpPort":"10122",
 						"DebugPort":"10123",
-						"InitialSleepTime":"1000",
-						"MaxReceiveSequenceNumber":"17"
+						"InitialSleepTime":"1000"
 					},
 				},
 				{
@@ -183,13 +182,6 @@
 			"ChainId":"Chain1",
 			"ClientId":"ClientId1",
 			"RequestId":"req9",
-			"AccountNumber":"42142405",
-			"RequestType":"GET_BALANCE"
-		},
-				{
-			"ChainId":"Chain1",
-			"ClientId":"ClientId1",
-			"RequestId":"req10",
 			"AccountNumber":"42142405",
 			"RequestType":"GET_BALANCE"
 		}

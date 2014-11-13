@@ -25,6 +25,26 @@ public class TestApp {
 		AppStarter.main(args);
 	}
 	
+	//@Test
+	public void testApp2() {
+		final String args[] = new String[1];
+		args[0] = new File("." + File.separatorChar + "src"
+				+ File.separatorChar + "test" + File.separatorChar
+				+ "resources" + File.separatorChar + "t2.json")
+		.getAbsolutePath();
+		AppStarter.main(args);
+	}
+	
+	@Test
+	public void testApp3() {
+		final String args[] = new String[1];
+		args[0] = new File("." + File.separatorChar + "src"
+				+ File.separatorChar + "test" + File.separatorChar
+				+ "resources" + File.separatorChar + "t3.json")
+		.getAbsolutePath();
+		AppStarter.main(args);
+	}
+	
 	
 	//@Test
 	public void testApp4() {
@@ -36,7 +56,7 @@ public class TestApp {
 		AppStarter.main(args);
 	}
 
-	@Test
+	//@Test
 	public void testApp5() {
 		final String args[] = new String[1];
 		args[0] = new File("." + File.separatorChar + "src"

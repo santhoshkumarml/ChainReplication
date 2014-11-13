@@ -457,7 +457,8 @@ public class ServerMessageHandler {
 						chain.getTail().getServerProcessDetails().getHost(),
 						chain.getTail().getServerProcessDetails().getTcpPort());
 				sendMessage(newTailContacter, joinMessageToServer);
-			} else if (server.getAdjacencyList().getPredecessor()!=null && !(server.getAdjacencyList().getPredecessor().equals(newServerObject
+			} else if (server.getAdjacencyList().getPredecessor()!=null &&
+					!(server.getAdjacencyList().getPredecessor().equals(newServerObject
 					.getAdjacencyList().getPredecessor()))) {
 				final int lastSequenceNumberReceived = this
 						.getHistoryOfRequests()
