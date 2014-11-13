@@ -24,7 +24,7 @@ public class TestApp {
 		.getAbsolutePath();
 		AppStarter.main(args);
 	}
-	
+
 	//@Test
 	/**
 	 * Test app2.
@@ -37,11 +37,11 @@ public class TestApp {
 		.getAbsolutePath();
 		AppStarter.main(args);
 	}
-	
+
 	/**
 	 * Test app3.
 	 */
-	@Test
+	//@Test
 	public void testApp3() {
 		final String args[] = new String[1];
 		args[0] = new File("." + File.separatorChar + "src"
@@ -50,8 +50,8 @@ public class TestApp {
 		.getAbsolutePath();
 		AppStarter.main(args);
 	}
-	
-	
+
+
 	//@Test
 	/**
 	 * Test app4.
@@ -65,7 +65,7 @@ public class TestApp {
 		AppStarter.main(args);
 	}
 
-	//@Test
+	@Test
 	/**
 	 * Test app5.
 	 */
@@ -77,7 +77,33 @@ public class TestApp {
 		.getAbsolutePath();
 		AppStarter.main(args);
 	}
-	
+
+	//@Test
+	/**
+	 * Test app5.
+	 */
+	public void testApp6() {
+		final String args[] = new String[1];
+		args[0] = new File("." + File.separatorChar + "src"
+				+ File.separatorChar + "test" + File.separatorChar
+				+ "resources" + File.separatorChar + "t6.json")
+		.getAbsolutePath();
+		AppStarter.main(args);
+	}
+
+	//@Test
+	/**
+	 * Test app5.
+	 */
+	public void testApp7() {
+		final String args[] = new String[1];
+		args[0] = new File("." + File.separatorChar + "src"
+				+ File.separatorChar + "test" + File.separatorChar
+				+ "resources" + File.separatorChar + "t7.json")
+		.getAbsolutePath();
+		AppStarter.main(args);
+	}
+
 	// @Test
 	/**
 	 * Test master data structure.
