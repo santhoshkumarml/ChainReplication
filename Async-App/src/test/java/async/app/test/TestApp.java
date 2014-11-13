@@ -15,7 +15,7 @@ public class TestApp {
 	/**
 	 * Test app.
 	 */
-	//@Test
+	@Test
 	public void testApp1() {
 		final String args[] = new String[1];
 		args[0] = new File("." + File.separatorChar + "src"
@@ -65,7 +65,7 @@ public class TestApp {
 		AppStarter.main(args);
 	}
 
-	@Test
+	//@Test
 	/**
 	 * Test app5.
 	 */
