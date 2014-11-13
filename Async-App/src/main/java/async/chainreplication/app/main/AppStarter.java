@@ -51,6 +51,9 @@ public class AppStarter {
 			this.serverToProcess = serverToProcess;
 		}
 		
+		/**
+		 * Kill all servers.
+		 */
 		public void killAllServers() {
 			this.killAllServers = true;
 		}

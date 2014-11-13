@@ -41,17 +41,12 @@ public class ServerChainReplicationFacade {
 	/**
 	 * Instantiates a new server chain replication facade.
 	 *
-	 * @param server
-	 *            the server
-	 * @param chainNameToChainMap
-	 *            the chain name to chain map
-	 * @param master
-	 *            the master
-	 * @param map 
-	 * @param serverImpl
-	 *            the server impl
-	 * @throws ServerChainReplicationException
-	 *             the server chain replication exception
+	 * @param server            the server
+	 * @param chainNameToChainMap            the chain name to chain map
+	 * @param master            the master
+	 * @param receiveAndSendSequenceNumberLimit the receive and send sequence number limit
+	 * @param serverImpl            the server impl
+	 * @throws ServerChainReplicationException             the server chain replication exception
 	 */
 	public ServerChainReplicationFacade(Server server,
 			Map<String, Chain> chainNameToChainMap, Master master,

@@ -93,6 +93,9 @@ public class Chain implements Serializable {
 		this.tail = tail;
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
 	@Override
 	public String toString() {
 		String headString = null, tailString = null;

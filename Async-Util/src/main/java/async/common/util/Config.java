@@ -43,6 +43,11 @@ public class Config implements Serializable {
 	/** The server to initial sleep time. */
 	Map<Server, Pair<Integer, Integer>> receiveAndSendMessageLimit = new HashMap<Server, Pair<Integer,Integer>>();
 
+	/**
+	 * Gets the receive and send message limit.
+	 *
+	 * @return the receive and send message limit
+	 */
 	public Map<Server, Pair<Integer, Integer>> getReceiveAndSendMessageLimit() {
 		return receiveAndSendMessageLimit;
 	}

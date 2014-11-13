@@ -184,15 +184,28 @@ public class ServerMessageHandler {
 	/** The server chain replication facade. */
 	ServerChainReplicationFacade serverChainReplicationFacade;
 
+	/** The max receive sequence number. */
 	volatile int maxReceiveSequenceNumber =1000;
+	
+	/** The max send sequence number. */
 	volatile int maxSendSequenceNumber =1000;
 
 
 
+	/**
+	 * Sets the max receive sequence number.
+	 *
+	 * @param maxReceiveSequenceNumber the new max receive sequence number
+	 */
 	public void setMaxReceiveSequenceNumber(int maxReceiveSequenceNumber) {
 		this.maxReceiveSequenceNumber = maxReceiveSequenceNumber;
 	}
 
+	/**
+	 * Sets the max send sequence number.
+	 *
+	 * @param maxSendSequenceNumber the new max send sequence number
+	 */
 	public void setMaxSendSequenceNumber(int maxSendSequenceNumber) {
 		this.maxSendSequenceNumber = maxSendSequenceNumber;
 	}
@@ -365,9 +378,8 @@ public class ServerMessageHandler {
 	/**
 	 * Handle application message.
 	 *
-	 * @param message
-	 *            the message
-	 * @throws ServerChainReplicationException 
+	 * @param message            the message
+	 * @throws ServerChainReplicationException the server chain replication exception
 	 */
 	public void handleApplicationMessage(ApplicationMessage message)
 			throws ServerChainReplicationException {
@@ -597,6 +609,8 @@ public class ServerMessageHandler {
 
 	/**
 	 * Increment receive sequence number.
+	 *
+	 * @return the int
 	 */
 	public synchronized int incrementAndCheckReceiveSequenceNumber() {
 		synchronized (receiveSequenceNumber) {
@@ -611,6 +625,8 @@ public class ServerMessageHandler {
 
 	/**
 	 * Increment send sequence number.
+	 *
+	 * @return the int
 	 */
 	public synchronized int incrementAndCheckSendSequenceNumber() {
 		synchronized (sendSequenceNumber) {
@@ -636,12 +652,9 @@ public class ServerMessageHandler {
 	/**
 	 * Send message.
 	 *
-	 * @param client
-	 *            the client
-	 * @param chainReplicationMessage
-	 *            the chain replication message
-	 * @throws ConnectClientException
-	 *             the connect client exception
+	 * @param client            the client
+	 * @param chainReplicationMessage            the chain replication message
+	 * @throws ServerChainReplicationException the server chain replication exception
 	 */
 	public void sendMessage(IClientHelper client,
 			ChainReplicationMessage chainReplicationMessage)
@@ -784,6 +797,12 @@ public class ServerMessageHandler {
 		}
 	}
 
+	/**
+	 * Handle bulk sync message.
+	 *
+	 * @param message the message
+	 * @throws ServerChainReplicationException the server chain replication exception
+	 */
 	public void handleBulkSyncMessage(BulkSyncMessage message) throws ServerChainReplicationException {
 		for(ResponseOrSyncMessage syncMessages :message.getSyncMessages()) {
 			sync(syncMessages.getRequest(), syncMessages.getReply());

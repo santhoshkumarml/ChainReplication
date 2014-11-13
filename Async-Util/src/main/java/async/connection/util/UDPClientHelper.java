@@ -32,6 +32,9 @@ public class UDPClientHelper implements IClientHelper {
 		this.port = port;
 	}
 	
+	/* (non-Javadoc)
+	 * @see async.connection.util.IClientHelper#getServerPort()
+	 */
 	@Override
 	public int getServerPort() {
 		return this.port;

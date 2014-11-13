@@ -42,6 +42,7 @@ public class ClientImpl extends ChainReplicationImpl {
 	/** The response listener. */
 	ResponseListener responseListener;
 	
+	/** The request dispatcher. */
 	RequestDispatcher requestDispatcher;
 
 	/** The client chain replication facade. */
@@ -50,6 +51,7 @@ public class ClientImpl extends ChainReplicationImpl {
 	/** The client id. */
 	String clientId;
 	
+	/** The test cases. */
 	TestCases testCases;
 
 	/**
@@ -160,23 +162,49 @@ public class ClientImpl extends ChainReplicationImpl {
 	}
 	
 	
+	/**
+	 * The Class RequestDispatcher.
+	 */
 	public static class RequestDispatcher extends Thread {
 		
+		/** The client impl. */
 		private ClientImpl clientImpl;
+		
+		/** The response wait time. */
 		private long responseWaitTime;
+		
+		/** The test cases. */
 		private TestCases testCases;
+		
+		/** The is running. */
 		volatile boolean isRunning = false;
 
+		/**
+		 * Instantiates a new request dispatcher.
+		 *
+		 * @param responseWaitTime the response wait time
+		 * @param clientImpl the client impl
+		 * @param testCases the test cases
+		 */
 		public RequestDispatcher(long responseWaitTime, ClientImpl clientImpl,
 				TestCases testCases) {
 			this.clientImpl = clientImpl;
 			this.responseWaitTime = responseWaitTime;
 			this.testCases = testCases;
 		}
+		
+		/**
+		 * Checks if is running.
+		 *
+		 * @return true, if is running
+		 */
 		public boolean isRunning() {
 			return isRunning;
 		}
 		
+		/* (non-Javadoc)
+		 * @see java.lang.Thread#run()
+		 */
 		public void run() {
 			isRunning = true;
 			try {
@@ -192,10 +220,7 @@ public class ClientImpl extends ChainReplicationImpl {
 		/**
 		 * Perform operations.
 		 *
-		 * @param config
-		 *            the config
-		 * @throws ClientChainReplicationException
-		 *             the client chain replication exception
+		 * @throws ClientChainReplicationException             the client chain replication exception
 		 */
 		private void performOperations()
 				throws ClientChainReplicationException {
@@ -236,6 +261,11 @@ public class ClientImpl extends ChainReplicationImpl {
 	}
 
 
+	/**
+	 * Gets the request dispatcher.
+	 *
+	 * @return the request dispatcher
+	 */
 	public RequestDispatcher getRequestDispatcher() {
 		return this.requestDispatcher;
 	}

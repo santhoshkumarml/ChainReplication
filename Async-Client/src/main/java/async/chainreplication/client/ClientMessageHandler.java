@@ -31,6 +31,11 @@ public class ClientMessageHandler {
 	/** The chain name to chain map. */
 	Map<String, Chain> chainNameToChainMap = new HashMap<String, Chain>();
 
+	/**
+	 * Gets the chain name to chain map.
+	 *
+	 * @return the chain name to chain map
+	 */
 	public Map<String, Chain> getChainNameToChainMap() {
 		return chainNameToChainMap;
 	}

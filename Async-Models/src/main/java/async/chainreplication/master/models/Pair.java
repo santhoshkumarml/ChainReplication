@@ -13,9 +13,7 @@ import java.io.Serializable;
  */
 public class Pair<F, S> implements Serializable {
 
-	/**
-	 * 
-	 */
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 6579190661922473935L;
 
 	/** The first. */

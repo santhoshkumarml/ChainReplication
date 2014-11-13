@@ -31,6 +31,7 @@ public class ClientChainReplicationFacade {
 	/** The client impl. */
 	ClientImpl clientImpl;
 
+	/** The stop processing messages. */
 	volatile boolean stopProcessingMessages = false;
 
 	/**
@@ -76,6 +77,11 @@ public class ClientChainReplicationFacade {
 		}
 	}
 
+	/**
+	 * Start processing messages.
+	 *
+	 * @throws ClientChainReplicationException the client chain replication exception
+	 */
 	public void startProcessingMessages() throws ClientChainReplicationException {
 		while(!stopProcessingMessages) {
 			while (messages.hasMoreMessages()) {
@@ -92,6 +98,9 @@ public class ClientChainReplicationFacade {
 	}
 
 
+	/**
+	 * Stop processing messages.
+	 */
 	public void stopProcessingMessages() {
 		this.stopProcessingMessages  = true;
 	}

@@ -26,6 +26,9 @@ public class TestApp {
 	}
 	
 	//@Test
+	/**
+	 * Test app2.
+	 */
 	public void testApp2() {
 		final String args[] = new String[1];
 		args[0] = new File("." + File.separatorChar + "src"
@@ -35,6 +38,9 @@ public class TestApp {
 		AppStarter.main(args);
 	}
 	
+	/**
+	 * Test app3.
+	 */
 	@Test
 	public void testApp3() {
 		final String args[] = new String[1];
@@ -47,6 +53,9 @@ public class TestApp {
 	
 	
 	//@Test
+	/**
+	 * Test app4.
+	 */
 	public void testApp4() {
 		final String args[] = new String[1];
 		args[0] = new File("." + File.separatorChar + "src"
@@ -57,6 +66,9 @@ public class TestApp {
 	}
 
 	//@Test
+	/**
+	 * Test app5.
+	 */
 	public void testApp5() {
 		final String args[] = new String[1];
 		args[0] = new File("." + File.separatorChar + "src"

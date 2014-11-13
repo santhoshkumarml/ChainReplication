@@ -246,6 +246,11 @@ public class MasterMessageHandler {
 		return masterDs;
 	}
 
+	/**
+	 * Log message.
+	 *
+	 * @param message the message
+	 */
 	public void logMessage(String message) {
 		this.masterChainReplicationFacade.logMessages(message);
 	}

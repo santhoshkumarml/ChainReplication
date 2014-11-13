@@ -12,9 +12,11 @@ public enum Priority {
 	/** The higher priority. */
 	HIGHER_PRIORITY, // All Sequence Message exchange for Successor Change/Bulk
 	// Sync Message
-	HIGH_PRIORITY, // Request Messages/Response messages/Sync Messages are high
+	/** The high priority. */
+ HIGH_PRIORITY, // Request Messages/Response messages/Sync Messages are high
 	// priority
-	ABOVE_NORMAL_PRIORITY, // ACk Messages are above normal priority
+	/** The above normal priority. */
+ ABOVE_NORMAL_PRIORITY, // ACk Messages are above normal priority
 	/** The high priority. */
 	/** The normal priority. */
 	NORMAL_PRIORITY // All log messages are normal priority

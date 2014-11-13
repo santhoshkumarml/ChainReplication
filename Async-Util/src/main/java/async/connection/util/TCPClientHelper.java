@@ -72,6 +72,9 @@ public class TCPClientHelper implements IClientHelper {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see async.connection.util.IClientHelper#getServerPort()
+	 */
 	@Override
 	public int getServerPort() {
 		return this.port;
