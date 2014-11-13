@@ -1,5 +1,5 @@
 {
-	"Description":"New node fail during node join",
+	"Description":"Tail Fail during node join",
 	"Master":{
 		"MasterName":"Master",
 		"MasterHost":"localhost",
@@ -43,7 +43,8 @@
 						"TcpPort":"10131",
 						"UdpPort":"10132",
 						"DebugPort":"10133",
-						"InitialSleepTime":"2000"
+						"InitialSleepTime":"2000",
+						"MaxSendSequenceNumber":"23"
 					},	
 				},
 				{
@@ -54,8 +55,7 @@
 						"TcpPort":"10141",
 						"UdpPort":"10142",
 						"DebugPort":"10143",
-						"InitialSleepTime":"40000",
-						"MaxReceiveSequenceNumber":"2"
+						"InitialSleepTime":"40000"
 					},
 					
 				},
@@ -160,7 +160,8 @@
 			"RequestId":"req6",
 			"AccountNumber":"42142405",
 			"RequestType":"DEPOSIT",
-			"Amount":"20"
+			"Amount":"20",
+			"RetryCount":"2"
 		},
 		{
 			"ChainId":"Chain1",

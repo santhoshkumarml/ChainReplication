@@ -1,5 +1,5 @@
 {
-	"Description":"S fails how S- and S+ contacts",
+	"Description":"New node fail during node join",
 	"Master":{
 		"MasterName":"Master",
 		"MasterHost":"localhost",
@@ -43,8 +43,7 @@
 						"TcpPort":"10131",
 						"UdpPort":"10132",
 						"DebugPort":"10133",
-						"InitialSleepTime":"2000",
-						"MaxSendSequenceNumber":"12"
+						"InitialSleepTime":"2000"
 					},	
 				},
 				{
@@ -55,7 +54,8 @@
 						"TcpPort":"10141",
 						"UdpPort":"10142",
 						"DebugPort":"10143",
-						"InitialSleepTime":"3000"
+						"InitialSleepTime":"40000",
+						"MaxReceiveSequenceNumber":"2"
 					},
 					
 				},

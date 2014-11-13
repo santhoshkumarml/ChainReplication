@@ -1,5 +1,5 @@
 {
-	"Description":"S fails how S- and S+ contacts",
+	"Description":"Tail fails",
 	"Master":{
 		"MasterName":"Master",
 		"MasterHost":"localhost",
@@ -34,6 +34,7 @@
 						"DebugPort":"10123",
 						"InitialSleepTime":"1000"
 					},
+					
 				},
 				{
 					"ServerId":"Server3",
@@ -45,7 +46,8 @@
 						"DebugPort":"10133",
 						"InitialSleepTime":"2000",
 						"MaxSendSequenceNumber":"12"
-					},	
+					},
+					
 				},
 				{
 					"ServerId":"Server4",
@@ -55,136 +57,127 @@
 						"TcpPort":"10141",
 						"UdpPort":"10142",
 						"DebugPort":"10143",
-						"InitialSleepTime":"3000"
-					},
-					
-				},
-				{
-					"ServerId":"Server5",
-					"ChainId":"Chain1",
-					"ProcessDetails":{
-						"Host":"localhost",
-						"TcpPort":"10151",
-						"UdpPort":"10152",
-						"DebugPort":"10153",
-						"InitialSleepTime":"0",
-						"MaxSendSequenceNumber":"9"
+						"InitialSleepTime":"3000",
+						"MaxSendSequenceNumber":"7"
 					},
 					
 				}
 				
-			]
+			}
 			
-		}
+		]
 		
-	],
-	"Clients":[
-		{
-			"ClientId":"ClientId1",
-			"ProcessDetails":{
-				"Host":"localhost",
-				"UdpPort":"11001",
-				"TcpPort":"11002",
-				"DebugPort":"11003"
-			},
-			"ResponseWaitTime":"5000"
-		}
-		
-	],
-	"Requests":[
-		{
-			"ChainId":"Chain1",
-			"ClientId":"ClientId1",
-			"RequestId":"req1",
-			"AccountNumber":"42142405",
-			"RequestType":"GET_BALANCE"
+	}
+	
+],
+"Clients":[
+	{
+		"ClientId":"ClientId1",
+		"ProcessDetails":{
+			"Host":"localhost",
+			"UdpPort":"11001",
+			"TcpPort":"11002",
+			"DebugPort":"11003"
 		},
-		{
-			"ChainId":"Chain1",
-			"ClientId":"ClientId1",
-			"RequestId":"req2",
-			"AccountNumber":"42142405",
-			"RequestType":"WITHDRAW",
-			"Amount":"100"
-		},
-		{
-			"ChainId":"Chain1",
-			"ClientId":"ClientId1",
-			"RequestId":"req2",
-			"AccountNumber":"42142405",
-			"RequestType":"DEPOSIT",
-			"Amount":"100"
-		},
-		{
-			"ChainId":"Chain1",
-			"ClientId":"ClientId1",
-			"RequestId":"req2",
-			"AccountNumber":"42142405",
-			"RequestType":"WITHDRAW",
-			"Amount":"100"
-		},
-		{
-			"ChainId":"Chain1",
-			"ClientId":"ClientId1",
-			"RequestId":"req3",
-			"AccountNumber":"42142405",
-			"RequestType":"DEPOSIT",
-			"Amount":"100"
-		},
-		{
-			"ChainId":"Chain1",
-			"ClientId":"ClientId1",
-			"RequestId":"req4",
-			"AccountNumber":"42142405",
-			"RequestType":"WITHDRAW",
-			"Amount":"50"
-		},
-		{
-			"ChainId":"Chain1",
-			"ClientId":"ClientId1",
-			"RequestId":"req5",
-			"AccountNumber":"42142405",
-			"RequestType":"GET_BALANCE"
-		},
-		{
-			"ChainId":"Chain1",
-			"ClientId":"ClientId1",
-			"RequestId":"req4",
-			"AccountNumber":"42142405",
-			"RequestType":"WITHDRAW",
-			"Amount":"50"
-		},
-		{
-			"ChainId":"Chain1",
-			"ClientId":"ClientId1",
-			"RequestId":"req6",
-			"AccountNumber":"42142405",
-			"RequestType":"DEPOSIT",
-			"Amount":"20"
-		},
-		{
-			"ChainId":"Chain1",
-			"ClientId":"ClientId1",
-			"RequestId":"req7",
-			"AccountNumber":"42142405",
-			"RequestType":"WITHDRAW",
-			"Amount":"100"
-		},
-		{
-			"ChainId":"Chain1",
-			"ClientId":"ClientId1",
-			"RequestId":"req8",
-			"AccountNumber":"42142405",
-			"RequestType":"WITHDRAW",
-			"Amount":"50"
-		},
-		{
-			"ChainId":"Chain1",
-			"ClientId":"ClientId1",
-			"RequestId":"req9",
-			"AccountNumber":"42142405",
-			"RequestType":"GET_BALANCE"
-		}
-		
-	]
+		"ResponseWaitTime":"5000"
+	}
+	
+],
+"Requests":[
+	{
+		"ChainId":"Chain1",
+		"ClientId":"ClientId1",
+		"RequestId":"req1",
+		"AccountNumber":"42142405",
+		"RequestType":"GET_BALANCE"
+	},
+	{
+		"ChainId":"Chain1",
+		"ClientId":"ClientId1",
+		"RequestId":"req2",
+		"AccountNumber":"42142405",
+		"RequestType":"WITHDRAW",
+		"Amount":"100"
+	},
+	{
+		"ChainId":"Chain1",
+		"ClientId":"ClientId1",
+		"RequestId":"req2",
+		"AccountNumber":"42142405",
+		"RequestType":"DEPOSIT",
+		"Amount":"100"
+	},
+	{
+		"ChainId":"Chain1",
+		"ClientId":"ClientId1",
+		"RequestId":"req2",
+		"AccountNumber":"42142405",
+		"RequestType":"WITHDRAW",
+		"Amount":"100"
+	},
+	{
+		"ChainId":"Chain1",
+		"ClientId":"ClientId1",
+		"RequestId":"req3",
+		"AccountNumber":"42142405",
+		"RequestType":"DEPOSIT",
+		"Amount":"100"
+	},
+	{
+		"ChainId":"Chain1",
+		"ClientId":"ClientId1",
+		"RequestId":"req4",
+		"AccountNumber":"42142405",
+		"RequestType":"WITHDRAW",
+		"Amount":"50"
+	},
+	{
+		"ChainId":"Chain1",
+		"ClientId":"ClientId1",
+		"RequestId":"req5",
+		"AccountNumber":"42142405",
+		"RequestType":"GET_BALANCE"
+	},
+	{
+		"ChainId":"Chain1",
+		"ClientId":"ClientId1",
+		"RequestId":"req4",
+		"AccountNumber":"42142405",
+		"RequestType":"WITHDRAW",
+		"Amount":"50"
+	},
+	{
+		"ChainId":"Chain1",
+		"ClientId":"ClientId1",
+		"RequestId":"req6",
+		"AccountNumber":"42142405",
+		"RequestType":"DEPOSIT",
+		"Amount":"20"
+	},
+	{
+		"ChainId":"Chain1",
+		"ClientId":"ClientId1",
+		"RequestId":"req7",
+		"AccountNumber":"42142405",
+		"RequestType":"WITHDRAW",
+		"Amount":"100"
+	},
+	{
+		"ChainId":"Chain1",
+		"ClientId":"ClientId1",
+		"RequestId":"req8",
+		"AccountNumber":"42142405",
+		"RequestType":"WITHDRAW",
+		"Amount":"50"
+	},
+	{
+		"ChainId":"Chain1",
+		"ClientId":"ClientId1",
+		"RequestId":"req9",
+		"AccountNumber":"42142405",
+		"RequestType":"GET_BALANCE"
+	
+}
+	
+]
 }
