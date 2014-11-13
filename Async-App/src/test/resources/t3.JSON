@@ -1,5 +1,5 @@
 {
-	"Description":"Tail Fail during node join",
+	"Description":"Server1-Server2-Server3, Server2 will die after 10 seconds",
 	"Master":{
 		"MasterName":"Master",
 		"MasterHost":"localhost",
@@ -44,7 +44,7 @@
 						"UdpPort":"10132",
 						"DebugPort":"10133",
 						"InitialSleepTime":"2000",
-						"MaxSendSequenceNumber":"23"
+						"MaxSendSequenceNumber":"12"
 					},	
 				},
 				{
@@ -55,7 +55,7 @@
 						"TcpPort":"10141",
 						"UdpPort":"10142",
 						"DebugPort":"10143",
-						"InitialSleepTime":"40000"
+						"InitialSleepTime":"3000"
 					},
 					
 				},
@@ -160,8 +160,7 @@
 			"RequestId":"req6",
 			"AccountNumber":"42142405",
 			"RequestType":"DEPOSIT",
-			"Amount":"20",
-			"RetryCount":"2"
+			"Amount":"20"
 		},
 		{
 			"ChainId":"Chain1",
